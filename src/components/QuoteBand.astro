@@ -6,16 +6,18 @@ interface Props {
   text: string;
   tone?: 'cobalt' | 'peach';
   size?: 'lg' | 'md';
+  /** Los destellos se encienden y la frase entra con un corte al llegar a pantalla (ver RevealOnScroll). */
+  reveal?: boolean;
 }
 
-const { text, tone = 'cobalt', size = 'lg' } = Astro.props;
+const { text, tone = 'cobalt', size = 'lg', reveal = false } = Astro.props;
 ---
 
 <section class:list={['quote', `quote--${size}`]} data-tone={tone}>
-  <div class="container quote__inner">
+  <div class="container quote__inner" data-reveal={reveal ? '' : undefined}>
     <Motif kind="sparkle" size="1.75rem" class="quote__spark quote__spark--a" />
     <blockquote class="quote__text">
-      <p>{text}</p>
+      <p class:list={{ 'reveal-line': reveal }} style="--line-delay: 260ms">{text}</p>
     </blockquote>
     <Motif kind="sparkle" size="1.1rem" class="quote__spark quote__spark--b" />
   </div>
@@ -67,5 +69,30 @@ const { text, tone = 'cobalt', size = 'lg' } = Astro.props;
 
   .quote__inner :global(.quote__spark--b) {
     opacity: 0.8;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .quote__inner[data-reveal='pending'] :global(.quote__spark) {
+      scale: 0;
+    }
+
+    .quote__inner[data-reveal='in'] :global(.quote__spark--a) {
+      animation: spark-on 900ms var(--ease-out) backwards;
+    }
+
+    .quote__inner[data-reveal='in'] :global(.quote__spark--b) {
+      animation: spark-on 900ms var(--ease-out) 900ms backwards;
+    }
+  }
+
+  @keyframes spark-on {
+    from {
+      scale: 0;
+      rotate: -90deg;
+    }
+    to {
+      scale: 1;
+      rotate: 0deg;
+    }
   }
 </style>

@@ -5,20 +5,22 @@ import type { Interest } from '../modules/profile/domain/Interest';
 /** Temas que la autora quiere contar: palabra grande + descripción, en filas con filete. */
 interface Props {
   interests: Interest[];
+  /** Cada fila se escribe al llegar a pantalla: filete, asterisco, palabra y texto (ver RevealOnScroll). */
+  reveal?: boolean;
 }
 
-const { interests } = Astro.props;
+const { interests, reveal = false } = Astro.props;
 ---
 
 {interests.length > 0 && (
   <ul class="interests">
-    {interests.map((interest) => (
-      <li class="interests__item">
-        <h3 class="interests__title">
+    {interests.map((interest, i) => (
+      <li class="interests__item" data-reveal={reveal ? '' : undefined} style={`--row:${i % 3}`}>
+        <h3 class:list={['interests__title', { 'reveal-line': reveal }]}>
           <Motif kind="asterisk" size="0.7em" class="interests__mark" />
           {interest.getTitle()}
         </h3>
-        <p class="interests__text">{interest.getDescription()}</p>
+        <p class:list={['interests__text', { 'reveal-fade': reveal }]}>{interest.getDescription()}</p>
       </li>
     ))}
   </ul>
@@ -72,6 +74,60 @@ const { interests } = Astro.props;
       align-items: center;
       gap: var(--space-12);
       padding-block: var(--space-12);
+    }
+  }
+
+  /* Revelado: el filete se traza de izquierda a derecha y el asterisco gira hasta su sitio. */
+  @media (prefers-reduced-motion: no-preference) {
+    .interests__item[data-reveal='pending'],
+    .interests__item[data-reveal='in'] {
+      --stagger: calc(var(--row) * 90ms);
+      --line-delay: calc(var(--stagger) + 150ms);
+      --fade-delay: calc(var(--stagger) + 380ms);
+      position: relative;
+      border-bottom-color: transparent;
+    }
+
+    .interests__item[data-reveal='pending']::after,
+    .interests__item[data-reveal='in']::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 -1px;
+      height: 1px;
+      background: var(--line);
+      transform-origin: left;
+    }
+
+    .interests__item[data-reveal='pending']::after {
+      scale: 0 1;
+    }
+
+    .interests__item[data-reveal='in']::after {
+      animation: rule-draw 1100ms var(--ease-out) var(--stagger) backwards;
+    }
+
+    .interests__item[data-reveal='in'] :global(.interests__mark) {
+      animation: mark-turn 1000ms var(--ease-out) var(--line-delay) backwards;
+    }
+  }
+
+  @keyframes rule-draw {
+    from {
+      scale: 0 1;
+    }
+    to {
+      scale: 1 1;
+    }
+  }
+
+  @keyframes mark-turn {
+    from {
+      rotate: -180deg;
+      scale: 0.3;
+    }
+    to {
+      rotate: 0deg;
+      scale: 1;
     }
   }
 </style>

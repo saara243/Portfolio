@@ -6,16 +6,18 @@ import type { Motivation } from '../modules/profile/domain/Motivation';
 interface Props {
   motivation: Motivation;
   scene: string;
+  /** Slugline tecleada y título con corte al llegar a pantalla (ver RevealOnScroll). */
+  reveal?: boolean;
 }
 
-const { motivation, scene } = Astro.props;
+const { motivation, scene, reveal = false } = Astro.props;
 ---
 
 <section class="band letter" data-tone="cobalt">
   <div class="container letter__inner">
-    <div class="letter__head">
-      <p class="letter__slug script-font">{scene}</p>
-      <h2 class="letter__title">{motivation.getTitle()}</h2>
+    <div class="letter__head" data-reveal={reveal ? '' : undefined}>
+      <p class:list={['letter__slug script-font', { 'reveal-type': reveal }]} style={reveal ? `--chars:${scene.length}` : undefined}>{scene}</p>
+      <h2 class:list={['letter__title', { 'reveal-line': reveal }]}>{motivation.getTitle()}</h2>
       <Motif kind="badge" size="clamp(4.5rem, 10vw, 7rem)" class="letter__badge" />
     </div>
 
@@ -52,6 +54,30 @@ const { motivation, scene } = Astro.props;
 
   .letter__head :global(.letter__badge) {
     color: var(--peach);
+  }
+
+  /* La estrella-sello gira mientras la carta recorre la pantalla: eco del asterisco del hero. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .letter {
+        view-timeline: --letter block;
+      }
+
+      .letter__head :global(.letter__badge) {
+        animation: badge-turn linear both;
+        animation-timeline: --letter;
+        animation-range: entry 0% exit 100%;
+      }
+    }
+  }
+
+  @keyframes badge-turn {
+    from {
+      rotate: -45deg;
+    }
+    to {
+      rotate: 135deg;
+    }
   }
 
   .letter__sheet {

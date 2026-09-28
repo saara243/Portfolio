@@ -6,15 +6,17 @@ interface Props {
   level?: 1 | 2;
   align?: 'start' | 'center';
   size?: 'md' | 'lg';
+  /** La slugline se teclea y el título entra con un corte al llegar a pantalla (ver RevealOnScroll). */
+  reveal?: boolean;
 }
 
-const { scene, title, level = 2, align = 'start', size = 'md' } = Astro.props;
+const { scene, title, level = 2, align = 'start', size = 'md', reveal = false } = Astro.props;
 const Heading = level === 1 ? 'h1' : 'h2';
 ---
 
-<div class:list={['scene', `scene--${align}`, `scene--${size}`]}>
-  <p class="scene__slug script-font">{scene}</p>
-  {title && <Heading class="scene__title">{title}</Heading>}
+<div class:list={['scene', `scene--${align}`, `scene--${size}`]} data-reveal={reveal ? '' : undefined}>
+  <p class:list={['scene__slug script-font', { 'reveal-type': reveal }]} style={reveal ? `--chars:${scene.length}` : undefined}>{scene}</p>
+  {title && <Heading class:list={['scene__title', { 'reveal-line': reveal }]}>{title}</Heading>}
 </div>
 
 <style>
@@ -24,6 +26,10 @@ const Heading = level === 1 ? 'h1' : 'h2';
 
   .scene--center {
     text-align: center;
+  }
+
+  .scene--center .scene__slug {
+    margin-inline: auto;
   }
 
   .scene__slug {

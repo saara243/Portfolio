@@ -1,0 +1,36 @@
+---
+/**
+ * Activa las primitivas de src/styles/motion.css para los elementos con [data-reveal].
+ * Solo marca como pendiente lo que aún está fuera de pantalla: si el script no corre,
+ * o con movimiento reducido, todo se ve desde el principio.
+ */
+---
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function initReveals() {
+    const targets = document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-reveal="in"])');
+    if (targets.length === 0 || reducedMotion.matches || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute('data-reveal', 'in');
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+
+    const fold = window.innerHeight * 0.88;
+    targets.forEach((target) => {
+      if (target.getBoundingClientRect().top < fold) return;
+      target.setAttribute('data-reveal', 'pending');
+      observer.observe(target);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initReveals);
+</script>

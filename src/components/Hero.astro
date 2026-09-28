@@ -12,11 +12,20 @@ interface Props {
 const { lang, profile } = Astro.props;
 const t = useTranslations(lang);
 const cv = profile.getCv();
+const slug = t('scene.home');
 ---
+
+<script is:inline>
+  // La secuencia de apertura solo se interpreta en la primera carga, no al volver a la home navegando.
+  if (!window.__heroIntroPlayed && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    document.documentElement.classList.add('intro');
+  }
+  window.__heroIntroPlayed = true;
+</script>
 
 <section class="hero" data-tone="peach">
   <div class="container hero__inner">
-    <p class="hero__slug script-font">{t('scene.home')}</p>
+    <p class="hero__slug script-font reveal-type" style={`--chars:${slug.length}`}>{slug}</p>
 
     <div class="hero__title">
       <h1 class="hero__name">{profile.getName()}</h1>
@@ -156,12 +165,36 @@ const cv = profile.getCv();
     }
   }
 
-  /* Firma: el asterisco se traza al cargar y gira con el scroll. */
+  /*
+   * Apertura (primera carga): la slugline se teclea, el nombre entra con un corte
+   * mientras el asterisco se traza, y después se asientan rol, lema y acciones.
+   * Firma permanente: el asterisco gira con el scroll.
+   */
   @media (prefers-reduced-motion: no-preference) {
-    .hero__mark :global(.motif__ray) {
+    :global(html.intro) .hero__slug {
+      animation: type-on var(--type-duration) steps(var(--chars), end) 120ms backwards;
+    }
+
+    :global(html.intro) .hero__name {
+      animation: line-reveal 950ms var(--ease-out) 420ms backwards;
+    }
+
+    :global(html.intro) .hero__role {
+      animation: settle 700ms var(--ease-out) 780ms backwards;
+    }
+
+    :global(html.intro) .hero__tagline {
+      animation: settle 800ms var(--ease-out) 940ms backwards;
+    }
+
+    :global(html.intro) .hero__actions {
+      animation: settle 700ms var(--ease-out) 1100ms backwards;
+    }
+
+    :global(html.intro) .hero__mark :global(.motif__ray) {
       stroke-dasharray: 1;
       animation: ray-draw 1100ms var(--ease-out) backwards;
-      animation-delay: calc(var(--i) * 90ms + 150ms);
+      animation-delay: calc(var(--i) * 90ms + 300ms);
     }
 
     @supports (animation-timeline: scroll()) {

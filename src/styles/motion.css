@@ -1,0 +1,72 @@
+/*
+ * Primitivas de movimiento: "el guion se escribe mientras lees".
+ * - .reveal-type: la slugline se teclea carácter a carácter (necesita --chars).
+ * - .reveal-line: el titular entra con un barrido de corte.
+ * - .reveal-fade: el resto se asienta.
+ * Se disparan con [data-reveal='in'] (IntersectionObserver en RevealOnScroll)
+ * o con html.intro (primera carga del hero). El estado por defecto es visible:
+ * solo se oculta lo que el script marca como [data-reveal='pending'].
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal='pending'] .reveal-type,
+  [data-reveal='pending'].reveal-type {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  [data-reveal='pending'] .reveal-line,
+  [data-reveal='pending'] .reveal-fade {
+    opacity: 0;
+  }
+
+  [data-reveal='in'] .reveal-type,
+  [data-reveal='in'].reveal-type {
+    animation: type-on var(--type-duration) steps(var(--chars, 24), end) var(--reveal-delay, 0ms) backwards;
+  }
+
+  [data-reveal='in'] .reveal-line {
+    animation: line-reveal 800ms var(--ease-out) var(--line-delay, var(--type-duration)) backwards;
+  }
+
+  [data-reveal='in'] .reveal-fade {
+    animation: settle 700ms var(--ease-out) var(--fade-delay, 400ms) backwards;
+  }
+}
+
+.reveal-type {
+  /* La velocidad de tecleo es constante; las sluglines largas no superan 0.9s. */
+  --type-duration: min(calc(var(--chars, 24) * 28ms), 900ms);
+  width: fit-content;
+}
+
+@keyframes type-on {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes line-reveal {
+  from {
+    opacity: 1;
+    translate: 0 0.45em;
+    clip-path: inset(100% -0.5em -0.5em -0.5em);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(-0.5em -0.5em -0.5em -0.5em);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
