@@ -1,0 +1,28 @@
+---
+import { DEFAULT_LOCALE, LOCALES, localizedPath } from '../i18n/utils';
+
+// Raíz: redirige al idioma del navegador (o al por defecto sin JS).
+const fallback = localizedPath(DEFAULT_LOCALE);
+const targets = Object.fromEntries(LOCALES.map((lang) => [lang, localizedPath(lang)]));
+---
+
+<!doctype html>
+<html lang={DEFAULT_LOCALE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Portfolio</title>
+    <link rel="canonical" href={fallback} />
+    <script is:inline define:vars={{ targets, fallback }}>
+      var preferred = (navigator.languages || [navigator.language || ''])
+        .map(function (l) { return l.slice(0, 2).toLowerCase(); })
+        .find(function (l) { return targets[l]; });
+      location.replace(preferred ? targets[preferred] : fallback);
+    </script>
+    <noscript><meta http-equiv="refresh" content={`0; url=${fallback}`} /></noscript>
+  </head>
+  <body style="background:#f5f0e6">
+    <a href={fallback}>Portfolio</a>
+  </body>
+</html>

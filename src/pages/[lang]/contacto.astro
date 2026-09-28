@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SceneHeading from '../../components/SceneHeading.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
+import { profileModule } from '../../modules/profile/application/factory';
+import { getLangStaticPaths, routes, toLang, useTranslations } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = toLang(Astro.params.lang);
+const t = useTranslations(lang);
+const profile = await profileModule.getProfile.execute({ locale: lang });
+
+// Si se define PUBLIC_FORMSPREE_ID se activa el formulario; si no, solo email y redes.
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+---
+
+<BaseLayout lang={lang} path={routes.contact} title={t('contact.title')}>
+  <section class="section container reading">
+    <SceneHeading scene={t('scene.contact')} title={t('contact.title')} level={1} />
+    <p>{t('contact.intro')}</p>
+
+    {formspreeId && (
+      <form class="contact" action={`https://formspree.io/f/${formspreeId}`} method="POST">
+        <label>
+          {t('contact.name')}
+          <input name="name" type="text" autocomplete="name" required maxlength="120" />
+        </label>
+        <label>
+          {t('contact.email')}
+          <input name="email" type="email" autocomplete="email" required maxlength="200" />
+        </label>
+        <label>
+          {t('contact.message')}
+          <textarea name="message" rows="6" required maxlength="5000"></textarea>
+        </label>
+        <button class="button button--primary" type="submit">{t('contact.send')}</button>
+      </form>
+    )}
+
+    <p class="contact__direct">{t('contact.orEmail')}</p>
+    <SocialLinks links={profile.getSocials()} email={profile.getEmail()} />
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-4);
+    margin-block: var(--space-8);
+  }
+
+  .contact label {
+    display: grid;
+    gap: var(--space-2);
+    font-family: var(--font-script);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+  }
+
+  .contact input,
+  .contact textarea {
+    width: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font: var(--text-base) / 1.5 var(--font-body);
+    text-transform: none;
+  }
+
+  .contact button {
+    justify-self: start;
+  }
+
+  .contact__direct {
+    margin-top: var(--space-8);
+    color: var(--color-muted);
+  }
+</style>

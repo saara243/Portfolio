@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SceneHeading from '../../../components/SceneHeading.astro';
+import ScriptCard from '../../../components/ScriptCard.astro';
+import ScriptFilters from '../../../components/ScriptFilters.astro';
+import { scriptsModule } from '../../../modules/scripts/application/factory';
+import { getLangStaticPaths, routes, toLang, useTranslations } from '../../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = toLang(Astro.params.lang);
+const t = useTranslations(lang);
+const scripts = await scriptsModule.listScripts.execute({ locale: lang });
+---
+
+<BaseLayout lang={lang} path={routes.projects} title={t('projects.title')} description={t('projects.intro')}>
+  <section class="section container">
+    <SceneHeading scene={t('scene.projects')} title={t('projects.title')} level={1} />
+    <p class="reading">{t('projects.intro')}</p>
+
+    <ScriptFilters lang={lang} formats={scripts.formats()} genres={scripts.genres()} />
+
+    <div class="grid-cards">
+      {scripts.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
+    </div>
+    <p data-script-empty hidden={!scripts.isEmpty()}>{t('projects.empty')}</p>
+  </section>
+</BaseLayout>

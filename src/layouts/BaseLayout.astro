@@ -1,0 +1,79 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { profileModule } from '../modules/profile/application/factory';
+import { LOCALES, DEFAULT_LOCALE, languages, localizedPath, useTranslations, withBase, type Lang } from '../i18n/utils';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  /** Ruta sin idioma, p.ej. "proyectos/mi-guion/". Se usa para hreflang y el selector de idioma. */
+  path: string;
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { lang, path, title, description, image } = Astro.props;
+const t = useTranslations(lang);
+const profile = await profileModule.getProfile.execute({ locale: lang });
+
+const siteName = `${profile.getName()} — ${profile.getRole()}`;
+const pageTitle = title ? `${title} · ${profile.getName()}` : siteName;
+const pageDescription = description ?? profile.getTagline() ?? t('site.description');
+const canonical = new URL(localizedPath(lang, path), Astro.site);
+const ogImage = new URL(withBase(image ?? profile.getPhoto() ?? 'images/og-default.svg'), Astro.site);
+---
+
+<!doctype html>
+<html lang={languages[lang].htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    {LOCALES.map((locale) => (
+      <link rel="alternate" hreflang={languages[locale].htmlLang} href={new URL(localizedPath(locale, path), Astro.site)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL(localizedPath(DEFAULT_LOCALE, path), Astro.site)} />
+    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <link rel="sitemap" href={withBase('sitemap-index.xml')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={languages[lang].ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap"
+    />
+
+    <script is:inline>
+      // Aplica el tema guardado antes de pintar (evita parpadeo). Sin localStorage → sigue al sistema.
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+        } catch (e) {}
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t('a11y.skip')}</a>
+    <Header lang={lang} path={path} siteName={profile.getName()} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} profile={profile} />
+  </body>
+</html>

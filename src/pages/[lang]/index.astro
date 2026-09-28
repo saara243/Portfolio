@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import ScriptCard from '../../components/ScriptCard.astro';
+import SceneHeading from '../../components/SceneHeading.astro';
+import { profileModule } from '../../modules/profile/application/factory';
+import { scriptsModule } from '../../modules/scripts/application/factory';
+import { getLangStaticPaths, localizedPath, routes, toLang, useTranslations } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = toLang(Astro.params.lang);
+const t = useTranslations(lang);
+const profile = await profileModule.getProfile.execute({ locale: lang });
+const featured = await scriptsModule.listFeaturedScripts.execute({ locale: lang });
+---
+
+<BaseLayout lang={lang} path={routes.home}>
+  <Hero lang={lang} profile={profile} />
+
+  <section class="section container">
+    <SceneHeading scene={t('scene.cut')} title={t('home.featured')} />
+    <div class="grid-cards">
+      {featured.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
+    </div>
+    <p class="more">
+      <a class="button" href={localizedPath(lang, routes.projects)}>{t('home.allProjects')} →</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .more {
+    margin-top: var(--space-8);
+  }
+</style>

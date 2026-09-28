@@ -1,0 +1,99 @@
+---
+import type { Script } from '../modules/scripts/domain/Script';
+import type { UiKey } from '../i18n/ui';
+import { localizedPath, routes, useTranslations, withBase, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  script: Script;
+}
+
+const { lang, script } = Astro.props;
+const t = useTranslations(lang);
+const cover = script.getCover();
+const format = script.getFormat().getValue();
+const genreKeys = script.getGenres().map((genre) => genre.getKey()).join(' ');
+---
+
+<article class="card" data-script-card data-format={format} data-genres={genreKeys}>
+  <a class="card__link" href={localizedPath(lang, routes.project(script.getSlug()))}>
+    {cover && (
+      <img
+        class="card__cover"
+        src={withBase(cover)}
+        alt=""
+        width="600"
+        height="800"
+        loading="lazy"
+        transition:name={`cover-${script.getSlug()}`}
+      />
+    )}
+    <div class="card__body">
+      <p class="card__meta script-font">
+        {t(`format.${format}` as UiKey)} · {script.getYear()}
+      </p>
+      <h3 class="card__title">{script.getTitle()}</h3>
+      <p class="card__logline">{script.getLogline()}</p>
+      <span class="card__more script-font">{t('projects.read')} →</span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: transform var(--transition);
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+  }
+
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card__cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    background: var(--color-line);
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: var(--space-6);
+  }
+
+  .card__meta {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .card__title {
+    font-size: var(--text-xl);
+  }
+
+  .card__logline {
+    flex: 1;
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+
+  .card__more {
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+</style>

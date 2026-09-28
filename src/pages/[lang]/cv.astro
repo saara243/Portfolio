@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DownloadButton from '../../components/DownloadButton.astro';
+import SceneHeading from '../../components/SceneHeading.astro';
+import Timeline from '../../components/Timeline.astro';
+import { profileModule } from '../../modules/profile/application/factory';
+import { getLangStaticPaths, routes, toLang, useTranslations } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = toLang(Astro.params.lang);
+const t = useTranslations(lang);
+const profile = await profileModule.getProfile.execute({ locale: lang });
+const cv = profile.getCv();
+---
+
+<BaseLayout lang={lang} path={routes.cv} title={t('cv.title')}>
+  <section class="section container">
+    <SceneHeading scene={t('scene.cv')} title={t('cv.title')} level={1} />
+    {cv && (
+      <p class="cv__download">
+        <DownloadButton file={cv} label={t('cv.download')} />
+      </p>
+    )}
+
+    <Timeline title={t('cv.experience')} entries={profile.getExperience()} />
+    <Timeline title={t('cv.education')} entries={profile.getEducation()} />
+    <Timeline title={t('cv.awards')} entries={profile.getAwards()} />
+  </section>
+</BaseLayout>
+
+<style>
+  .cv__download {
+    margin-bottom: var(--space-12);
+  }
+</style>

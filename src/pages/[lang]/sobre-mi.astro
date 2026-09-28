@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SceneHeading from '../../components/SceneHeading.astro';
+import { profileModule } from '../../modules/profile/application/factory';
+import { getLangStaticPaths, routes, toLang, useTranslations, withBase } from '../../i18n/utils';
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = toLang(Astro.params.lang);
+const t = useTranslations(lang);
+const profile = await profileModule.getProfile.execute({ locale: lang });
+const photo = profile.getPhoto();
+---
+
+<BaseLayout lang={lang} path={routes.about} title={t('about.title')}>
+  <section class="section container about">
+    {photo && (
+      <img class="about__photo" src={withBase(photo)} alt={profile.getName()} width="480" height="600" />
+    )}
+    <div class="about__text">
+      <SceneHeading scene={t('scene.about')} title={t('about.title')} level={1} />
+      <div class="prose reading" set:html={profile.getBioHtml()} />
+
+      {profile.getSkills().length > 0 && (
+        <>
+          <h2 class="about__subtitle">{t('about.skills')}</h2>
+          <ul class="tags">{profile.getSkills().map((skill) => <li>{skill}</li>)}</ul>
+        </>
+      )}
+      {profile.getLanguages().length > 0 && (
+        <>
+          <h2 class="about__subtitle">{t('about.languages')}</h2>
+          <ul class="tags">{profile.getLanguages().map((language) => <li>{language}</li>)}</ul>
+        </>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-12);
+  }
+
+  .about__photo {
+    width: 100%;
+    max-width: 24rem;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius);
+    filter: grayscale(0.2);
+  }
+
+  .about__subtitle {
+    margin-top: var(--space-12);
+    font-size: var(--text-xl);
+  }
+
+  @media (min-width: 900px) {
+    .about {
+      grid-template-columns: 2fr 3fr;
+      align-items: start;
+    }
+
+    .about__photo {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+</style>

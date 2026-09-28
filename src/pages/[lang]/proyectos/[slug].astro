@@ -1,0 +1,182 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DownloadButton from '../../../components/DownloadButton.astro';
+import SceneHeading from '../../../components/SceneHeading.astro';
+import { profileModule } from '../../../modules/profile/application/factory';
+import { scriptsModule } from '../../../modules/scripts/application/factory';
+import type { UiKey } from '../../../i18n/ui';
+import { LOCALES, localizedPath, routes, toLang, useTranslations, withBase } from '../../../i18n/utils';
+
+export const getStaticPaths = (async () => {
+  const paths = await Promise.all(
+    LOCALES.map(async (lang) => {
+      const scripts = await scriptsModule.listScripts.execute({ locale: lang });
+      return scripts.toArray().map((script) => ({ params: { lang, slug: script.getSlug() } }));
+    }),
+  );
+  return paths.flat();
+}) satisfies GetStaticPaths;
+
+const lang = toLang(Astro.params.lang);
+const t = useTranslations(lang);
+const script = await scriptsModule.getScriptBySlug.execute({ locale: lang, slug: Astro.params.slug! });
+const profile = await profileModule.getProfile.execute({ locale: lang });
+
+const cover = script.getCover();
+const pdf = script.getPdf();
+const requestHref = `mailto:${profile.getEmail()}?subject=${encodeURIComponent(
+  `${t('script.onRequestSubject')}: ${script.getTitle()}`,
+)}`;
+
+const details = [
+  { label: t('script.format'), value: t(`format.${script.getFormat().getValue()}` as UiKey) },
+  { label: t('script.genres'), value: script.getGenres().map((genre) => genre.getLabel()).join(', ') },
+  { label: t('script.year'), value: script.getYear() },
+  { label: t('script.pages'), value: script.getPages() },
+  { label: t('script.duration'), value: script.getDuration() },
+  { label: t('script.status'), value: t(`status.${script.getStatus().getValue()}` as UiKey) },
+].filter((detail) => detail.value !== undefined && detail.value !== '');
+---
+
+<BaseLayout
+  lang={lang}
+  path={routes.project(script.getSlug())}
+  title={script.getTitle()}
+  description={script.getLogline()}
+  image={cover}
+>
+  <article class="section container script">
+    <a class="script__back script-font" href={localizedPath(lang, routes.projects)}>← {t('projects.back')}</a>
+
+    <div class="script__layout">
+      <div class="script__main">
+        <SceneHeading scene={t(`format.${script.getFormat().getValue()}` as UiKey)} title={script.getTitle()} level={1} />
+
+        <section class="script__logline">
+          <h2 class="visually-hidden">{t('script.logline')}</h2>
+          <p>{script.getLogline()}</p>
+        </section>
+
+        {script.getSynopsisHtml() && (
+          <section>
+            <h2 class="script__subtitle">{t('script.synopsis')}</h2>
+            <div class="prose reading" set:html={script.getSynopsisHtml()} />
+          </section>
+        )}
+
+        {script.getAwards().length > 0 && (
+          <section>
+            <h2 class="script__subtitle">{t('script.awards')}</h2>
+            <ul>{script.getAwards().map((award) => <li>{award}</li>)}</ul>
+          </section>
+        )}
+      </div>
+
+      <aside class="script__aside">
+        {cover && (
+          <img
+            class="script__cover"
+            src={withBase(cover)}
+            alt=""
+            width="600"
+            height="800"
+            transition:name={`cover-${script.getSlug()}`}
+          />
+        )}
+        <h2 class="script__subtitle">{t('script.details')}</h2>
+        <dl class="script__details">
+          {details.map((detail) => (
+            <div>
+              <dt class="script-font">{detail.label}</dt>
+              <dd>{detail.value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {script.isDownloadable() && pdf && <DownloadButton file={pdf} label={t('script.download')} />}
+        {script.isAvailableOnRequest() && (
+          <>
+            <p class="script__note">{t('script.onRequestNote')}</p>
+            <a class="button button--primary" href={requestHref}>{t('script.onRequest')}</a>
+          </>
+        )}
+      </aside>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .script__back {
+    display: inline-block;
+    margin-bottom: var(--space-8);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .script__layout {
+    display: grid;
+    gap: var(--space-12);
+  }
+
+  .script__logline p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-xl);
+    max-width: var(--reading-width);
+  }
+
+  .script__subtitle {
+    margin-top: var(--space-8);
+    font-size: var(--text-xl);
+  }
+
+  .script__cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+  }
+
+  .script__details {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-8);
+  }
+
+  .script__details div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .script__details dt {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .script__details dd {
+    margin: 0;
+  }
+
+  .script__note {
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 900px) {
+    .script__layout {
+      grid-template-columns: 3fr 2fr;
+      align-items: start;
+    }
+
+    .script__aside {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+</style>

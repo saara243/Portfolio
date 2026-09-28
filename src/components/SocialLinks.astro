@@ -1,0 +1,39 @@
+---
+import type { SocialLink } from '../modules/profile/domain/SocialLink';
+
+interface Props {
+  links: SocialLink[];
+  email?: string;
+}
+
+const { links, email } = Astro.props;
+---
+
+<ul class="social">
+  {email && (
+    <li>
+      <a href={`mailto:${email}`}>{email}</a>
+    </li>
+  )}
+  {links.map((link) => (
+    <li>
+      <a href={link.getUrl()} target="_blank" rel="noopener noreferrer">{link.getLabel()}</a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-script);
+  }
+
+  .social a {
+    color: var(--color-ink);
+  }
+</style>

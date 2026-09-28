@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    rect { fill: #1c1a17; }
+    text { fill: #f5f0e6; }
+    @media (prefers-color-scheme: dark) { rect { fill: #f5f0e6; } text { fill: #1c1a17; } }
+  </style>
+  <rect width="32" height="32" rx="6" />
+  <text x="16" y="22" font-family="Courier New, monospace" font-size="16" font-weight="700" text-anchor="middle">G</text>
+</svg>

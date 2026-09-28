@@ -1,0 +1,60 @@
+---
+import DownloadButton from './DownloadButton.astro';
+import SceneHeading from './SceneHeading.astro';
+import type { Profile } from '../modules/profile/domain/Profile';
+import { localizedPath, routes, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  profile: Profile;
+}
+
+const { lang, profile } = Astro.props;
+const t = useTranslations(lang);
+const cv = profile.getCv();
+---
+
+<section class="hero">
+  <div class="container">
+    <SceneHeading scene={t('scene.home')} />
+    <h1 class="hero__name">{profile.getName()}</h1>
+    <p class="hero__role script-font">{profile.getRole()}</p>
+    <p class="hero__tagline">{profile.getTagline()}</p>
+    <div class="hero__actions">
+      {cv && <DownloadButton file={cv} label={t('home.ctaCv')} />}
+      <a class="button" href={localizedPath(lang, routes.contact)}>{t('home.ctaContact')}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--space-16) var(--space-12);
+  }
+
+  .hero__name {
+    font-size: var(--text-hero);
+    margin-bottom: var(--space-2);
+    view-transition-name: site-name;
+  }
+
+  .hero__role {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+  }
+
+  .hero__tagline {
+    max-width: 36rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-xl);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+</style>

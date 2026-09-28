@@ -1,0 +1,20 @@
+---
+import { withBase } from '../i18n/utils';
+
+/** Botón único para descargar ficheros de /public (CV, guiones, press kit…). */
+interface Props {
+  file: string;
+  label: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { file, label, variant = 'primary' } = Astro.props;
+const fileName = file.split('/').pop();
+---
+
+<a class:list={['button', { 'button--primary': variant === 'primary' }]} href={withBase(file)} download={fileName}>
+  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+    <path fill="none" stroke="currentColor" stroke-width="2" d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14" />
+  </svg>
+  {label}
+</a>

@@ -1,0 +1,142 @@
+---
+import type { Genre } from '../modules/scripts/domain/Genre';
+import type { ScriptFormat } from '../modules/scripts/domain/ScriptFormat';
+import type { UiKey } from '../i18n/ui';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+/**
+ * Filtros de la lista de proyectos. Las opciones vienen del dominio (ScriptList);
+ * aquí solo se muestran/ocultan tarjetas ya renderizadas y se refleja en la URL.
+ */
+interface Props {
+  lang: Lang;
+  formats: ScriptFormat[];
+  genres: Genre[];
+}
+
+const { lang, formats, genres } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<form class="filters" data-script-filters>
+  {formats.length > 1 && (
+    <fieldset>
+      <legend class="script-font">{t('projects.filterFormat')}</legend>
+      <label><input type="radio" name="format" value="" checked /> {t('projects.all')}</label>
+      {formats.map((format) => (
+        <label>
+          <input type="radio" name="format" value={format.getValue()} /> {t(`format.${format.getValue()}` as UiKey)}
+        </label>
+      ))}
+    </fieldset>
+  )}
+  {genres.length > 1 && (
+    <fieldset>
+      <legend class="script-font">{t('projects.filterGenre')}</legend>
+      <label><input type="radio" name="genre" value="" checked /> {t('projects.all')}</label>
+      {genres.map((genre) => (
+        <label>
+          <input type="radio" name="genre" value={genre.getKey()} /> {genre.getLabel()}
+        </label>
+      ))}
+    </fieldset>
+  )}
+</form>
+
+<script>
+  function initFilters() {
+    const form = document.querySelector<HTMLFormElement>('[data-script-filters]');
+    if (!form) return;
+    const cards = document.querySelectorAll<HTMLElement>('[data-script-card]');
+    const empty = document.querySelector<HTMLElement>('[data-script-empty]');
+
+    const apply = () => {
+      const data = new FormData(form);
+      const format = String(data.get('format') ?? '');
+      const genre = String(data.get('genre') ?? '');
+      let visible = 0;
+      cards.forEach((card) => {
+        const matches =
+          (!format || card.dataset.format === format) &&
+          (!genre || (card.dataset.genres ?? '').split(' ').includes(genre));
+        card.hidden = !matches;
+        if (matches) visible++;
+      });
+      if (empty) empty.hidden = visible > 0;
+
+      const url = new URL(location.href);
+      format ? url.searchParams.set('formato', format) : url.searchParams.delete('formato');
+      genre ? url.searchParams.set('genero', genre) : url.searchParams.delete('genero');
+      history.replaceState(history.state, '', url);
+    };
+
+    // Restaurar filtros desde la URL (enlaces compartibles).
+    const params = new URLSearchParams(location.search);
+    const select = (name: string, value: string | null) => {
+      if (!value) return;
+      const input = form.querySelector<HTMLInputElement>(`input[name="${name}"][value="${CSS.escape(value)}"]`);
+      if (input) input.checked = true;
+    };
+    select('format', params.get('formato'));
+    select('genre', params.get('genero'));
+
+    form.addEventListener('change', apply);
+    apply();
+  }
+
+  document.addEventListener('astro:page-load', initFilters);
+</script>
+
+<style>
+  .filters {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  legend {
+    width: 100%;
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+
+  label:has(input:checked) {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  label:has(input:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
