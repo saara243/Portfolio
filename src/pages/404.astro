@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Motif from '../components/Motif.astro';
 import { DEFAULT_LOCALE, localizedPath, useTranslations } from '../i18n/utils';
 
 // GitHub Pages sirve un único 404.html, así que se muestra en el idioma por defecto.
@@ -8,29 +9,42 @@ const t = useTranslations(lang);
 ---
 
 <BaseLayout lang={lang} path="" title="404">
-  <section class="section container not-found">
-    <p class="not-found__code script-font">404</p>
-    <h1 class="not-found__title script-font">{t('404.title')}</h1>
-    <p>{t('404.text')}</p>
-    <a class="button button--primary" href={localizedPath(lang)}>{t('404.back')}</a>
+  <section class="band not-found" data-tone="cobalt">
+    <div class="container not-found__inner">
+      <Motif kind="asterisk" size="6rem" class="not-found__mark" />
+      <p class="not-found__code script-font">404</p>
+      <h1 class="not-found__title">{t('404.title')}</h1>
+      <p class="lead">{t('404.text')}</p>
+      <a class="button button--primary" href={localizedPath(lang)}>{t('404.back')}</a>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
   .not-found {
+    min-height: calc(100dvh - 4.5rem);
+    display: grid;
+    align-items: center;
+  }
+
+  .not-found__inner {
     display: grid;
     justify-items: center;
     text-align: center;
-    padding-block: var(--space-24);
+  }
+
+  .not-found__inner :global(.not-found__mark) {
+    margin-bottom: var(--space-8);
+    color: var(--peach);
   }
 
   .not-found__code {
-    color: var(--color-accent);
+    margin: 0 0 var(--space-4);
+    font-weight: 700;
     letter-spacing: 0.3em;
   }
 
   .not-found__title {
     font-size: var(--text-hero);
-    text-transform: uppercase;
   }
 </style>

@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-28T12:00:00Z",
+  "title": "Design System: Portfolio de guionista (Sara Abreu)",
+  "extensions": {
+    "colorMeta": {
+      "cobalt": { "role": "primary", "displayName": "Cobalto de tinta azul", "canonical": "oklch(52.8% 0.205 259)", "tonalRamp": ["#02004c", "#000f76", "#0035a2", "#0057d0", "#2f7df4", "#5ba3ff", "#85c9ff", "#aff0ff"] },
+      "cobalt-deep": { "role": "primary", "displayName": "Cobalto profundo", "canonical": "oklch(42.2% 0.161 258)", "tonalRamp": ["#000042", "#001969", "#003a93", "#225db7", "#4a81d7", "#71a5f7", "#99cbff", "#c2f1ff"] },
+      "peach": { "role": "secondary", "displayName": "Papel melocotón", "canonical": "oklch(93.4% 0.040 56)", "tonalRamp": ["#120904", "#2e221a", "#4d3f34", "#6f5d51", "#927e70", "#b7a090", "#ddc4b2", "#ffe8d6"] },
+      "peach-soft": { "role": "secondary", "displayName": "Melocotón pálido", "canonical": "oklch(96.6% 0.020 58)", "tonalRamp": ["#0f0a07", "#2a2420", "#48403b", "#685f59", "#8a8079", "#aea39b", "#d3c6be", "#f9ece2"] },
+      "taupe": { "role": "tertiary", "displayName": "Taupe cálido", "canonical": "oklch(79.1% 0.034 58)", "tonalRamp": ["#120904", "#2e221a", "#4d3f35", "#6e5e52", "#917e71", "#b5a192", "#dac4b5", "#ffeadb"] },
+      "ink": { "role": "neutral", "displayName": "Tinta", "canonical": "oklch(18.1% 0.006 55)", "tonalRamp": ["#0d0a09", "#272422", "#44413f", "#64605e", "#858280", "#a7a4a2", "#cbc8c7", "#f0eeec"] },
+      "ink-soft": { "role": "neutral", "displayName": "Tinta suave", "canonical": "oklch(44.3% 0.023 51)", "tonalRamp": ["#120905", "#2d221c", "#4c3f38", "#6c5e56", "#8d7f77", "#afa29a", "#d3c6bf", "#f8ece5"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Nombre en el hero; uno por página." },
+      "headline": { "displayName": "Headline", "purpose": "Títulos de sección grandes, intereses, menú móvil, nombre en el pie." },
+      "title": { "displayName": "Title", "purpose": "Título por defecto de SceneHeading y citas destacadas." },
+      "subtitle": { "displayName": "Subtitle", "purpose": "Títulos de tarjeta, grupo y línea de tiempo; eslogan del hero en cursiva." },
+      "body": { "displayName": "Body", "purpose": "Cuerpo de lectura, columna de 40rem." },
+      "lead": { "displayName": "Lead", "purpose": "Entradillas y textos de intereses." },
+      "label": { "displayName": "Label", "purpose": "Botones, navegación, marca, etiquetas de formulario." },
+      "slugline": { "displayName": "Slugline", "purpose": "Notación de guion: encabezados de escena, formato·año, periodos, leyendas de filtro." }
+    },
+    "tones": [
+      { "name": "peach", "bg": "var(--peach)", "fg": "var(--ink)", "heading": "var(--cobalt)", "muted": "var(--ink-soft)", "accent": "var(--cobalt)", "onAccent": "var(--peach)", "line": "rgb(2 98 222 / 0.35)" },
+      { "name": "cobalt", "bg": "var(--cobalt)", "fg": "var(--peach)", "heading": "var(--peach)", "muted": "var(--peach)", "accent": "var(--peach)", "onAccent": "var(--cobalt)", "line": "rgb(255 227 208 / 0.45)" },
+      { "name": "taupe", "bg": "var(--taupe)", "fg": "var(--ink)", "heading": "var(--ink)", "muted": "#3f352f", "accent": "var(--cobalt-deep)", "onAccent": "var(--peach)", "line": "rgb(20 17 15 / 0.25)" }
+    ],
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Curva única del sitio para transiciones y trazados." },
+      { "name": "transition", "value": "220ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Cambios de estado: color, fondo, borde, grosor de subrayado." },
+      { "name": "cover-zoom", "value": "scale 700ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Portada de tarjeta a 1.035 en hover; giro de 90° del asterisco de intereses." },
+      { "name": "ray-draw", "value": "1100ms cubic-bezier(0.16, 1, 0.3, 1), 90ms de desfase por rayo", "purpose": "Trazado del asterisco del hero al cargar." },
+      { "name": "asterisk-turn", "value": "scroll(root), 0–120vh, rotate 150deg, scale 0.85", "purpose": "Giro del asterisco del hero ligado al scroll." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal: relleno de acento, esquinas rectas, label en mayúsculas.",
+      "html": "<a class=\"ds-button ds-button--primary\" href=\"#\">Ver proyectos</a>",
+      "css": ".ds-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; min-height: 48px; padding: 0.75rem 1.5rem; border: 1px solid var(--accent, #0262de); border-radius: 0; background: transparent; color: var(--accent, #0262de); font: 500 0.875rem / 1 'Jost', 'Futura', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background 220ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-button--primary { background: var(--accent, #0262de); color: var(--on-accent, #ffe3d0); } .ds-button--primary:hover { background: transparent; color: var(--accent, #0262de); } .ds-button:focus-visible { outline: 2px solid var(--accent, #0262de); outline-offset: 3px; }"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acción secundaria (descargar CV): contorno de 1px que se rellena en hover.",
+      "html": "<a class=\"ds-button-sec\" href=\"#\">Descargar CV</a>",
+      "css": ".ds-button-sec { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.75rem 1.5rem; border: 1px solid var(--accent, #0262de); border-radius: 0; background: transparent; color: var(--accent, #0262de); font: 500 0.875rem / 1 'Jost', 'Futura', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; transition: background 220ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-button-sec:hover { background: var(--accent, #0262de); color: var(--on-accent, #ffe3d0); } .ds-button-sec:focus-visible { outline: 2px solid var(--accent, #0262de); outline-offset: 3px; }"
+    },
+    {
+      "name": "Chip de filtro",
+      "kind": "chip",
+      "refersTo": "filter-chip",
+      "description": "Filtro de formato/género en la lista de proyectos; seleccionado se rellena de acento.",
+      "html": "<div class=\"ds-chips\"><label class=\"ds-chip ds-chip--on\"><input type=\"radio\" name=\"f\" checked> Todos</label><label class=\"ds-chip\"><input type=\"radio\" name=\"f\"> Largometraje</label><label class=\"ds-chip\"><input type=\"radio\" name=\"f\"> Serie</label></div>",
+      "css": ".ds-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #ffe3d0; padding: 1rem; } .ds-chip { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border: 1px solid rgb(2 98 222 / 0.35); font: 400 0.875rem 'Jost', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #0262de; cursor: pointer; transition: background 220ms cubic-bezier(0.16, 1, 0.3, 1), border-color 220ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-chip:hover { border-color: #0262de; } .ds-chip--on, .ds-chip:has(input:checked) { background: #0262de; border-color: #0262de; color: #ffe3d0; } .ds-chip:has(input:focus-visible) { outline: 2px solid #0262de; outline-offset: 2px; } .ds-chip input { position: absolute; opacity: 0; pointer-events: none; }"
+    },
+    {
+      "name": "Campo de formulario",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "Campo del formulario de contacto: solo filete inferior; en foco se engrosa y el fondo pasa a melocotón pálido.",
+      "html": "<div class=\"ds-field-wrap\"><label class=\"ds-field\">Nombre<input type=\"text\" placeholder=\"\"></label></div>",
+      "css": ".ds-field-wrap { background: #ffe3d0; padding: 1.5rem; } .ds-field { display: grid; gap: 0.5rem; font: 400 0.875rem 'Jost', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: #0262de; } .ds-field input { width: 100%; padding: 0.75rem 0; border: 0; border-bottom: 1px solid #0262de; border-radius: 0; background: transparent; color: #14110f; font: 1.0625rem / 1.5 'Barlow', sans-serif; letter-spacing: 0; text-transform: none; caret-color: #0262de; } .ds-field input:focus-visible { outline: none; border-bottom-width: 2px; background: #fff1e7; }"
+    },
+    {
+      "name": "Navegación",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Cabecera fija melocotón con filete inferior; marca y enlaces en label de Jost cobalto, actual subrayado.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav__brand\" href=\"#\">Sara Abreu</a><ul class=\"ds-nav__links\"><li><a href=\"#\">Sobre mí</a></li><li><a href=\"#\" aria-current=\"page\">Proyectos</a></li><li><a href=\"#\">CV</a></li><li><a href=\"#\">Contacto</a></li></ul></header>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.5rem; padding: 0 40px; background: #ffe3d0; border-bottom: 1px solid rgb(2 98 222 / 0.35); } .ds-nav__brand, .ds-nav__links a { font: 400 0.875rem 'Jost', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; color: #0262de; transition: text-decoration-thickness 220ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-nav__links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; } .ds-nav__links a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.25em; } .ds-nav__links a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; } .ds-nav a:focus-visible { outline: 2px solid #0262de; outline-offset: 3px; }"
+    },
+    {
+      "name": "Tarjeta de proyecto",
+      "kind": "card",
+      "refersTo": "script-card",
+      "description": "Portada 3:4 sobre cobalto, metadatos en slugline, título y logline; la portada escala en hover.",
+      "html": "<article class=\"ds-card\"><a class=\"ds-card__link\" href=\"#\"><div class=\"ds-card__frame\"><span class=\"ds-card__cover\">La casa del lago</span></div><p class=\"ds-card__meta\">Largometraje · 2025</p><h3 class=\"ds-card__title\">La casa del lago</h3><p class=\"ds-card__logline\">Una hermana vuelve al pueblo para vender la casa familiar y encuentra un guion que no recuerda haber escrito.</p><span class=\"ds-card__more\">Leer →</span></a></article>",
+      "css": ".ds-card { max-width: 18rem; background: #ffe3d0; padding: 1rem; } .ds-card__link { display: flex; flex-direction: column; text-decoration: none; color: #14110f; } .ds-card__frame { overflow: hidden; margin-bottom: 1rem; background: #0262de; } .ds-card__cover { display: grid; place-items: center; aspect-ratio: 3 / 4; padding: 1.5rem; font: 300 1.5rem 'Jost', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; color: #ffe3d0; transition: scale 700ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-card__link:hover .ds-card__cover { scale: 1.035; } .ds-card__meta { margin: 0 0 0.5rem; font: 700 0.8125rem 'Courier Prime', monospace; text-transform: uppercase; color: #0262de; } .ds-card__title { margin: 0 0 0.5rem; font: 400 1.5rem / 1.1 'Jost', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #0262de; } .ds-card__link:hover .ds-card__title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; } .ds-card__logline { margin: 0 0 1rem; font: 300 1.0625rem / 1.6 'Barlow', sans-serif; } .ds-card__more { align-self: start; padding-bottom: 0.25rem; border-bottom: 1px solid rgb(2 98 222 / 0.35); font: 400 0.875rem 'Jost', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: #0262de; transition: border-color 220ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-card__link:hover .ds-card__more { border-color: #0262de; } .ds-card__link:focus-visible { outline: 2px solid #0262de; outline-offset: 3px; }"
+    },
+    {
+      "name": "Encabezado de escena",
+      "kind": "custom",
+      "refersTo": "scene-heading",
+      "description": "Slugline de guion en Courier sobre el título de sección en Jost; abre cada banda.",
+      "html": "<div class=\"ds-scene\"><p class=\"ds-scene__slug\">INT. PORTFOLIO — DÍA</p><h2 class=\"ds-scene__title\">Proyectos</h2></div>",
+      "css": ".ds-scene { background: #ffe3d0; padding: 2rem; } .ds-scene__slug { margin: 0 0 0.75rem; font: 700 0.875rem 'Courier Prime', monospace; letter-spacing: 0.04em; text-transform: uppercase; color: #0262de; } .ds-scene__title { margin: 0; font: 300 clamp(1.875rem, 1.4rem + 2vw, 3rem) / 1.1 'Jost', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #0262de; }"
+    },
+    {
+      "name": "Banda de cita (cobalto)",
+      "kind": "custom",
+      "refersTo": "band-cobalt",
+      "description": "Banda cobalto con una frase en Jost cursiva entre destellos de cuatro puntas.",
+      "html": "<section class=\"ds-quote\"><svg class=\"ds-quote__spark\" viewBox=\"0 0 100 100\" width=\"28\" height=\"28\" aria-hidden=\"true\"><path d=\"M50 0C53 36 64 47 100 50C64 53 53 64 50 100C47 64 36 53 0 50C36 47 47 36 50 0Z\" fill=\"currentColor\"/></svg><blockquote class=\"ds-quote__text\"><p>Escribo historias pequeñas que ocurren en sitios concretos.</p></blockquote><svg class=\"ds-quote__spark ds-quote__spark--b\" viewBox=\"0 0 100 100\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M50 0C53 36 64 47 100 50C64 53 53 64 50 100C47 64 36 53 0 50C36 47 47 36 50 0Z\" fill=\"currentColor\"/></svg></section>",
+      "css": ".ds-quote { display: grid; justify-items: center; gap: 1.5rem; padding: 4rem 16px; background: #0262de; color: #ffe3d0; text-align: center; } .ds-quote__spark { color: #ffe3d0; } .ds-quote__spark--b { opacity: 0.8; } .ds-quote__text { margin: 0; } .ds-quote__text p { margin: 0; max-width: 30ch; font: italic 300 clamp(1.875rem, 1.4rem + 2vw, 3rem) / 1.3 'Jost', sans-serif; color: #ffe3d0; }"
+    },
+    {
+      "name": "Asterisco (motivo)",
+      "kind": "custom",
+      "refersTo": "motif-asterisk",
+      "description": "Motivo de trazo fino en currentColor; en el hero se traza al cargar y gira con el scroll.",
+      "html": "<div class=\"ds-motif\"><svg viewBox=\"0 0 100 100\" width=\"120\" height=\"120\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\"><path d=\"M2 50L98 50\" pathLength=\"1\" style=\"--i:0\"/><path d=\"M8.43 26L91.57 74\" pathLength=\"1\" style=\"--i:1\"/><path d=\"M26 8.43L74 91.57\" pathLength=\"1\" style=\"--i:2\"/><path d=\"M50 2L50 98\" pathLength=\"1\" style=\"--i:3\"/><path d=\"M74 8.43L26 91.57\" pathLength=\"1\" style=\"--i:4\"/><path d=\"M91.57 26L8.43 74\" pathLength=\"1\" style=\"--i:5\"/></g></svg></div>",
+      "css": ".ds-motif { display: grid; place-items: center; padding: 2rem; background: #ffe3d0; color: #0262de; } .ds-motif path { stroke-dasharray: 1; animation: ds-ray 1100ms cubic-bezier(0.16, 1, 0.3, 1) backwards; animation-delay: calc(var(--i) * 90ms + 150ms); } .ds-motif svg { transition: rotate 700ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-motif:hover svg { rotate: 90deg; } @keyframes ds-ray { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } } @media (prefers-reduced-motion: reduce) { .ds-motif path { animation: none; } .ds-motif svg { transition: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El cuaderno de guionista",
+    "overview": "El sitio es un cuaderno de trabajo en melocotón y cobalto, no una plantilla. Las páginas alternan bandas completas de papel melocotón y cobalto saturado, como cambios de capítulo, y cada sección se abre con un encabezado de escena de guion real (`INT. PORTFOLIO — DÍA`). El mundo lo fijó la autora a partir de su web anterior: la regla del rediseño es \"mismo mundo, mejor oficio\", no reinterpretarlo.\n\nLa densidad es baja y editorial: mucho aire vertical entre bandas, columnas de lectura estrechas, titulares en mayúsculas geométricas finas con tracking amplio. La profundidad no viene de sombras sino del cambio de tono de banda y de filetes finos. Los únicos ornamentos son motivos de trazo dibujados a mano (asterisco, estrella-sello, destello), heredando el color del texto. El sitio rechaza explícitamente el portfolio de \"cine oscuro\" con tira de película y fotogramas.\n\nSolo hay tema claro: el melocotón y el cobalto son la identidad, no un modo.",
+    "keyCharacteristics": [
+      "Bandas de tono completo (melocotón / cobalto / taupe) que redefinen todos los colores semánticos a la vez.",
+      "Encabezados de escena en Courier Prime abriendo cada banda; Courier solo para notación de guion.",
+      "Titulares Jost 300 en mayúsculas con tracking; cuerpo Barlow 300/400.",
+      "Esquinas rectas, sin sombras, filetes de 1px.",
+      "Motivos de trazo (asterisco, estrella-sello, destello) como única ornamentación.",
+      "Firma: el asterisco del hero se traza al cargar y gira con el scroll."
+    ],
+    "rules": [
+      { "name": "The Band Tone Rule", "body": "El color se cambia a nivel de banda, nunca de elemento suelto. Un bloque nuevo declara `data-tone=\"peach\" | \"cobalt\" | \"taupe\"` y hereda todo; un componente que fija un hex propio para texto o acento rompe la inversión de tonos.", "section": "colors" },
+      { "name": "The Two Voices Rule", "body": "Melocotón y cobalto son las dos voces; el taupe es un panel, no una tercera voz. No se introducen acentos de otros tonos (ni rojos, ni verdes, ni gradientes).", "section": "colors" },
+      { "name": "The Courier Is Quotation Rule", "body": "Courier Prime aparece solo donde el contenido imita la notación de guion (slugline, formato, periodo). Nunca en cuerpo, botones ni navegación.", "section": "typography" },
+      { "name": "The Real Slugline Rule", "body": "Un encabezado de escena es una slugline de guion con forma real (`INT./EXT. LUGAR — DÍA/NOCHE`), no una etiqueta de categoría sobre el título. Si el texto no se lee como un encabezado de escena, no va en Courier ni encima del título.", "section": "typography" },
+      { "name": "The Light Caps Rule", "body": "Los titulares son Jost 300 en mayúsculas con tracking (0.08em o más). No se usan pesos de display por encima de 400.", "section": "typography" },
+      { "name": "The Paper Not Glass Rule", "body": "Las superficies son papel: sin sombras, sin desenfoques, sin transparencias apiladas. Para separar, cambia el tono o traza un filete.", "section": "elevation" },
+      { "name": "The Square Corner Rule", "body": "Nada lleva esquinas redondeadas; el redondeo pertenece solo a los motivos dibujados.", "section": "shapes" }
+    ],
+    "dos": [
+      "**Do** abrir cada banda nueva con `data-tone` y un `SceneHeading` cuya slugline sea un encabezado de escena real.",
+      "**Do** usar siempre las variables semánticas (`--fg`, `--heading`, `--accent`, `--on-accent`, `--line`) para que el componente funcione en los tres tonos.",
+      "**Do** alternar bandas melocotón y cobalto como cambios de capítulo; el taupe para paneles y bandas puente.",
+      "**Do** mantener titulares en Jost 300 mayúsculas con tracking 0.08em o más, y cuerpo en Barlow a 1.7 de interlineado.",
+      "**Do** separar con filetes de 1px en `--line` y cambios de tono.",
+      "**Do** usar los motivos de `Motif` (asterisco, estrella-sello, destello) en `currentColor` como única ornamentación, y respetar `prefers-reduced-motion` en toda animación.",
+      "**Do** mantener objetivos táctiles de 44–48px."
+    ],
+    "donts": [
+      "**Don't** añadir modo oscuro: el melocotón/cobalto es la identidad.",
+      "**Don't** usar la estética de \"cine oscuro\": tiras de película, fotogramas, claquetas o fondos negros.",
+      "**Don't** usar sombras, desenfoques ni esquinas redondeadas en superficies, botones o campos.",
+      "**Don't** usar Courier Prime fuera de la notación de guion.",
+      "**Don't** introducir colores fuera de la paleta ni gradientes.",
+      "**Don't** fijar hex a mano en un componente para texto o acentos; cambia el tono de la banda."
+    ]
+  }
+}

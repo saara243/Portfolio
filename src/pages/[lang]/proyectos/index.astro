@@ -14,15 +14,30 @@ const scripts = await scriptsModule.listScripts.execute({ locale: lang });
 ---
 
 <BaseLayout lang={lang} path={routes.projects} title={t('projects.title')} description={t('projects.intro')}>
-  <section class="section container">
-    <SceneHeading scene={t('scene.projects')} title={t('projects.title')} level={1} />
-    <p class="reading">{t('projects.intro')}</p>
+  <section class="band" data-tone="peach">
+    <div class="container">
+    <SceneHeading scene={t('scene.projects')} title={t('projects.title')} level={1} size="lg" />
+    <p class="reading lead intro">{t('projects.intro')}</p>
 
     <ScriptFilters lang={lang} formats={scripts.formats()} genres={scripts.genres()} />
 
     <div class="grid-cards">
       {scripts.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
     </div>
-    <p data-script-empty hidden={!scripts.isEmpty()}>{t('projects.empty')}</p>
+    <p class="empty" data-script-empty hidden={!scripts.isEmpty()}>{t('projects.empty')}</p>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .intro {
+    margin: calc(-1 * var(--space-6)) 0 var(--space-12);
+  }
+
+  .empty {
+    font-family: var(--font-script);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+</style>

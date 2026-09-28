@@ -46,117 +46,170 @@ const details = [
   description={script.getLogline()}
   image={cover}
 >
-  <article class="section container script">
-    <a class="script__back script-font" href={localizedPath(lang, routes.projects)}>← {t('projects.back')}</a>
+  <article class="band" data-tone="peach">
+    <div class="container script">
+      <a class="script__back" href={localizedPath(lang, routes.projects)}><span aria-hidden="true">←</span> {t('projects.back')}</a>
 
-    <div class="script__layout">
-      <div class="script__main">
-        <SceneHeading scene={t(`format.${script.getFormat().getValue()}` as UiKey)} title={script.getTitle()} level={1} />
+      <div class="script__layout">
+        <div class="script__main">
+          <SceneHeading scene={t('scene.script')} title={script.getTitle()} level={1} size="lg" />
 
-        <section class="script__logline">
-          <h2 class="visually-hidden">{t('script.logline')}</h2>
-          <p>{script.getLogline()}</p>
-        </section>
-
-        {script.getSynopsisHtml() && (
-          <section>
-            <h2 class="script__subtitle">{t('script.synopsis')}</h2>
-            <div class="prose reading" set:html={script.getSynopsisHtml()} />
+          <section class="script__logline">
+            <h2 class="script__label script-font">{t('script.logline')}</h2>
+            <p>{script.getLogline()}</p>
           </section>
-        )}
 
-        {script.getAwards().length > 0 && (
-          <section>
-            <h2 class="script__subtitle">{t('script.awards')}</h2>
-            <ul>{script.getAwards().map((award) => <li>{award}</li>)}</ul>
-          </section>
-        )}
+          {script.getSynopsisHtml() && (
+            <section class="script__block">
+              <h2 class="script__label script-font">{t('script.synopsis')}</h2>
+              <div class="prose script__synopsis" set:html={script.getSynopsisHtml()} />
+            </section>
+          )}
+
+          {script.getAwards().length > 0 && (
+            <section class="script__block">
+              <h2 class="script__label script-font">{t('script.awards')}</h2>
+              <ul class="script__awards">{script.getAwards().map((award) => <li>{award}</li>)}</ul>
+            </section>
+          )}
+        </div>
+
+        <aside class="script__aside">
+          {cover && (
+            <img
+              class="script__cover"
+              src={withBase(cover)}
+              alt=""
+              width="600"
+              height="800"
+              transition:name={`cover-${script.getSlug()}`}
+            />
+          )}
+          <div class="script__sheet" data-tone="taupe">
+            <h2 class="script__label script-font">{t('script.details')}</h2>
+            <dl class="script__details">
+              {details.map((detail) => (
+                <div>
+                  <dt>{detail.label}</dt>
+                  <dd>{detail.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {script.isDownloadable() && pdf && <DownloadButton file={pdf} label={t('script.download')} />}
+            {script.isAvailableOnRequest() && (
+              <>
+                <p class="script__note">{t('script.onRequestNote')}</p>
+                <a class="button button--primary" href={requestHref}>{t('script.onRequest')}</a>
+              </>
+            )}
+          </div>
+        </aside>
       </div>
-
-      <aside class="script__aside">
-        {cover && (
-          <img
-            class="script__cover"
-            src={withBase(cover)}
-            alt=""
-            width="600"
-            height="800"
-            transition:name={`cover-${script.getSlug()}`}
-          />
-        )}
-        <h2 class="script__subtitle">{t('script.details')}</h2>
-        <dl class="script__details">
-          {details.map((detail) => (
-            <div>
-              <dt class="script-font">{detail.label}</dt>
-              <dd>{detail.value}</dd>
-            </div>
-          ))}
-        </dl>
-
-        {script.isDownloadable() && pdf && <DownloadButton file={pdf} label={t('script.download')} />}
-        {script.isAvailableOnRequest() && (
-          <>
-            <p class="script__note">{t('script.onRequestNote')}</p>
-            <a class="button button--primary" href={requestHref}>{t('script.onRequest')}</a>
-          </>
-        )}
-      </aside>
     </div>
   </article>
 </BaseLayout>
 
 <style>
   .script__back {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
     margin-bottom: var(--space-8);
+    font-family: var(--font-display);
     font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
     text-decoration: none;
+    color: var(--accent);
   }
 
   .script__layout {
     display: grid;
-    gap: var(--space-12);
+    gap: var(--space-16);
+  }
+
+  .script__label {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--accent);
   }
 
   .script__logline p {
+    max-width: 36ch;
+    margin: 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-weight: 300;
     font-size: var(--text-xl);
-    max-width: var(--reading-width);
+    line-height: 1.4;
   }
 
-  .script__subtitle {
-    margin-top: var(--space-8);
-    font-size: var(--text-xl);
+  .script__block {
+    margin-top: var(--space-16);
+  }
+
+  .script__synopsis {
+    max-width: 62ch;
+    font-weight: 300;
+    font-size: var(--text-lg);
+  }
+
+  .script__awards {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .script__awards li {
+    position: relative;
+    padding-left: var(--space-6);
+  }
+
+  .script__awards li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 0.75rem;
+    height: 1px;
+    background: var(--accent);
   }
 
   .script__cover {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-card);
+  }
+
+  .script__sheet {
+    padding: var(--space-8);
   }
 
   .script__details {
     display: grid;
-    gap: var(--space-3);
     margin: 0 0 var(--space-8);
+    border-top: 1px solid var(--line);
   }
 
   .script__details div {
     display: grid;
-    grid-template-columns: 8rem 1fr;
+    grid-template-columns: 7rem 1fr;
     gap: var(--space-4);
-    padding-bottom: var(--space-2);
-    border-bottom: 1px solid var(--color-line);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--line);
   }
 
   .script__details dt {
-    font-size: var(--text-sm);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-muted);
+    line-height: 1.9;
   }
 
   .script__details dd {
@@ -165,18 +218,18 @@ const details = [
 
   .script__note {
     font-size: var(--text-sm);
-    color: var(--color-muted);
   }
 
   @media (min-width: 900px) {
     .script__layout {
-      grid-template-columns: 3fr 2fr;
+      grid-template-columns: minmax(0, 7fr) minmax(18rem, 4fr);
       align-items: start;
+      gap: var(--space-24);
     }
 
     .script__aside {
       position: sticky;
-      top: 6rem;
+      top: 7rem;
     }
   }
 </style>

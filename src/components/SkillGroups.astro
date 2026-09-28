@@ -1,0 +1,88 @@
+---
+import Motif from './Motif.astro';
+import type { SkillGroup } from '../modules/profile/domain/SkillGroup';
+
+/** Bloques de capacidades en paneles taupe, con un destello en el cruce. */
+interface Props {
+  groups: SkillGroup[];
+}
+
+const { groups } = Astro.props;
+---
+
+{groups.length > 0 && (
+  <div class="skills">
+    {groups.map((group) => (
+      <section class="skills__group" data-tone="taupe">
+        <h3 class="skills__title">{group.getTitle()}</h3>
+        <ul class="skills__list">
+          {group.getItems().map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+    ))}
+    {groups.length === 4 && <Motif kind="sparkle" size="3.5rem" class="skills__spark" />}
+  </div>
+)}
+
+<style>
+  .skills {
+    position: relative;
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .skills__group {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+  }
+
+  .skills__title {
+    margin-bottom: var(--space-6);
+    font-size: var(--text-xl);
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .skills__list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .skills__list li {
+    position: relative;
+    padding-left: var(--space-6);
+    line-height: 1.5;
+  }
+
+  .skills__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.75rem;
+    height: 1px;
+    background: var(--ink);
+  }
+
+  .skills :global(.skills__spark) {
+    display: none;
+    color: var(--cobalt);
+  }
+
+  @media (min-width: 768px) {
+    .skills {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .skills :global(.skills__spark) {
+      display: block;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      translate: -50% -50%;
+      pointer-events: none;
+    }
+  }
+</style>

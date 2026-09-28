@@ -1,6 +1,5 @@
 ---
 import LanguagePicker from './LanguagePicker.astro';
-import ThemeToggle from './ThemeToggle.astro';
 import { localizedPath, routes, useTranslations, type Lang } from '../i18n/utils';
 
 interface Props {
@@ -13,19 +12,18 @@ const { lang, path, siteName } = Astro.props;
 const t = useTranslations(lang);
 
 const links = [
-  { href: routes.home, label: t('nav.home') },
   { href: routes.about, label: t('nav.about') },
   { href: routes.projects, label: t('nav.projects') },
   { href: routes.cv, label: t('nav.cv') },
   { href: routes.contact, label: t('nav.contact') },
 ];
 
-const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith(href));
+const isCurrent = (href: string) => path.startsWith(href);
 ---
 
-<header class="header">
+<header class="header" data-tone="peach">
   <div class="container header__inner">
-    <a class="header__brand" href={localizedPath(lang)}>{siteName}</a>
+    <a class="header__brand" href={localizedPath(lang)} aria-current={path === '' ? 'page' : undefined}>{siteName}</a>
 
     <button class="header__toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
       <span class="visually-hidden">{t('a11y.menu')}</span>
@@ -42,10 +40,7 @@ const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith
           </li>
         ))}
       </ul>
-      <div class="header__tools">
-        <LanguagePicker lang={lang} path={path} />
-        <ThemeToggle label={t('a11y.theme')} />
-      </div>
+      <LanguagePicker lang={lang} path={path} />
     </nav>
   </div>
 </header>
@@ -55,23 +50,29 @@ const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith
     const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
     const nav = document.querySelector<HTMLElement>('[data-nav]');
     if (!toggle || !nav) return;
-    toggle.addEventListener('click', () => {
-      const open = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!open));
-      nav.toggleAttribute('data-open', !open);
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.toggleAttribute('data-open', open);
+      document.documentElement.toggleAttribute('data-nav-open', open);
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && nav.hasAttribute('data-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
     });
   }
   document.addEventListener('astro:page-load', initNav);
+  document.addEventListener('astro:before-swap', () => document.documentElement.removeAttribute('data-nav-open'));
 </script>
 
 <style>
   .header {
     position: sticky;
     top: 0;
-    z-index: 10;
-    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--color-line);
+    z-index: 20;
+    border-bottom: 1px solid var(--line);
   }
 
   .header__inner {
@@ -79,25 +80,33 @@ const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
-    min-height: 4rem;
+    min-height: 4.5rem;
   }
 
   .header__brand {
-    font-family: var(--font-script);
-    font-weight: 700;
+    position: relative;
+    z-index: 2;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
     text-decoration: none;
+    color: var(--cobalt);
+    view-transition-name: site-brand;
   }
 
   .header__toggle {
+    position: relative;
+    z-index: 2;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
+    margin-right: -12px;
     border: 0;
     background: none;
-    color: inherit;
+    color: var(--cobalt);
     cursor: pointer;
   }
 
@@ -105,10 +114,10 @@ const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith
   .header__burger::before,
   .header__burger::after {
     display: block;
-    width: 22px;
-    height: 2px;
+    width: 24px;
+    height: 1.5px;
     background: currentColor;
-    transition: transform var(--transition);
+    transition: transform var(--transition), background var(--transition);
   }
 
   .header__burger {
@@ -125,41 +134,72 @@ const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith
   .header__burger::before { top: -7px; }
   .header__burger::after { top: 7px; }
 
+  .header__toggle[aria-expanded='true'] {
+    color: var(--peach);
+  }
+
+  .header__toggle[aria-expanded='true'] .header__burger {
+    background: transparent;
+  }
+
+  .header__toggle[aria-expanded='true'] .header__burger::before {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .header__toggle[aria-expanded='true'] .header__burger::after {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Menú móvil: pantalla completa en cobalto. */
   .header__nav {
     display: none;
-    position: absolute;
-    inset: 4rem 0 auto 0;
-    padding: var(--space-6) var(--gutter) var(--space-8);
-    background: var(--color-paper);
-    border-bottom: 1px solid var(--color-line);
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-12);
+    padding: var(--space-24) var(--gutter) var(--space-12);
+    background: var(--cobalt);
+    color: var(--peach);
+    --accent: var(--peach);
+    --muted: var(--peach);
   }
 
   .header__nav[data-open] {
-    display: block;
+    display: flex;
+  }
+
+  :global(html[data-nav-open]) .header__brand {
+    color: var(--peach);
+  }
+
+  :global(html[data-nav-open]) {
+    overflow: hidden;
   }
 
   .header__links {
     list-style: none;
-    margin: 0 0 var(--space-6);
+    margin: 0;
     padding: 0;
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
 
   .header__links a {
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
+    font-weight: 300;
+    font-size: var(--text-3xl);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
     text-decoration: none;
   }
 
   .header__links a[aria-current='page'] {
-    color: var(--color-accent);
-  }
-
-  .header__tools {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
   }
 
   @media (min-width: 900px) {
@@ -170,30 +210,25 @@ const isCurrent = (href: string) => (href === '' ? path === '' : path.startsWith
     .header__nav {
       display: flex;
       position: static;
+      flex-direction: row;
       align-items: center;
       gap: var(--space-8);
       padding: 0;
       background: none;
-      border: 0;
+      color: var(--cobalt);
+      --accent: var(--cobalt);
+      --muted: var(--ink-soft);
     }
 
     .header__links {
       display: flex;
-      gap: var(--space-6);
-      margin: 0;
+      gap: var(--space-8);
     }
 
     .header__links a {
-      font-family: var(--font-script);
+      font-weight: 400;
       font-size: var(--text-sm);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .header__links a[aria-current='page'] {
-      text-decoration: underline;
-      text-decoration-color: var(--color-accent);
-      text-decoration-thickness: 2px;
+      letter-spacing: var(--tracking-wide);
     }
   }
 </style>

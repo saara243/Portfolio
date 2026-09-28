@@ -11,7 +11,7 @@ web
 - **Productoras y showrunners** que buscan guionistas junior o ayudantes de guion para salas y proyectos. Llegan con poco tiempo, normalmente desde un enlace en un email, una candidatura o LinkedIn, y necesitan decidir rápido si la voz y el oficio encajan.
 - **Festivales, laboratorios y residencias de guion** cuyos comités evalúan convocatorias. Leen con más calma, comparan candidaturas y buscan trayectoria, loglines sólidas y material verificable (guiones, selecciones, formación).
 
-Ambas audiencias tienen el mismo peso. La autora es una guionista emergente con base en Barcelona.
+Ambas audiencias tienen el mismo peso. La autora es **Sara Abreu**, guionista audiovisual formada en ESCAC (Grado de Cinematografía y Máster Superior de Guion), con base en Barcelona. Ahora busca ampliar su experiencia hacia la televisión y el entretenimiento; la web incluye una sección "¿Por qué Gestmusic?" dirigida a unas prácticas en esa productora.
 
 ## Product Purpose
 
@@ -36,7 +36,7 @@ La web habla el idioma del guion: cada página se abre con un encabezado de esce
 - **Idiomas:** castellano (por defecto), catalán e inglés. Si falta una traducción de un guion, se muestra la versión en castellano. Textos de interfaz en `src/i18n/ui.ts`.
 - **Páginas:** inicio (hero + proyectos destacados), sobre mí, proyectos (listado con filtros por formato y género), ficha de proyecto, CV, contacto, 404.
 - **Contacto:** email y redes; formulario Formspree opcional si se define `PUBLIC_FORMSPREE_ID`.
-- **Tema claro/oscuro** con conmutador.
+- **Solo tema claro.** El modo oscuro se eliminó a propósito: el mundo melocotón/cobalto es la identidad.
 - **Arquitectura:** DDD en `src/modules/{scripts,profile,shared}`; componentes de presentación sin lógica de negocio en `src/components/`. Tests unitarios (Jest) y e2e (Playwright).
 - **Terminología de estados:** en desarrollo, terminado, producido. **Formatos:** largometraje, cortometraje, serie, piloto, teatro, otro.
 - **Portadas:** verticales, proporción 3:4.
@@ -44,15 +44,19 @@ La web habla el idioma del guion: cada página se abre con un encabezado de esce
 ## Brand Commitments
 
 - La metáfora de guion (encabezados de escena, `CORTE A:`) es parte de la identidad del producto.
-- Voz en primera persona, cercana y sobria; el tagline actual de ejemplo ("Escribo historias pequeñas que ocurren en lugares enormes") marca el registro, pero es placeholder.
+- **Referencia visual fijada por el usuario:** la web anterior de la autora, https://freyaabaad.wixsite.com/portfolio (melocotón, cobalto, tipografía geométrica fina, motivos de estrella). Se reconstruye como "mismo mundo, mejor oficio", no como réplica de Wix.
+- Voz en primera persona, cercana, honesta y algo introspectiva ("quiero escribir historias donde la gente se vea reflejada, que piensen: yo conozco a alguien así").
 
 ## Evidence on Hand
 
-**Todo el contenido actual es placeholder** y será sustituido por la autora:
+**Contenido real** (tomado de la web anterior de la autora): nombre, bio, estudios en ESCAC, experiencia (profesora en el Aula de Guion de la Summer School de ESCAC, junio 2026; rodajes 2022–2026), aprendizajes clave, historias que le interesa contar, capacidades, motivación para Gestmusic, email e Instagram. Vive en `src/content/profile/{es,ca,en}.md`. El teléfono de la web anterior no se publica.
 
-- Nombre ("Nombre Apellido"), bio, email, redes, formación, experiencia y premios en `src/content/profile/{es,ca,en}.md`.
-- Tres proyectos de ejemplo (*El último faro*, *Domingo de lluvia*, *Ruido blanco*) en `src/content/scripts/`, con PDFs de muestra en `public/files/scripts/`.
-- CVs de muestra en `public/files/cv/`, foto `public/images/profile.svg`, portada `public/images/covers/placeholder.svg`.
+**Sigue siendo placeholder:**
+
+- Los tres proyectos (*El último faro*, *Domingo de lluvia*, *Ruido blanco*) en `src/content/scripts/` y sus PDFs en `public/files/scripts/`.
+- Los CVs en `public/files/cv/`, la foto `public/images/profile.svg` y la portada `public/images/covers/placeholder.svg`.
+
+Las fotos de la web anterior (fotogramas de series y fotos de stock) no se reutilizan.
 
 No inventar nunca créditos, premios, selecciones, testimonios, productoras, cifras ni citas de prensa. El diseño debe funcionar con portadas ausentes o genéricas y con pocos proyectos.
 
@@ -66,4 +70,4 @@ No inventar nunca créditos, premios, selecciones, testimonios, productoras, cif
 
 ## Accessibility & Inclusion
 
-Enlace "Saltar al contenido", tema claro/oscuro y contenido trilingüe ya forman parte del producto; se mantienen. No se ha fijado un estándar formal más allá de eso.
+Enlace "Saltar al contenido" y contenido trilingüe ya forman parte del producto; se mantienen. No se ha fijado un estándar formal más allá de eso.

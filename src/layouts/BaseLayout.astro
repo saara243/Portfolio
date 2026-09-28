@@ -31,6 +31,7 @@ const ogImage = new URL(withBase(image ?? profile.getPhoto() ?? 'images/og-defau
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffe3d0" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonical} />
@@ -54,21 +55,12 @@ const ogImage = new URL(withBase(image ?? profile.getPhoto() ?? 'images/og-defau
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;1,300&family=Courier+Prime:wght@400;700&family=Jost:ital,wght@0,300;0,400;0,500;1,300&display=swap"
     />
 
-    <script is:inline>
-      // Aplica el tema guardado antes de pintar (evita parpadeo). Sin localStorage → sigue al sistema.
-      (function () {
-        try {
-          var theme = localStorage.getItem('theme');
-          if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
-        } catch (e) {}
-      })();
-    </script>
     <ClientRouter />
   </head>
-  <body>
+  <body data-tone="peach">
     <a class="skip-link" href="#main">{t('a11y.skip')}</a>
     <Header lang={lang} path={path} siteName={profile.getName()} />
     <main id="main">

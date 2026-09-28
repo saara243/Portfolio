@@ -1,4 +1,7 @@
 import { Locale } from '../../shared/domain/Locale';
+import { Interest, type InterestPrimitive } from './Interest';
+import { Motivation, type MotivationPrimitive } from './Motivation';
+import { SkillGroup, type SkillGroupPrimitive } from './SkillGroup';
 import { SocialLink, type SocialLinkPrimitive } from './SocialLink';
 import { TimelineEntry, type TimelineEntryPrimitive } from './TimelineEntry';
 
@@ -7,6 +10,7 @@ export interface ProfilePrimitive {
   name: string;
   role: string;
   tagline: string;
+  statement?: string;
   bioHtml: string;
   photo?: string;
   email: string;
@@ -15,8 +19,12 @@ export interface ProfilePrimitive {
   socials: SocialLinkPrimitive[];
   education: TimelineEntryPrimitive[];
   experience: TimelineEntryPrimitive[];
+  learnings: string[];
   awards: TimelineEntryPrimitive[];
-  skills: string[];
+  interests: InterestPrimitive[];
+  skills: SkillGroupPrimitive[];
+  skillsNote?: string;
+  motivation?: MotivationPrimitive;
   languages: string[];
 }
 
@@ -27,6 +35,7 @@ export class Profile {
     private readonly name: string,
     private readonly role: string,
     private readonly tagline: string,
+    private readonly statement: string | undefined,
     private readonly bioHtml: string,
     private readonly photo: string | undefined,
     private readonly email: string,
@@ -35,8 +44,12 @@ export class Profile {
     private readonly socials: SocialLink[],
     private readonly education: TimelineEntry[],
     private readonly experience: TimelineEntry[],
+    private readonly learnings: string[],
     private readonly awards: TimelineEntry[],
-    private readonly skills: string[],
+    private readonly interests: Interest[],
+    private readonly skills: SkillGroup[],
+    private readonly skillsNote: string | undefined,
+    private readonly motivation: Motivation | undefined,
     private readonly languages: string[],
   ) {}
 
@@ -47,6 +60,7 @@ export class Profile {
       data.name.trim(),
       data.role.trim(),
       data.tagline.trim(),
+      data.statement?.trim() || undefined,
       data.bioHtml,
       data.photo,
       data.email,
@@ -55,8 +69,12 @@ export class Profile {
       data.socials.map((link) => SocialLink.create(link)),
       data.education.map((entry) => TimelineEntry.create(entry)),
       data.experience.map((entry) => TimelineEntry.create(entry)),
+      [...data.learnings],
       data.awards.map((entry) => TimelineEntry.create(entry)),
-      [...data.skills],
+      data.interests.map((interest) => Interest.create(interest)),
+      data.skills.map((group) => SkillGroup.create(group)),
+      data.skillsNote?.trim() || undefined,
+      data.motivation ? Motivation.create(data.motivation) : undefined,
       [...data.languages],
     );
   }
@@ -77,6 +95,7 @@ export class Profile {
   getName(): string { return this.name; }
   getRole(): string { return this.role; }
   getTagline(): string { return this.tagline; }
+  getStatement(): string | undefined { return this.statement; }
   getBioHtml(): string { return this.bioHtml; }
   getPhoto(): string | undefined { return this.photo; }
   getEmail(): string { return this.email; }
@@ -85,8 +104,12 @@ export class Profile {
   getSocials(): SocialLink[] { return [...this.socials]; }
   getEducation(): TimelineEntry[] { return [...this.education]; }
   getExperience(): TimelineEntry[] { return [...this.experience]; }
+  getLearnings(): string[] { return [...this.learnings]; }
   getAwards(): TimelineEntry[] { return [...this.awards]; }
-  getSkills(): string[] { return [...this.skills]; }
+  getInterests(): Interest[] { return [...this.interests]; }
+  getSkills(): SkillGroup[] { return [...this.skills]; }
+  getSkillsNote(): string | undefined { return this.skillsNote; }
+  getMotivation(): Motivation | undefined { return this.motivation; }
   getLanguages(): string[] { return [...this.languages]; }
 
   hasCv(): boolean {
@@ -103,6 +126,7 @@ export class Profile {
       name: this.name,
       role: this.role,
       tagline: this.tagline,
+      statement: this.statement,
       bioHtml: this.bioHtml,
       photo: this.photo,
       email: this.email,
@@ -111,8 +135,12 @@ export class Profile {
       socials: this.socials.map((link) => link.toPrimitive()),
       education: this.education.map((entry) => entry.toPrimitive()),
       experience: this.experience.map((entry) => entry.toPrimitive()),
+      learnings: [...this.learnings],
       awards: this.awards.map((entry) => entry.toPrimitive()),
-      skills: [...this.skills],
+      interests: this.interests.map((interest) => interest.toPrimitive()),
+      skills: this.skills.map((group) => group.toPrimitive()),
+      skillsNote: this.skillsNote,
+      motivation: this.motivation?.toPrimitive(),
       languages: [...this.languages],
     };
   }

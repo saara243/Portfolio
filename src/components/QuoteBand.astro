@@ -1,0 +1,71 @@
+---
+import Motif from './Motif.astro';
+
+/** Banda con una frase destacada (manifiesto o cierre), entre destellos. */
+interface Props {
+  text: string;
+  tone?: 'cobalt' | 'peach';
+  size?: 'lg' | 'md';
+}
+
+const { text, tone = 'cobalt', size = 'lg' } = Astro.props;
+---
+
+<section class:list={['quote', `quote--${size}`]} data-tone={tone}>
+  <div class="container quote__inner">
+    <Motif kind="sparkle" size="1.75rem" class="quote__spark quote__spark--a" />
+    <blockquote class="quote__text">
+      <p>{text}</p>
+    </blockquote>
+    <Motif kind="sparkle" size="1.1rem" class="quote__spark quote__spark--b" />
+  </div>
+</section>
+
+<style>
+  .quote {
+    padding-block: clamp(3.5rem, 2.5rem + 5vw, 7rem);
+  }
+
+  .quote--md {
+    padding-block: var(--space-12);
+  }
+
+  .quote__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-6);
+    text-align: center;
+  }
+
+  .quote__text {
+    margin: 0;
+  }
+
+  .quote__text p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--text-2xl);
+    line-height: 1.3;
+    color: var(--heading);
+    max-width: 30ch;
+  }
+
+  .quote--md .quote__text p {
+    max-width: 44ch;
+  }
+
+  .quote--md .quote__text p {
+    font-size: var(--text-xl);
+  }
+
+  .quote__inner :global(.quote__spark) {
+    color: var(--accent);
+  }
+
+  .quote__inner :global(.quote__spark--b) {
+    opacity: 0.8;
+  }
+</style>

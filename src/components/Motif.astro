@@ -1,0 +1,63 @@
+---
+/**
+ * Motivos gráficos de la identidad (decorativos, aria-hidden):
+ * - asterisk: estallido de trazo fino (12 rayos).
+ * - badge: estrella-sello festoneada, rellena.
+ * - sparkle: destello de cuatro puntas, relleno.
+ * Heredan el color de `currentColor`.
+ */
+interface Props {
+  kind: 'asterisk' | 'badge' | 'sparkle';
+  size?: string;
+  class?: string;
+}
+
+const { kind, size = '4rem', class: className } = Astro.props;
+
+const RAYS = 6;
+const rays = Array.from({ length: RAYS }, (_, i) => {
+  const angle = (Math.PI / RAYS) * i;
+  const dx = Math.cos(angle) * 48;
+  const dy = Math.sin(angle) * 48;
+  return `M${(50 - dx).toFixed(2)} ${(50 - dy).toFixed(2)}L${(50 + dx).toFixed(2)} ${(50 + dy).toFixed(2)}`;
+});
+
+const POINTS = 12;
+const badge =
+  Array.from({ length: POINTS * 2 }, (_, i) => {
+    const angle = (Math.PI / POINTS) * i - Math.PI / 2;
+    const radius = i % 2 === 0 ? 49 : 38;
+    return `${(50 + Math.cos(angle) * radius).toFixed(2)} ${(50 + Math.sin(angle) * radius).toFixed(2)}`;
+  })
+    .map((point, i) => `${i === 0 ? 'M' : 'L'}${point}`)
+    .join('') + 'Z';
+
+const sparkle = 'M50 0C53 36 64 47 100 50C64 53 53 64 50 100C47 64 36 53 0 50C36 47 47 36 50 0Z';
+---
+
+<svg
+  class:list={['motif', `motif--${kind}`, className]}
+  viewBox="0 0 100 100"
+  width={size}
+  height={size}
+  style={`--motif-size:${size}`}
+  aria-hidden="true"
+  focusable="false"
+>
+  {kind === 'asterisk' && (
+    <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      {rays.map((d, i) => <path class="motif__ray" d={d} vector-effect="non-scaling-stroke" pathLength="1" style={`--i:${i}`} />)}
+    </g>
+  )}
+  {kind === 'badge' && <path d={badge} fill="currentColor" />}
+  {kind === 'sparkle' && <path d={sparkle} fill="currentColor" />}
+</svg>
+
+<style>
+  .motif {
+    width: var(--motif-size);
+    height: var(--motif-size);
+    flex: none;
+    overflow: visible;
+  }
+</style>

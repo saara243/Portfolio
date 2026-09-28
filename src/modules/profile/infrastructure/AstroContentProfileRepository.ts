@@ -13,6 +13,7 @@ export class AstroContentProfileRepository implements ProfileRepository {
       name: entry.data.name,
       role: entry.data.role,
       tagline: entry.data.tagline,
+      statement: entry.data.statement,
       bioHtml: entry.rendered?.html ?? '',
       photo: entry.data.photo,
       email: entry.data.email,
@@ -21,8 +22,12 @@ export class AstroContentProfileRepository implements ProfileRepository {
       socials: entry.data.socials,
       education: entry.data.education,
       experience: entry.data.experience,
+      learnings: entry.data.learnings,
       awards: entry.data.awards,
+      interests: entry.data.interests,
       skills: entry.data.skills,
+      skillsNote: entry.data.skillsNote,
+      motivation: entry.data.motivation,
       languages: entry.data.languages,
     });
   }

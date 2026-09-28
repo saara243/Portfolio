@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import InterestList from '../../components/InterestList.astro';
+import MotivationLetter from '../../components/MotivationLetter.astro';
+import QuoteBand from '../../components/QuoteBand.astro';
 import ScriptCard from '../../components/ScriptCard.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
 import { profileModule } from '../../modules/profile/application/factory';
@@ -13,24 +16,66 @@ const lang = toLang(Astro.params.lang);
 const t = useTranslations(lang);
 const profile = await profileModule.getProfile.execute({ locale: lang });
 const featured = await scriptsModule.listFeaturedScripts.execute({ locale: lang });
+const statement = profile.getStatement();
+const motivation = profile.getMotivation();
 ---
 
 <BaseLayout lang={lang} path={routes.home}>
   <Hero lang={lang} profile={profile} />
 
-  <section class="section container">
-    <SceneHeading scene={t('scene.cut')} title={t('home.featured')} />
-    <div class="grid-cards">
-      {featured.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
-    </div>
-    <p class="more">
-      <a class="button" href={localizedPath(lang, routes.projects)}>{t('home.allProjects')} →</a>
-    </p>
-  </section>
+  {statement && <QuoteBand text={statement} />}
+
+  {profile.getInterests().length > 0 && (
+    <section class="band" data-tone="peach">
+      <div class="container">
+        <SceneHeading scene={t('scene.interests')} title={t('home.interests')} size="lg" />
+        <InterestList interests={profile.getInterests()} />
+      </div>
+    </section>
+  )}
+
+  {!featured.isEmpty() && (
+    <section class="band" data-tone="taupe">
+      <div class="container">
+        <div class="featured__head">
+          <SceneHeading scene={t('scene.cut')} title={t('home.featured')} size="lg" />
+          <a class="button" href={localizedPath(lang, routes.projects)}>{t('home.allProjects')}</a>
+        </div>
+        <div class="grid-cards">
+          {featured.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {motivation && (
+    <MotivationLetter motivation={motivation} scene={t('scene.motivation')}>
+      <div class="letter-actions">
+        <a class="button button--primary" href={localizedPath(lang, routes.contact)}>{t('contact.write')}</a>
+        <a class="button" href={localizedPath(lang, routes.about)}>{t('nav.about')}</a>
+      </div>
+    </MotivationLetter>
+  )}
 </BaseLayout>
 
 <style>
-  .more {
+  .featured__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+
+  .featured__head :global(.scene) {
+    margin-bottom: 0;
+  }
+
+  .letter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
     margin-top: var(--space-8);
   }
 </style>

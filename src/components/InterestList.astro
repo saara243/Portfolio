@@ -1,0 +1,77 @@
+---
+import Motif from './Motif.astro';
+import type { Interest } from '../modules/profile/domain/Interest';
+
+/** Temas que la autora quiere contar: palabra grande + descripción, en filas con filete. */
+interface Props {
+  interests: Interest[];
+}
+
+const { interests } = Astro.props;
+---
+
+{interests.length > 0 && (
+  <ul class="interests">
+    {interests.map((interest) => (
+      <li class="interests__item">
+        <h3 class="interests__title">
+          <Motif kind="asterisk" size="0.7em" class="interests__mark" />
+          {interest.getTitle()}
+        </h3>
+        <p class="interests__text">{interest.getDescription()}</p>
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .interests {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .interests__item {
+    display: grid;
+    gap: var(--space-3);
+    padding-block: var(--space-8);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .interests__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: 0;
+    font-size: var(--text-3xl);
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .interests__title :global(.interests__mark) {
+    color: var(--cobalt);
+    transition: rotate 700ms var(--ease-out);
+  }
+
+  .interests__item:hover :global(.interests__mark) {
+    rotate: 90deg;
+  }
+
+  .interests__text {
+    max-width: 52ch;
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 900px) {
+    .interests__item {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: center;
+      gap: var(--space-12);
+      padding-block: var(--space-12);
+    }
+  }
+</style>

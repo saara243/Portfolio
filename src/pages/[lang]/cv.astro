@@ -15,8 +15,9 @@ const cv = profile.getCv();
 ---
 
 <BaseLayout lang={lang} path={routes.cv} title={t('cv.title')}>
-  <section class="section container">
-    <SceneHeading scene={t('scene.cv')} title={t('cv.title')} level={1} />
+  <section class="band" data-tone="peach">
+    <div class="container cv">
+    <SceneHeading scene={t('scene.cv')} title={t('cv.title')} level={1} size="lg" />
     {cv && (
       <p class="cv__download">
         <DownloadButton file={cv} label={t('cv.download')} />
@@ -26,11 +27,16 @@ const cv = profile.getCv();
     <Timeline title={t('cv.experience')} entries={profile.getExperience()} />
     <Timeline title={t('cv.education')} entries={profile.getEducation()} />
     <Timeline title={t('cv.awards')} entries={profile.getAwards()} />
+    </div>
   </section>
 </BaseLayout>
 
 <style>
+  .cv {
+    max-width: 60rem;
+  }
+
   .cv__download {
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-16);
   }
 </style>

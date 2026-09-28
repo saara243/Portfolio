@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DownloadButton from '../../components/DownloadButton.astro';
+import Motif from '../../components/Motif.astro';
+import QuoteBand from '../../components/QuoteBand.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
+import SkillGroups from '../../components/SkillGroups.astro';
 import { profileModule } from '../../modules/profile/application/factory';
 import { getLangStaticPaths, routes, toLang, useTranslations, withBase } from '../../i18n/utils';
 
@@ -10,62 +14,258 @@ const lang = toLang(Astro.params.lang);
 const t = useTranslations(lang);
 const profile = await profileModule.getProfile.execute({ locale: lang });
 const photo = profile.getPhoto();
+const cv = profile.getCv();
+const education = profile.getEducation();
+const experience = profile.getExperience();
+const learnings = profile.getLearnings();
+const skillsNote = profile.getSkillsNote();
 ---
 
 <BaseLayout lang={lang} path={routes.about} title={t('about.title')}>
-  <section class="section container about">
-    {photo && (
-      <img class="about__photo" src={withBase(photo)} alt={profile.getName()} width="480" height="600" />
-    )}
-    <div class="about__text">
-      <SceneHeading scene={t('scene.about')} title={t('about.title')} level={1} />
-      <div class="prose reading" set:html={profile.getBioHtml()} />
-
-      {profile.getSkills().length > 0 && (
-        <>
-          <h2 class="about__subtitle">{t('about.skills')}</h2>
-          <ul class="tags">{profile.getSkills().map((skill) => <li>{skill}</li>)}</ul>
-        </>
+  <section class="band about" data-tone="peach">
+    <div class="container about__inner">
+      {photo && (
+        <figure class="about__figure">
+          <img class="about__photo" src={withBase(photo)} alt={profile.getName()} width="480" height="600" />
+          <Motif kind="sparkle" size="3rem" class="about__spark" />
+        </figure>
       )}
-      {profile.getLanguages().length > 0 && (
-        <>
-          <h2 class="about__subtitle">{t('about.languages')}</h2>
-          <ul class="tags">{profile.getLanguages().map((language) => <li>{language}</li>)}</ul>
-        </>
-      )}
+      <div class="about__text">
+        <SceneHeading scene={t('scene.about')} title={t('about.title')} level={1} size="lg" />
+        <div class="prose about__bio" set:html={profile.getBioHtml()} />
+      </div>
     </div>
   </section>
+
+  {(education.length > 0 || experience.length > 0) && (
+    <section class="band path" data-tone="cobalt">
+      <div class="container">
+        <p class="path__slug script-font">{t('scene.studies')}</p>
+        <div class="path__grid">
+          {education.length > 0 && (
+            <section class="path__panel path__panel--outline">
+              <Motif kind="badge" size="3.5rem" class="path__mark" />
+              <h2 class="path__title">{t('about.education')}</h2>
+              <ul class="path__list">
+                {education.map((entry) => (
+                  <li>
+                    <span class="path__entry">{entry.getTitle()}</span>
+                    {entry.getPlace() && <span class="path__place">{entry.getPlace()}</span>}
+                  </li>
+                ))}
+              </ul>
+              {cv && <DownloadButton file={cv} label={t('nav.cv')} variant="secondary" />}
+            </section>
+          )}
+          {experience.length > 0 && (
+            <section class="path__panel" data-tone="peach">
+              <Motif kind="badge" size="3.5rem" class="path__mark" />
+              <h2 class="path__title">{t('about.experience')}</h2>
+              <ul class="path__list">
+                {experience.map((entry) => (
+                  <li>
+                    <span class="path__entry">{entry.getTitle()}</span>
+                    {entry.getPlace() && <span class="path__place">{entry.getPlace()}</span>}
+                    {entry.getDescription() && <span class="path__desc">{entry.getDescription()}</span>}
+                    {entry.getPeriod() && <span class="path__period">{entry.getPeriod()}</span>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+
+        {learnings.length > 0 && (
+          <div class="learnings">
+            <h2 class="learnings__title">{t('about.learnings')}</h2>
+            <ul class="learnings__list">
+              {learnings.map((learning) => <li>{learning}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {profile.getSkills().length > 0 && (
+    <section class="band" data-tone="peach">
+      <div class="container">
+        <SceneHeading scene={t('scene.skills')} title={t('about.contribute')} align="center" size="lg" />
+        <SkillGroups groups={profile.getSkills()} />
+      </div>
+    </section>
+  )}
+
+  {skillsNote && <QuoteBand text={skillsNote} tone="cobalt" size="md" />}
+
+  {profile.getLanguages().length > 0 && (
+    <section class="band" data-tone="peach">
+      <div class="container">
+        <h2 class="languages__title">{t('about.languages')}</h2>
+        <ul class="tags">{profile.getLanguages().map((language) => <li>{language}</li>)}</ul>
+      </div>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
-  .about {
+  .about__inner {
     display: grid;
     gap: var(--space-12);
   }
 
-  .about__photo {
-    width: 100%;
-    max-width: 24rem;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius);
-    filter: grayscale(0.2);
+  .about__figure {
+    position: relative;
+    margin: 0;
+    max-width: 22rem;
   }
 
-  .about__subtitle {
-    margin-top: var(--space-12);
+  .about__photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    rotate: -2deg;
+    outline: 1px solid var(--line);
+    outline-offset: 10px;
+  }
+
+  .about__figure :global(.about__spark) {
+    position: absolute;
+    right: -1.25rem;
+    top: -1.25rem;
+    color: var(--cobalt);
+  }
+
+  .about__bio {
+    max-width: 62ch;
+    font-size: var(--text-lg);
+    font-weight: 300;
+  }
+
+  .path__slug {
+    margin: 0 0 var(--space-8);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .path__grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .path__panel {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: var(--space-4);
+    padding: clamp(2rem, 1.5rem + 3vw, 3.5rem) clamp(1.25rem, 1rem + 2vw, 3rem);
+    text-align: center;
+  }
+
+  .path__panel--outline {
+    border: 1px solid var(--line);
+  }
+
+  .path__panel :global(.path__mark) {
+    color: var(--accent);
+  }
+
+  .path__title {
+    margin: 0;
+    font-size: var(--text-2xl);
+  }
+
+  .path__list {
+    display: grid;
+    gap: var(--space-6);
+    margin: var(--space-2) 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  .path__list li {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .path__entry {
+    font-size: var(--text-lg);
+    font-weight: 400;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .path__place,
+  .path__period {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .path__place {
+    color: var(--accent);
+  }
+
+  .path__desc {
+    max-width: 38ch;
+    margin-inline: auto;
+    font-weight: 300;
+  }
+
+  .learnings {
+    display: grid;
+    justify-items: center;
+    margin-top: var(--space-24);
+    text-align: center;
+  }
+
+  .learnings__title {
+    margin-bottom: var(--space-8);
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    letter-spacing: 0.04em;
+  }
+
+  .learnings__list {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .learnings__list li {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+  }
+
+  .languages__title {
     font-size: var(--text-xl);
   }
 
   @media (min-width: 900px) {
-    .about {
-      grid-template-columns: 2fr 3fr;
+    .about__inner {
+      grid-template-columns: minmax(16rem, 2fr) 3fr;
       align-items: start;
+      gap: var(--space-16);
     }
 
-    .about__photo {
+    .about__figure {
       position: sticky;
-      top: 6rem;
+      top: 8rem;
+      margin-top: var(--space-16);
+    }
+
+    .path__grid {
+      grid-template-columns: 1fr 1fr;
     }
   }
 </style>

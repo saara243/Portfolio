@@ -44,6 +44,8 @@ const profile = defineCollection({
     name: z.string(),
     role: z.string(),
     tagline: z.string(),
+    // Frase-manifiesto que se destaca en una banda propia
+    statement: z.string().optional(),
     photo: publicFile.optional(),
     email: z.string(),
     location: z.string().optional(),
@@ -51,8 +53,14 @@ const profile = defineCollection({
     socials: z.array(z.object({ label: z.string(), url: z.string() })).default([]),
     education: z.array(timelineEntry).default([]),
     experience: z.array(timelineEntry).default([]),
+    learnings: z.array(z.string()).default([]),
     awards: z.array(timelineEntry).default([]),
-    skills: z.array(z.string()).default([]),
+    interests: z.array(z.object({ title: z.string(), description: z.string() })).default([]),
+    skills: z.array(z.object({ title: z.string(), items: z.array(z.string()).min(1) })).default([]),
+    skillsNote: z.string().optional(),
+    motivation: z
+      .object({ title: z.string(), paragraphs: z.array(z.string()).min(1), closing: z.string().optional() })
+      .optional(),
     languages: z.array(z.string()).default([]),
   }),
 });

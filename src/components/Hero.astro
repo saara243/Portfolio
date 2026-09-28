@@ -1,6 +1,6 @@
 ---
 import DownloadButton from './DownloadButton.astro';
-import SceneHeading from './SceneHeading.astro';
+import Motif from './Motif.astro';
 import type { Profile } from '../modules/profile/domain/Profile';
 import { localizedPath, routes, useTranslations, type Lang } from '../i18n/utils';
 
@@ -14,47 +14,178 @@ const t = useTranslations(lang);
 const cv = profile.getCv();
 ---
 
-<section class="hero">
-  <div class="container">
-    <SceneHeading scene={t('scene.home')} />
-    <h1 class="hero__name">{profile.getName()}</h1>
-    <p class="hero__role script-font">{profile.getRole()}</p>
+<section class="hero" data-tone="peach">
+  <div class="container hero__inner">
+    <p class="hero__slug script-font">{t('scene.home')}</p>
+
+    <div class="hero__title">
+      <h1 class="hero__name">{profile.getName()}</h1>
+      <p class="hero__role">{profile.getRole()}</p>
+    </div>
+
+    <div class="hero__mark">
+      <Motif kind="asterisk" size="100%" class="hero__asterisk" />
+    </div>
+
     <p class="hero__tagline">{profile.getTagline()}</p>
+
     <div class="hero__actions">
-      {cv && <DownloadButton file={cv} label={t('home.ctaCv')} />}
-      <a class="button" href={localizedPath(lang, routes.contact)}>{t('home.ctaContact')}</a>
+      <a class="button button--primary" href={localizedPath(lang, routes.projects)}>{t('home.ctaProjects')}</a>
+      {cv && <DownloadButton file={cv} label={t('home.ctaCv')} variant="secondary" />}
+      <a class="hero__contact" href={localizedPath(lang, routes.contact)}>{t('home.ctaContact')} →</a>
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    padding-block: var(--space-16) var(--space-12);
+    padding-block: var(--space-12) var(--band-pad);
+    overflow: hidden;
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'slug'
+      'mark'
+      'title'
+      'tagline'
+      'actions';
+    align-items: end;
+    gap: var(--space-6);
+  }
+
+  .hero__slug {
+    grid-area: slug;
+    margin: 0;
+    font-weight: 700;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    color: var(--cobalt);
+  }
+
+  .hero__title {
+    grid-area: title;
   }
 
   .hero__name {
+    margin: 0;
     font-size: var(--text-hero);
-    margin-bottom: var(--space-2);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: 0.04em;
     view-transition-name: site-name;
   }
 
   .hero__role {
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-muted);
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-lg);
+    letter-spacing: var(--tracking-wide);
+    text-transform: lowercase;
+    color: var(--cobalt);
+  }
+
+  .hero__mark {
+    grid-area: mark;
+    justify-self: end;
+    width: clamp(7rem, 30vw, 11rem);
+    aspect-ratio: 1;
+    color: var(--cobalt);
   }
 
   .hero__tagline {
-    max-width: 36rem;
+    grid-area: tagline;
+    max-width: 30ch;
+    margin: var(--space-4) 0 0;
     font-family: var(--font-display);
+    font-weight: 300;
     font-style: italic;
     font-size: var(--text-xl);
+    line-height: 1.35;
   }
 
   .hero__actions {
+    grid-area: actions;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-8);
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .hero__contact {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding-inline: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--cobalt);
+  }
+
+  @media (min-width: 900px) {
+    .hero {
+      padding-top: var(--space-16);
+    }
+
+    .hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 22rem);
+      grid-template-areas:
+        'slug    mark'
+        'title   mark'
+        'tagline mark'
+        'actions mark';
+      column-gap: var(--space-16);
+      row-gap: var(--space-4);
+      align-items: start;
+    }
+
+    .hero__title {
+      padding-top: var(--space-16);
+    }
+
+    .hero__mark {
+      width: 100%;
+      align-self: center;
+      justify-self: center;
+    }
+  }
+
+  /* Firma: el asterisco se traza al cargar y gira con el scroll. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__mark :global(.motif__ray) {
+      stroke-dasharray: 1;
+      animation: ray-draw 1100ms var(--ease-out) backwards;
+      animation-delay: calc(var(--i) * 90ms + 150ms);
+    }
+
+    @supports (animation-timeline: scroll()) {
+      .hero__mark :global(.hero__asterisk) {
+        animation: asterisk-turn linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 120vh;
+      }
+    }
+  }
+
+  @keyframes ray-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes asterisk-turn {
+    to {
+      rotate: 150deg;
+      scale: 0.85;
+    }
   }
 </style>

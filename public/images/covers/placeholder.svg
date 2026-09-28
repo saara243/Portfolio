@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
-  <rect width="600" height="800" fill="#1c1a17" />
-  <rect x="40" y="40" width="520" height="720" fill="none" stroke="#b4411b" stroke-width="2" />
-  <text x="300" y="380" font-family="Courier New, monospace" font-size="28" text-anchor="middle" fill="#f5f0e6">PORTADA</text>
-  <text x="300" y="420" font-family="Courier New, monospace" font-size="16" text-anchor="middle" fill="#a39b8c">images/covers/</text>
+  <rect width="600" height="800" fill="#0262de"/>
+  <rect x="36" y="36" width="528" height="728" fill="none" stroke="#ffe3d0" stroke-opacity="0.5"/>
+  <g fill="none" stroke="#ffe3d0" stroke-width="2" stroke-linecap="round"><path d="M180.0 340.0L420.0 340.0"/><path d="M196.1 280.0L403.9 400.0"/><path d="M240.0 236.1L360.0 443.9"/><path d="M300.0 220.0L300.0 460.0"/><path d="M360.0 236.1L240.0 443.9"/><path d="M403.9 280.0L196.1 400.0"/></g>
+  <text x="300" y="640" font-family="Courier New, monospace" font-size="22" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#ffe3d0">PORTADA</text>
 </svg>

@@ -1,20 +1,31 @@
 /*
- * Design tokens. PROVISIONALES: se ajustarán a las imágenes de referencia.
+ * Design tokens. Identidad: melocotón + cobalto (referencia: web anterior de la autora).
  * Cambiar la identidad visual = tocar solo este fichero.
+ * Solo tema claro: el melocotón/cobalto ES la identidad, no hay modo oscuro.
  */
 :root {
-  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Jost', 'Futura', 'Century Gothic', sans-serif;
+  --font-body: 'Barlow', 'DIN Next', 'Helvetica Neue', Arial, sans-serif;
+  /* Solo para sluglines y notación de guion: Courier es el estándar del formato. */
   --font-script: 'Courier Prime', 'Courier New', monospace;
 
-  --color-paper: #f5f0e6;
-  --color-surface: #fffdf8;
-  --color-ink: #1c1a17;
-  --color-muted: #6b6457;
-  --color-line: #d9d1c1;
-  --color-accent: #b4411b;
-  --color-accent-ink: #ffffff;
-  --color-focus: #1d4ed8;
+  /* Paleta base */
+  --peach: #ffe3d0;
+  --peach-soft: #fff1e7;
+  --cobalt: #0262de;
+  --cobalt-deep: #0247a3;
+  --taupe: #ccb6a6;
+  --ink: #14110f;
+  --ink-soft: #5e5048;
+
+  /* Tono por defecto (melocotón). Las bandas lo redefinen con [data-tone]. */
+  --bg: var(--peach);
+  --fg: var(--ink);
+  --heading: var(--cobalt);
+  --muted: var(--ink-soft);
+  --accent: var(--cobalt);
+  --on-accent: var(--peach);
+  --line: rgb(2 98 222 / 0.35);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -25,52 +36,62 @@
   --space-12: 3rem;
   --space-16: 4rem;
   --space-24: 6rem;
+  --space-32: 8rem;
 
+  --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.375rem;
-  --text-2xl: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
-  --text-hero: clamp(2.75rem, 1.5rem + 6vw, 6rem);
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --text-2xl: clamp(1.875rem, 1.4rem + 2vw, 3rem);
+  --text-3xl: clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem);
+  --text-hero: clamp(3rem, 1.2rem + 7vw, 6rem);
 
-  --radius: 4px;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -12px rgb(0 0 0 / 0.18);
-  --content-width: 72rem;
-  --reading-width: 42rem;
+  --tracking-caps: 0.08em;
+  --tracking-wide: 0.18em;
+
+  --content-width: 76rem;
+  --reading-width: 40rem;
   --gutter: 16px;
-  --transition: 180ms ease;
+  --band-pad: clamp(4rem, 3rem + 5vw, 8rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: 220ms var(--ease-out);
 
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --color-paper: #141311;
-    --color-surface: #1d1b18;
-    --color-ink: #ece6d9;
-    --color-muted: #a39b8c;
-    --color-line: #34302a;
-    --color-accent: #f0875a;
-    --color-accent-ink: #141311;
-    --color-focus: #93b4ff;
-    color-scheme: dark;
-  }
+[data-tone='cobalt'] {
+  --bg: var(--cobalt);
+  --fg: var(--peach);
+  --heading: var(--peach);
+  --muted: var(--peach);
+  --accent: var(--peach);
+  --on-accent: var(--cobalt);
+  --line: rgb(255 227 208 / 0.45);
 }
 
-:root[data-theme='dark'] {
-  --color-paper: #141311;
-  --color-surface: #1d1b18;
-  --color-ink: #ece6d9;
-  --color-muted: #a39b8c;
-  --color-line: #34302a;
-  --color-accent: #f0875a;
-  --color-accent-ink: #141311;
-  --color-focus: #93b4ff;
-  color-scheme: dark;
+[data-tone='taupe'] {
+  --bg: var(--taupe);
+  --fg: var(--ink);
+  --heading: var(--ink);
+  --muted: #3f352f;
+  --accent: var(--cobalt-deep);
+  --on-accent: var(--peach);
+  --line: rgb(20 17 15 / 0.25);
+}
+
+[data-tone='peach'] {
+  --bg: var(--peach);
+  --fg: var(--ink);
+  --heading: var(--cobalt);
+  --muted: var(--ink-soft);
+  --accent: var(--cobalt);
+  --on-accent: var(--peach);
+  --line: rgb(2 98 222 / 0.35);
 }
 
 @media (min-width: 768px) {
   :root {
-    --gutter: 32px;
+    --gutter: 40px;
   }
 }

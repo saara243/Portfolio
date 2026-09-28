@@ -13,46 +13,37 @@ const t = useTranslations(lang);
 const cover = script.getCover();
 const format = script.getFormat().getValue();
 const genreKeys = script.getGenres().map((genre) => genre.getKey()).join(' ');
+const genres = script.getGenres().map((genre) => genre.getLabel()).join(' · ');
 ---
 
 <article class="card" data-script-card data-format={format} data-genres={genreKeys}>
   <a class="card__link" href={localizedPath(lang, routes.project(script.getSlug()))}>
-    {cover && (
-      <img
-        class="card__cover"
-        src={withBase(cover)}
-        alt=""
-        width="600"
-        height="800"
-        loading="lazy"
-        transition:name={`cover-${script.getSlug()}`}
-      />
-    )}
-    <div class="card__body">
-      <p class="card__meta script-font">
-        {t(`format.${format}` as UiKey)} · {script.getYear()}
-      </p>
-      <h3 class="card__title">{script.getTitle()}</h3>
-      <p class="card__logline">{script.getLogline()}</p>
-      <span class="card__more script-font">{t('projects.read')} →</span>
+    <div class="card__frame">
+      {cover ? (
+        <img
+          class="card__cover"
+          src={withBase(cover)}
+          alt=""
+          width="600"
+          height="800"
+          loading="lazy"
+          transition:name={`cover-${script.getSlug()}`}
+        />
+      ) : (
+        <span class="card__cover card__cover--empty" aria-hidden="true">{script.getTitle()}</span>
+      )}
     </div>
+    <p class="card__meta script-font">
+      {t(`format.${format}` as UiKey)} · {script.getYear()}
+    </p>
+    <h3 class="card__title">{script.getTitle()}</h3>
+    {genres && <p class="card__genres">{genres}</p>}
+    <p class="card__logline">{script.getLogline()}</p>
+    <span class="card__more">{t('projects.read')} <span aria-hidden="true">→</span></span>
   </a>
 </article>
 
 <style>
-  .card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-    transition: transform var(--transition);
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-  }
-
   .card__link {
     display: flex;
     flex-direction: column;
@@ -61,39 +52,84 @@ const genreKeys = script.getGenres().map((genre) => genre.getKey()).join(' ');
     color: inherit;
   }
 
+  .card__frame {
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+    background: var(--cobalt);
+  }
+
   .card__cover {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
-    background: var(--color-line);
+    transition: scale 700ms var(--ease-out), opacity 300ms var(--ease-out);
   }
 
-  .card__body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  .card__cover--empty {
+    display: grid;
+    place-items: center;
     padding: var(--space-6);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-xl);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--peach);
+  }
+
+  .card__link:hover .card__cover {
+    scale: 1.035;
+    opacity: 0.92;
   }
 
   .card__meta {
-    margin-bottom: var(--space-2);
-    font-size: var(--text-sm);
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--accent);
   }
 
   .card__title {
+    margin: 0 0 var(--space-2);
     font-size: var(--text-xl);
+    font-weight: 400;
+  }
+
+  .card__genres {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--muted);
   }
 
   .card__logline {
     flex: 1;
-    font-size: var(--text-sm);
-    color: var(--color-muted);
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.6;
   }
 
   .card__more {
+    align-self: start;
+    font-family: var(--font-display);
     font-size: var(--text-sm);
-    color: var(--color-accent);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-1);
+    transition: border-color var(--transition);
+  }
+
+  .card__link:hover .card__more {
+    border-color: var(--accent);
+  }
+
+  .card__link:hover .card__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
   }
 </style>

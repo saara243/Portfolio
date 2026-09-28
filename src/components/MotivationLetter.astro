@@ -1,0 +1,93 @@
+---
+import Motif from './Motif.astro';
+import type { Motivation } from '../modules/profile/domain/Motivation';
+
+/** Carta de motivación: título grande en cobalto + hoja melocotón con los párrafos. */
+interface Props {
+  motivation: Motivation;
+  scene: string;
+}
+
+const { motivation, scene } = Astro.props;
+---
+
+<section class="band letter" data-tone="cobalt">
+  <div class="container letter__inner">
+    <div class="letter__head">
+      <p class="letter__slug script-font">{scene}</p>
+      <h2 class="letter__title">{motivation.getTitle()}</h2>
+      <Motif kind="badge" size="clamp(4.5rem, 10vw, 7rem)" class="letter__badge" />
+    </div>
+
+    <div class="letter__sheet" data-tone="peach">
+      {motivation.getParagraphs().map((paragraph) => <p>{paragraph}</p>)}
+      <slot />
+    </div>
+  </div>
+
+  {motivation.getClosing() && (
+    <div class="container">
+      <p class="letter__closing">{motivation.getClosing()}</p>
+    </div>
+  )}
+</section>
+
+<style>
+  .letter__inner {
+    display: grid;
+    gap: var(--space-12);
+  }
+
+  .letter__slug {
+    margin: 0 0 var(--space-3);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+  }
+
+  .letter__title {
+    margin: 0 0 var(--space-8);
+    font-size: var(--text-3xl);
+  }
+
+  .letter__head :global(.letter__badge) {
+    color: var(--peach);
+  }
+
+  .letter__sheet {
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    font-size: var(--text-base);
+  }
+
+  .letter__sheet p {
+    max-width: 60ch;
+  }
+
+  .letter__sheet p:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .letter__closing {
+    max-width: 44ch;
+    margin: var(--space-16) auto 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--text-xl);
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  @media (min-width: 900px) {
+    .letter__inner {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      align-items: start;
+      gap: var(--space-16);
+    }
+
+    .letter__head {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+</style>
