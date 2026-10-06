@@ -13,10 +13,17 @@
  * - dentist («Un problema de halitosis»): Diego en el sillón del dentista, con pantalones de campana y el
  *   aliento echando humo; hace girar el grifo como un lazo, revienta el fluorescente (caen cristales), el
  *   grifo se vuelve fuente y del bote cae un caramelo que rebota hasta él. Bucle de 8 s.
+ * - closet («Pica paret»): dos hermanas de cara a la pared cantan «un, dos, tres, pica paret»; el armario
+ *   se abre y el ser alargado de sonrisa fija avanza a saltos mientras no miran y se congela cuando se
+ *   giran; a la tercera está pegado a ellas, se las lleva dentro y el armario se cierra. Bucle de 10 s.
+ * - faces («Rostros»): celda 231, de noche; Salva tumbado de espaldas bajo la manta, con el mechero
+ *   encendido. Detrás asoma un rostro que se acerca y cambia (niño, anciana, hombre con barba que sonríe
+ *   con todos los dientes); unos dedos largos apagan la llama. Oscuro. Amanece: la manta en el suelo y
+ *   Salva mirando hacia arriba, sin rostro. Bucle de 10 s.
  * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
  */
 interface Props {
-  kind: 'revival' | 'set' | 'tube' | 'dentist';
+  kind: 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces';
   title: string;
   class?: string;
   [attr: string]: unknown;
@@ -278,6 +285,123 @@ const seats = [
       </g>
     </>)}
 
+    {kind === 'faces' && (<>
+      <!-- Celda 231: reja, placa, suelo -->
+      <text class="rs-plate" x="196" y="150" text-anchor="middle">CELDA 231</text>
+      <path d="M24 340h252" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+      <path d="M28 112v228M40 112v228M52 112v228M64 112v228M76 112v228M24 160h56M24 296h56" stroke="var(--peach)" stroke-width="3" />
+
+      <!-- Luz de la mañana -->
+      <rect class="rs-morning" x="0" y="0" width="300" height="400" fill="var(--peach-soft)" fill-opacity="0.12" />
+
+      <!-- La cama y Salva (escena ampliada desde el suelo) -->
+      <g class="rs-zoom" transform="translate(160 340) scale(1.25) translate(-160 -340)">
+      <rect x="110" y="304" width="158" height="10" fill="var(--peach)" />
+      <path d="M116 314v26M262 314v26" stroke="var(--peach)" stroke-width="4" />
+      <path class="rs-morning" d="M136 302q-4-26 26-30h56q30 2 32 30" stroke="var(--peach)" stroke-width="2.5" />
+      <g class="rs-morning">
+        <ellipse cx="122" cy="286" rx="11" ry="14" fill="var(--peach-soft)" />
+        <path d="M128 298l8 6" stroke="var(--peach)" stroke-width="5" />
+      </g>
+      <circle class="rs-head" cx="122" cy="288" r="13" fill="var(--peach)" />
+
+      <!-- Dex: un rostro que cambia -->
+      <g class="rs-dex">
+       <g class="rs-zoom" transform="translate(150 244) scale(1.35) translate(-152 -262)">
+        <g class="rs-face rs-face--child">
+          <circle cx="152" cy="262" r="13" fill="var(--peach-soft)" />
+          <circle cx="146" cy="260" r="3.5" fill="var(--peach)" /><circle cx="158" cy="260" r="3.5" fill="var(--peach)" />
+          <circle cx="144.5" cy="260" r="1.6" fill="var(--cobalt)" /><circle cx="156.5" cy="260" r="1.6" fill="var(--cobalt)" />
+          <path d="M149 269h6" stroke="var(--cobalt)" stroke-width="1.5" />
+        </g>
+        <g class="rs-face rs-face--old">
+          <circle cx="152" cy="246" r="7" stroke="var(--peach-soft)" stroke-width="2" />
+          <ellipse cx="152" cy="263" rx="12" ry="15" fill="var(--peach-soft)" />
+          <circle cx="146" cy="260" r="3" fill="var(--peach)" /><circle cx="158" cy="260" r="3" fill="var(--peach)" />
+          <circle cx="144.8" cy="260" r="1.4" fill="var(--cobalt)" /><circle cx="156.8" cy="260" r="1.4" fill="var(--cobalt)" />
+          <path d="M143 254l5 1M161 254l-5 1M144 266q8 3 16 0M147 271h10" stroke="var(--cobalt)" stroke-width="1.2" />
+        </g>
+        <g class="rs-face rs-face--man">
+          <circle cx="152" cy="260" r="14" fill="var(--peach-soft)" />
+          <path d="M138 262q2 18 14 20q12-2 14-20q-6 6-14 6t-14-6Z" fill="var(--peach)" />
+          <circle cx="146" cy="256" r="3" fill="var(--peach)" /><circle cx="158" cy="256" r="3" fill="var(--peach)" />
+          <circle cx="144.8" cy="256" r="1.4" fill="var(--cobalt)" /><circle cx="156.8" cy="256" r="1.4" fill="var(--cobalt)" />
+          <path d="M142 265q10 7 20 0Z" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1.2" />
+          <path d="M146 265.5v3M150 266v4M154 266v4M158 265.5v3" stroke="var(--cobalt)" stroke-width="1" />
+        </g>
+       </g>
+      </g>
+
+      <!-- La manta (azul) -->
+      <g class="rs-blanket">
+        <path class="rs-breath" d="M130 304q-4-38 34-42q30-6 56 2q36 8 38 40Z" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1.5" />
+        <path class="rs-breath" d="M150 270q20 10 30 34M190 266q16 12 22 38" stroke="var(--cobalt)" stroke-width="1" opacity="0.4" />
+      </g>
+
+      <!-- Dedos largos que apagan la llama -->
+      <path class="rs-hand" pathLength="1" d="M168 274L120 280l-12-6M120 280l-14 0M120 280l-12 6" stroke="var(--peach-soft)" stroke-width="2" />
+
+      <!-- El mechero -->
+      <g class="rs-lit">
+        <circle class="rs-glow" cx="106" cy="282" r="46" fill="var(--peach-soft)" opacity="0.12" />
+        <rect x="102" y="288" width="8" height="12" rx="1" fill="var(--peach-soft)" />
+        <path class="rs-flame" d="M106 274q5 6 3 10a3 3 0 0 1-6 0q-2-4 3-10Z" fill="var(--peach-soft)" />
+      </g>
+      <circle cx="106" cy="302" r="5" fill="var(--peach)" />
+      </g>
+
+      <rect class="rs-dark" x="0" y="0" width="300" height="400" fill="#000" />
+    </>)}
+
+    {kind === 'closet' && (<>
+      <text class="ck-chant" x="150" y="118" text-anchor="middle">UN, DOS, TRES, PICA PARET</text>
+
+      <!-- Habitación: suelo y pared -->
+      <path d="M24 340h252" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+      <path d="M272 150v190" stroke="var(--peach)" stroke-width="3" />
+
+      <!-- El armario: fondo, el ser y las puertas -->
+      <g class="ck-room">
+        <rect x="36" y="170" width="80" height="170" stroke="var(--peach)" stroke-width="3" />
+        <rect x="38" y="172" width="76" height="166" fill="#000" opacity="0.3" />
+
+        <g class="ck-thing">
+          <path d="M76 208v72M76 216l-22 76M76 216l22 76M76 280l-10 58M76 280l10 58" stroke="var(--peach-soft)" stroke-width="3.5" />
+          <ellipse cx="76" cy="190" rx="14" ry="19" fill="var(--peach-soft)" />
+          <circle class="ck-eye" cx="70" cy="185" r="4.5" fill="var(--cobalt)" />
+          <circle class="ck-eye" cx="82" cy="185" r="4.5" fill="var(--cobalt)" />
+          <path d="M64 197q12 12 24 0" stroke="var(--cobalt)" stroke-width="2" />
+          <path d="M68 200v3M72 202v3M76 203v3M80 202v3M84 200v3" stroke="var(--cobalt)" stroke-width="1.2" />
+        </g>
+      </g>
+      <g class="ck-closet">
+        <rect class="ck-door ck-door--l" x="38" y="172" width="38" height="166" fill="var(--peach)" stroke="var(--cobalt)" stroke-width="1" />
+        <rect class="ck-door ck-door--r" x="76" y="172" width="38" height="166" fill="var(--peach)" stroke="var(--cobalt)" stroke-width="1" />
+      </g>
+
+      <!-- Las hermanas: Leire (9) y Mirna (6), de cara a la pared -->
+      <g class="ck-kids">
+        <g class="ck-girl ck-girl--leire">
+          <path d="M228 277l-14 53h28Z" fill="var(--peach-soft)" />
+          <circle cx="224" cy="300" r="1.6" fill="var(--cobalt)" /><circle cx="232" cy="314" r="1.6" fill="var(--cobalt)" /><circle cx="222" cy="322" r="1.6" fill="var(--cobalt)" />
+          <path d="M224 330v10M232 330v10" stroke="var(--peach)" stroke-width="3" />
+          <path d="M230 284l30-20" stroke="var(--peach)" stroke-width="3" />
+          <circle cx="228" cy="268" r="9" fill="var(--peach)" />
+          <path d="M220 262q-6 16-1 30" stroke="var(--peach-soft)" stroke-width="5" />
+          <circle cx="233" cy="266" r="1.5" fill="var(--cobalt)" />
+        </g>
+        <g class="ck-girl ck-girl--mirna">
+          <path d="M252 297l-11 37h22Z" fill="var(--peach-soft)" />
+          <circle cx="250" cy="314" r="1.4" fill="var(--cobalt)" /><circle cx="256" cy="324" r="1.4" fill="var(--cobalt)" />
+          <path d="M248 334v6M256 334v6" stroke="var(--peach)" stroke-width="3" />
+          <path d="M254 302l14-12" stroke="var(--peach)" stroke-width="2.5" />
+          <circle cx="252" cy="290" r="7.5" fill="var(--peach)" />
+          <path d="M246 285q-5 12-1 22" stroke="var(--peach-soft)" stroke-width="4" />
+          <circle cx="256" cy="288" r="1.3" fill="var(--cobalt)" />
+        </g>
+      </g>
+    </>)}
+
     {kind === 'tube' && (<>
       <!-- Mueble y suelo -->
       <path d="M84 290v50M216 290v50M70 290h160" stroke="var(--peach)" stroke-width="4" />
@@ -504,6 +628,81 @@ const seats = [
     transform-origin: right bottom;
   }
 
+  .ck-chant {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    fill: var(--peach);
+    opacity: 0;
+  }
+
+  /* Sin movimiento: el segundo «¡ya!» — puertas abiertas, el ser a medio camino, ellas giradas. */
+  .cv .ck-door--l {
+    transform-origin: left center;
+    scale: 0.12 1;
+  }
+
+  .cv .ck-door--r {
+    transform-origin: right center;
+    scale: 0.12 1;
+  }
+
+  .ck-thing {
+    translate: 60px 0;
+  }
+
+  /* Cada niña se gira sobre su propio eje (el de la cabeza). */
+  .cv .ck-girl {
+    transform-box: view-box;
+    scale: -1 1;
+  }
+
+  .cv .ck-girl--leire {
+    transform-origin: 228px 300px;
+  }
+
+  .cv .ck-girl--mirna {
+    transform-origin: 252px 300px;
+  }
+
+  .rs-plate {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    fill: var(--peach);
+    opacity: 0.6;
+  }
+
+  /* Sin movimiento: de noche, con la anciana ya a su lado. */
+  .rs-morning,
+  .rs-face--child,
+  .rs-face--man,
+  .rs-hand,
+  .rs-dark {
+    opacity: 0;
+  }
+
+  .rs-hand {
+    stroke-dasharray: 1;
+  }
+
+  /* Zoom de la escena con el atributo transform: origen en 0 0, no en el centro de cada pieza. */
+  .cv .rs-zoom {
+    transform-box: view-box;
+    transform-origin: 0 0;
+  }
+
+  .cv .rs-blanket,
+  .cv .rs-flame {
+    transform-origin: center bottom;
+  }
+
+  .cv .rs-breath {
+    transform-origin: center bottom;
+  }
+
   .cv:not([data-playing]) :global(*) {
     animation-play-state: paused !important;
   }
@@ -545,6 +744,88 @@ const seats = [
 
     .cv-gasp {
       animation: cv-gasp 8s linear infinite;
+    }
+
+    /* Rostros */
+    .rs-dex {
+      animation: rs-dex 10s ease-in-out infinite;
+    }
+
+    .rs-face--child {
+      animation: rs-child 10s steps(1, end) infinite;
+    }
+
+    .rs-face--old {
+      animation: rs-old 10s steps(1, end) infinite;
+    }
+
+    .rs-face--man {
+      animation: rs-man 10s steps(1, end) infinite;
+    }
+
+    .rs-hand {
+      animation: rs-hand 10s ease-out infinite;
+    }
+
+    .rs-lit {
+      animation: rs-lit 10s steps(1, end) infinite;
+    }
+
+    .rs-flame {
+      animation: rs-flicker 0.5s ease-in-out infinite alternate;
+    }
+
+    .rs-glow {
+      animation: rs-glow 0.9s ease-in-out infinite alternate;
+    }
+
+    .rs-breath {
+      animation: rs-breath 0.8s ease-in-out infinite alternate;
+    }
+
+    .rs-dark {
+      animation: rs-dark 10s linear infinite;
+    }
+
+    .rs-morning {
+      animation: rs-morning 10s steps(1, end) infinite;
+    }
+
+    .rs-head {
+      animation: rs-head 10s steps(1, end) infinite;
+    }
+
+    .rs-blanket {
+      animation: rs-blanket 10s steps(1, end) infinite;
+    }
+
+    /* Pica paret */
+    .ck-chant {
+      animation: ck-chant 10s steps(1, end) infinite;
+    }
+
+    .ck-door {
+      animation: ck-door 10s var(--ease-out) infinite;
+    }
+
+    .ck-thing {
+      animation: ck-thing 10s linear infinite;
+    }
+
+    .ck-girl {
+      animation: ck-turn 10s steps(1, end) infinite;
+    }
+
+    .ck-kids {
+      animation: ck-taken 10s ease-in infinite;
+    }
+
+    .ck-eye {
+      animation: ck-eye 10s ease-out infinite;
+    }
+
+    .ck-closet {
+      animation: ck-slam 10s linear infinite;
     }
 
     /* Halitosis */
@@ -662,6 +943,141 @@ const seats = [
     .cs-wave {
       animation: cs-wave 0.5s ease-in-out infinite alternate;
     }
+  }
+
+  /* El rostro sale de la oscuridad detrás de él y se le acerca. */
+  @keyframes rs-dex {
+    0%, 8% { opacity: 0; translate: 80px 14px; }
+    30% { opacity: 1; translate: 46px 8px; }
+    50%, 72% { opacity: 1; translate: 0 0; }
+    74%, 100% { opacity: 0; translate: 0 0; }
+  }
+
+  @keyframes rs-child {
+    0% { opacity: 1; }
+    52%, 100% { opacity: 0; }
+  }
+
+  @keyframes rs-old {
+    0% { opacity: 0; }
+    52% { opacity: 1; }
+    62%, 100% { opacity: 0; }
+  }
+
+  @keyframes rs-man {
+    0% { opacity: 0; }
+    62% { opacity: 1; }
+    74%, 100% { opacity: 0; }
+  }
+
+  @keyframes rs-hand {
+    0%, 64% { opacity: 0; stroke-dashoffset: 1; }
+    65% { opacity: 1; stroke-dashoffset: 1; }
+    72% { opacity: 1; stroke-dashoffset: 0; }
+    74%, 100% { opacity: 0; stroke-dashoffset: 0; }
+  }
+
+  @keyframes rs-lit {
+    0% { opacity: 1; }
+    73%, 100% { opacity: 0; }
+  }
+
+  @keyframes rs-flicker {
+    from { scale: 1 1; }
+    to { scale: 0.85 1.15; }
+  }
+
+  @keyframes rs-glow {
+    from { opacity: 0.08; }
+    to { opacity: 0.16; }
+  }
+
+  @keyframes rs-breath {
+    from { scale: 1 1; }
+    to { scale: 1 1.03; }
+  }
+
+  /* Apagón: un grito en la oscuridad. Luego, la mañana. */
+  @keyframes rs-dark {
+    0%, 72.9% { opacity: 0; }
+    73%, 82% { opacity: 0.85; }
+    85%, 100% { opacity: 0; }
+  }
+
+  @keyframes rs-morning {
+    0% { opacity: 0; }
+    83% { opacity: 1; }
+    97%, 100% { opacity: 0; }
+  }
+
+  @keyframes rs-head {
+    0% { opacity: 1; }
+    83% { opacity: 0; }
+    97%, 100% { opacity: 1; }
+  }
+
+  /* La manta, tirada en el suelo. */
+  @keyframes rs-blanket {
+    0% { translate: 0 0; scale: 1 1; }
+    83% { translate: 0 36px; scale: 1 0.3; }
+    97%, 100% { translate: 0 0; scale: 1 1; }
+  }
+
+  /* Tres rondas de canción; mientras cantan (de cara a la pared) el ser avanza. */
+  @keyframes ck-chant {
+    0% { opacity: 0; }
+    8% { opacity: 1; }
+    22% { opacity: 0; }
+    34% { opacity: 1; }
+    48% { opacity: 0; }
+    62% { opacity: 1; }
+    72%, 100% { opacity: 0; }
+  }
+
+  @keyframes ck-turn {
+    0% { scale: 1 1; }
+    22% { scale: -1 1; }
+    30% { scale: 1 1; }
+    48% { scale: -1 1; }
+    56% { scale: 1 1; }
+    72% { scale: -1 1; }
+    100% { scale: -1 1; }
+  }
+
+  @keyframes ck-door {
+    0%, 12% { scale: 1 1; }
+    20%, 86% { scale: 0.12 1; }
+    89%, 100% { scale: 1 1; }
+  }
+
+  /* Avanza a saltos solo mientras no miran; al final se lleva a las niñas. */
+  @keyframes ck-thing {
+    0%, 38% { translate: 0 0; }
+    41% { translate: 30px -6px; }
+    44%, 64% { translate: 60px 0; }
+    66% { translate: 95px -6px; }
+    68%, 82% { translate: 120px 0; }
+    87%, 100% { translate: 0 0; }
+  }
+
+  @keyframes ck-eye {
+    0%, 74% { scale: 1; }
+    77%, 84% { scale: 1.5; }
+    87%, 100% { scale: 1; }
+  }
+
+  @keyframes ck-taken {
+    0%, 83% { translate: 0 0; opacity: 1; }
+    88% { translate: -150px 0; opacity: 0; }
+    96% { translate: -150px 0; opacity: 0; }
+    100% { translate: 0 0; opacity: 0; }
+  }
+
+  @keyframes ck-slam {
+    0%, 88% { translate: 0 0; }
+    89% { translate: -3px 0; }
+    90% { translate: 3px 0; }
+    91%, 100% { translate: 0 0; }
   }
 
   @keyframes cd-stink {

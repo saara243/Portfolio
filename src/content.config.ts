@@ -42,7 +42,7 @@ const scripts = defineCollection({
     duration: z.string().optional(),
     cover: publicFile.optional(),
     // Portada ilustrada y animada (src/components/CoverArt.astro) cuando no hay imagen de portada
-    coverArt: z.enum(['revival', 'set', 'tube', 'dentist']).optional(),
+    coverArt: z.enum(['revival', 'set', 'tube', 'dentist', 'closet', 'faces']).optional(),
     // Fotograma horizontal (16:9) para la cuadrícula de destacados de la home; opcional
     still: publicFile.optional(),
     pdf: publicFile.optional(),

@@ -5,7 +5,7 @@ import { ScriptStatus } from './ScriptStatus';
 
 export const DOWNLOAD_ACCESS = ['public', 'on-request'] as const;
 export type DownloadAccess = (typeof DOWNLOAD_ACCESS)[number];
-export type CoverArtKind = 'revival' | 'set' | 'tube' | 'dentist';
+export type CoverArtKind = 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces';
 
 export interface ScriptPrimitive {
   slug: string;
