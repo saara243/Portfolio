@@ -25,21 +25,14 @@ const nameLines = name.split(/\s+/).map((word) => Array.from(word).map((char) =>
  * --t es el momento (ms) en que cae cada carácter y --d cuánto se queda el cursor detrás de él.
  */
 type BlockKind = 'transition-in' | 'slug' | 'action' | 'character' | 'parenthetical' | 'dialogue' | 'transition';
-const statement = profile.getStatement();
 const themes = profile.getInterests().map((interest) => `${interest.getTitle()}.`).join(' ');
 const rawBlocks: [BlockKind, string][] = [
   ['transition-in', t('scene.fadeIn')],
   ['slug', slug],
-  // Si el lema coincide con la frase-manifiesto, no se repite: ya va como diálogo.
-  ...(profile.getTagline() !== statement ? ([['action', profile.getTagline()]] as [BlockKind, string][]) : []),
   ...(themes ? ([['action', themes]] as [BlockKind, string][]) : []),
-  ...(statement
-    ? ([
-        ['character', name.split(/\s+/)[0].toUpperCase()],
-        ['parenthetical', t('scene.toCamera')],
-        ['dialogue', statement],
-      ] as [BlockKind, string][])
-    : []),
+  ['character', name.split(/\s+/)[0].toUpperCase()],
+  ['parenthetical', t('scene.toCamera')],
+  ['dialogue', t('hero.dialogue')],
   ['transition', t('scene.cut')],
 ];
 

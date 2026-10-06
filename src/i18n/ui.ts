@@ -21,6 +21,7 @@ const es = {
   'scene.cut': 'CORTE A:',
   'scene.fadeIn': 'FUNDIDO DE ENTRADA:',
   'scene.toCamera': '(a cámara)',
+  'hero.dialogue': 'Mi pasión es escribir, ya sea cine, televisión o teatro.',
 
   'home.featured': 'Proyectos destacados',
   'home.allProjects': 'Ver todos los proyectos',
@@ -134,6 +135,7 @@ const ca: Record<UiKey, string> = {
   'scene.cut': 'TALL A:',
   'scene.fadeIn': "FOS D'ENTRADA:",
   'scene.toCamera': '(a càmera)',
+  'hero.dialogue': 'La meva passió és escriure, ja sigui cinema, televisió o teatre.',
 
   'home.featured': 'Projectes destacats',
   'home.allProjects': 'Veure tots els projectes',
@@ -245,6 +247,7 @@ const en: Record<UiKey, string> = {
   'scene.cut': 'CUT TO:',
   'scene.fadeIn': 'FADE IN:',
   'scene.toCamera': '(to camera)',
+  'hero.dialogue': 'My passion is writing, whether for film, television or theatre.',
 
   'home.featured': 'Featured projects',
   'home.allProjects': 'See all projects',
