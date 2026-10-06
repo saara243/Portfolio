@@ -35,10 +35,23 @@ const { interests, reveal = false } = Astro.props;
   }
 
   .interests__item {
+    position: relative;
+    isolation: isolate;
     display: grid;
     gap: var(--space-3);
     padding-block: var(--space-8);
     border-bottom: 1px solid var(--line);
+  }
+
+  /* Hoja cobalto que barre la fila al pasar: la fila cambia de tono, como una banda. */
+  .interests__item::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -1px calc(-1 * var(--gutter));
+    background: var(--cobalt);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 650ms var(--ease-out);
   }
 
   .interests__title {
@@ -49,15 +62,12 @@ const { interests, reveal = false } = Astro.props;
     font-size: var(--text-3xl);
     line-height: 1;
     overflow-wrap: anywhere;
+    transition: color 400ms var(--ease-out), translate 650ms var(--ease-out);
   }
 
   .interests__title :global(.interests__mark) {
     color: var(--cobalt);
-    transition: rotate 700ms var(--ease-out);
-  }
-
-  .interests__item:hover :global(.interests__mark) {
-    rotate: 90deg;
+    transition: rotate 900ms var(--ease-out), scale 900ms var(--ease-out), color 400ms var(--ease-out);
   }
 
   .interests__text {
@@ -66,6 +76,29 @@ const { interests, reveal = false } = Astro.props;
     font-size: var(--text-lg);
     font-weight: 300;
     line-height: 1.6;
+    transition: color 400ms var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .interests__item:hover::before {
+      clip-path: inset(0 0 0 0);
+    }
+
+    .interests__item:hover .interests__title,
+    .interests__item:hover .interests__text,
+    .interests__item:hover :global(.interests__mark) {
+      color: var(--peach);
+    }
+
+    .interests__item:hover :global(.interests__mark) {
+      rotate: 180deg;
+      scale: 1.25;
+    }
+
+    .interests__item:hover ::selection {
+      background: var(--peach);
+      color: var(--cobalt);
+    }
   }
 
   @media (min-width: 900px) {
@@ -75,16 +108,24 @@ const { interests, reveal = false } = Astro.props;
       gap: var(--space-12);
       padding-block: var(--space-12);
     }
+
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      .interests__item:hover .interests__title {
+        translate: var(--space-6) 0;
+      }
+    }
   }
 
-  /* Revelado: el filete se traza de izquierda a derecha y el asterisco gira hasta su sitio. */
+  /*
+   * Revelado: el filete se traza de izquierda a derecha, el asterisco estalla rayo a rayo
+   * desde el centro mientras gira hasta su sitio, la palabra sube con un corte y el texto se asienta.
+   */
   @media (prefers-reduced-motion: no-preference) {
     .interests__item[data-reveal='pending'],
     .interests__item[data-reveal='in'] {
       --stagger: calc(var(--row) * 90ms);
       --line-delay: calc(var(--stagger) + 150ms);
-      --fade-delay: calc(var(--stagger) + 380ms);
-      position: relative;
+      --fade-delay: calc(var(--stagger) + 420ms);
       border-bottom-color: transparent;
     }
 
@@ -103,11 +144,15 @@ const { interests, reveal = false } = Astro.props;
     }
 
     .interests__item[data-reveal='in']::after {
-      animation: rule-draw 1100ms var(--ease-out) var(--stagger) backwards;
+      animation: rule-draw 1200ms var(--ease-out) var(--stagger) backwards;
     }
 
     .interests__item[data-reveal='in'] :global(.interests__mark) {
-      animation: mark-turn 1000ms var(--ease-out) var(--line-delay) backwards;
+      animation: mark-turn 1100ms var(--ease-out) var(--line-delay) backwards;
+    }
+
+    .interests__item[data-reveal='in'] :global(.motif__ray) {
+      animation: ray-burst 700ms var(--ease-out) calc(var(--line-delay) + var(--i) * 35ms) backwards;
     }
   }
 
@@ -127,6 +172,15 @@ const { interests, reveal = false } = Astro.props;
     }
     to {
       rotate: 0deg;
+      scale: 1;
+    }
+  }
+
+  @keyframes ray-burst {
+    from {
+      scale: 0;
+    }
+    to {
       scale: 1;
     }
   }

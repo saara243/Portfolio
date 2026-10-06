@@ -13,6 +13,10 @@ const { lang, profile } = Astro.props;
 const t = useTranslations(lang);
 const cv = profile.getCv();
 const slug = t('scene.home');
+const name = profile.getName();
+// El nombre entra letra a letra: cada palabra en su línea, índice global para el desfase.
+let letterIndex = 0;
+const nameLines = name.split(/\s+/).map((word) => Array.from(word).map((char) => ({ char, i: letterIndex++ })));
 ---
 
 <script is:inline>
@@ -25,15 +29,25 @@ const slug = t('scene.home');
 
 <section class="hero" data-tone="peach">
   <div class="container hero__inner">
-    <p class="hero__slug script-font reveal-type" style={`--chars:${slug.length}`}>{slug}</p>
+    <p class="hero__slug script-font" style={`--chars:${slug.length}`}>
+      <span class="hero__slug-text">{slug}</span><span class="hero__caret" aria-hidden="true"></span>
+    </p>
 
     <div class="hero__title">
-      <h1 class="hero__name">{profile.getName()}</h1>
+      <h1 class="hero__name" aria-label={name}>
+        {nameLines.map((letters, line) => (
+          <span class="hero__line" style={`--line:${line}`} aria-hidden="true">
+            {letters.map(({ char, i }) => <span class="hero__char" style={`--c:${i}`}>{char}</span>)}
+          </span>
+        ))}
+      </h1>
       <p class="hero__role">{profile.getRole()}</p>
     </div>
 
-    <div class="hero__mark">
-      <Motif kind="asterisk" size="100%" class="hero__asterisk" />
+    <div class="hero__mark" data-hero-mark>
+      <div class="hero__spin">
+        <Motif kind="asterisk" size="100%" class="hero__asterisk" />
+      </div>
     </div>
 
     <p class="hero__tagline">{profile.getTagline()}</p>
@@ -46,13 +60,77 @@ const slug = t('scene.home');
   </div>
 </section>
 
+<script>
+  /*
+   * El asterisco atiende al lector: se inclina y se desplaza un poco hacia el puntero,
+   * con inercia. Su giro lento de reposo se pausa cuando el hero sale de pantalla.
+   */
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer = window.matchMedia('(pointer: fine)');
+  let cleanup: (() => void) | undefined;
+
+  function initHeroMark() {
+    cleanup?.();
+    cleanup = undefined;
+    const mark = document.querySelector<HTMLElement>('[data-hero-mark]');
+    if (!mark || reduce.matches) return;
+
+    const visibility = new IntersectionObserver(([entry]) => {
+      mark.toggleAttribute('data-offscreen', !entry.isIntersecting);
+    });
+    visibility.observe(mark);
+
+    if (!finePointer.matches) {
+      cleanup = () => visibility.disconnect();
+      return;
+    }
+
+    let target = { x: 0, y: 0 };
+    let current = { x: 0, y: 0 };
+    let frame = 0;
+
+    const tick = () => {
+      current.x += (target.x - current.x) * 0.07;
+      current.y += (target.y - current.y) * 0.07;
+      mark.style.setProperty('--px', current.x.toFixed(4));
+      mark.style.setProperty('--py', current.y.toFixed(4));
+      const settled = Math.abs(target.x - current.x) < 0.001 && Math.abs(target.y - current.y) < 0.001;
+      frame = settled ? 0 : requestAnimationFrame(tick);
+    };
+
+    const onMove = (event: PointerEvent) => {
+      if (mark.hasAttribute('data-offscreen')) return;
+      const box = mark.getBoundingClientRect();
+      const cx = box.left + box.width / 2;
+      const cy = box.top + box.height / 2;
+      target = {
+        x: Math.max(-1, Math.min(1, (event.clientX - cx) / (window.innerWidth / 2))),
+        y: Math.max(-1, Math.min(1, (event.clientY - cy) / (window.innerHeight / 2))),
+      };
+      if (!frame) frame = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    cleanup = () => {
+      window.removeEventListener('pointermove', onMove);
+      visibility.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }
+
+  document.addEventListener('astro:page-load', initHeroMark);
+</script>
+
 <style>
   .hero {
+    position: relative;
     padding-block: var(--space-12) var(--band-pad);
     overflow: hidden;
+    overflow: clip;
   }
 
   .hero__inner {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -67,15 +145,29 @@ const slug = t('scene.home');
 
   .hero__slug {
     grid-area: slug;
+    position: relative;
+    z-index: 1;
     margin: 0;
     font-weight: 700;
     font-size: var(--text-sm);
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--cobalt);
+    white-space: nowrap;
+  }
+
+  .hero__slug-text {
+    display: inline-block;
+  }
+
+  .hero__caret {
+    display: none;
   }
 
   .hero__title {
     grid-area: title;
+    position: relative;
+    z-index: 1;
   }
 
   .hero__name {
@@ -87,8 +179,24 @@ const slug = t('scene.home');
     view-transition-name: site-name;
   }
 
+  .hero__line {
+    display: block;
+    width: fit-content;
+    /* Recorta la entrada de las letras por abajo, dejando aire para tildes. */
+    clip-path: inset(-0.4em -0.2em 0 -0.2em);
+  }
+
+  .hero__line + .hero__line {
+    margin-left: 1.15em;
+  }
+
+  .hero__char {
+    display: inline-block;
+  }
+
   .hero__role {
-    margin: var(--space-4) 0 0;
+    margin: var(--space-6) 0 0;
+    margin-left: calc(1.15 * var(--text-hero));
     font-family: var(--font-display);
     font-weight: 300;
     font-size: var(--text-lg);
@@ -100,13 +208,19 @@ const slug = t('scene.home');
   .hero__mark {
     grid-area: mark;
     justify-self: end;
-    width: clamp(7rem, 30vw, 11rem);
+    width: clamp(10rem, 58vw, 18rem);
     aspect-ratio: 1;
+    margin-right: calc(-1 * var(--gutter) - 3rem);
+    margin-block: calc(-1 * var(--space-6)) calc(-1 * var(--space-12));
     color: var(--cobalt);
+    transform: translate(calc(var(--px, 0) * 1.25rem), calc(var(--py, 0) * 1.25rem))
+      rotate(calc(var(--px, 0) * 14deg));
   }
 
   .hero__tagline {
     grid-area: tagline;
+    position: relative;
+    z-index: 1;
     max-width: 30ch;
     margin: var(--space-4) 0 0;
     font-family: var(--font-display);
@@ -118,6 +232,8 @@ const slug = t('scene.home');
 
   .hero__actions {
     grid-area: actions;
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -128,13 +244,28 @@ const slug = t('scene.home');
   .hero__contact {
     display: inline-flex;
     align-items: center;
+    gap: 0.5em;
     min-height: 48px;
     padding-inline: var(--space-2);
     font-family: var(--font-display);
     font-size: var(--text-sm);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
+    text-decoration: none;
     color: var(--cobalt);
+    background: linear-gradient(currentColor, currentColor) left calc(50% + 0.9em) / 0 1px no-repeat;
+    transition: background-size 450ms var(--ease-out);
+  }
+
+  .hero__contact:hover {
+    background-size: calc(100% - 2 * var(--space-2)) 1px;
+    background-position-x: var(--space-2);
+  }
+
+  @media (max-width: 899px) {
+    .hero__role {
+      margin-left: 0;
+    }
   }
 
   @media (min-width: 900px) {
@@ -143,82 +274,209 @@ const slug = t('scene.home');
     }
 
     .hero__inner {
-      grid-template-columns: minmax(0, 1fr) minmax(14rem, 22rem);
+      min-height: min(50rem, calc(100svh - 9rem));
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      grid-template-rows: auto 1fr auto auto;
       grid-template-areas:
         'slug    mark'
         'title   mark'
         'tagline mark'
         'actions mark';
-      column-gap: var(--space-16);
+      column-gap: var(--space-8);
       row-gap: var(--space-4);
       align-items: start;
     }
 
     .hero__title {
-      padding-top: var(--space-16);
+      align-self: end;
+      padding-block: var(--space-16) var(--space-4);
     }
 
+    .hero__role {
+      margin-left: calc(1.15 * var(--text-hero));
+    }
+
+    /* El asterisco sangra por la derecha: es más grande que su columna. */
     .hero__mark {
-      width: 100%;
+      width: clamp(30rem, 46vw, 46rem);
       align-self: center;
-      justify-self: center;
+      justify-self: start;
+      margin: 0;
+      margin-right: calc(-1 * clamp(4rem, 14vw, 16rem));
     }
   }
 
   /*
-   * Apertura (primera carga): la slugline se teclea, el nombre entra con un corte
-   * mientras el asterisco se traza, y después se asientan rol, lema y acciones.
-   * Firma permanente: el asterisco gira con el scroll.
+   * Apertura (primera carga), unos 2 s:
+   * 1. La slugline se teclea con un cursor de Courier que avanza con ella y parpadea al acabar.
+   * 2. El asterisco estalla desde el centro, rayo a rayo en el sentido del reloj, mientras se despliega girando.
+   * 3. SARA / ABREU sube letra a letra desde la línea de corte.
+   * 4. El rol se asienta, el lema entra con un cambio de foco y las acciones llegan en cascada.
+   * Firma permanente: giro lento de reposo, inclinación hacia el puntero y giro con el scroll.
    */
   @media (prefers-reduced-motion: no-preference) {
-    :global(html.intro) .hero__slug {
+    .hero__caret {
+      display: inline-block;
+      width: 0.62em;
+      height: 1.15em;
+      margin-left: 0.15em;
+      vertical-align: -0.2em;
+      background: currentColor;
+      opacity: 0;
+    }
+
+    :global(html.intro) .hero__slug-text {
       animation: type-on var(--type-duration) steps(var(--chars), end) 120ms backwards;
     }
 
-    :global(html.intro) .hero__name {
-      animation: line-reveal 950ms var(--ease-out) 420ms backwards;
+    :global(html.intro) .hero__caret {
+      animation:
+        caret-travel var(--type-duration) steps(var(--chars), end) 120ms backwards,
+        caret-blink 1060ms steps(1, end) calc(120ms + var(--type-duration)) 4;
+    }
+
+    :global(html.intro) .hero__slug {
+      --type-duration: min(calc(var(--chars, 24) * 28ms), 900ms);
+    }
+
+    :global(html.intro) .hero__char {
+      animation: char-rise 1000ms var(--ease-out) calc(520ms + var(--c) * 42ms) backwards;
     }
 
     :global(html.intro) .hero__role {
-      animation: settle 700ms var(--ease-out) 780ms backwards;
+      animation: settle 800ms var(--ease-out) 1150ms backwards;
     }
 
     :global(html.intro) .hero__tagline {
-      animation: settle 800ms var(--ease-out) 940ms backwards;
+      animation: focus-pull 1100ms var(--ease-out) 1300ms backwards;
     }
 
-    :global(html.intro) .hero__actions {
-      animation: settle 700ms var(--ease-out) 1100ms backwards;
+    :global(html.intro) .hero__actions > :global(*) {
+      animation: settle 700ms var(--ease-out) backwards;
+    }
+
+    :global(html.intro) .hero__actions > :global(:nth-child(1)) { animation-delay: 1500ms; }
+    :global(html.intro) .hero__actions > :global(:nth-child(2)) { animation-delay: 1590ms; }
+    :global(html.intro) .hero__actions > :global(:nth-child(3)) { animation-delay: 1680ms; }
+
+    :global(html.intro) .hero__mark {
+      animation: mark-unfurl 2000ms var(--ease-out) 150ms backwards;
     }
 
     :global(html.intro) .hero__mark :global(.motif__ray) {
-      stroke-dasharray: 1;
-      animation: ray-draw 1100ms var(--ease-out) backwards;
-      animation-delay: calc(var(--i) * 90ms + 300ms);
+      animation: ray-grow 900ms var(--ease-out) backwards;
+      animation-delay: calc(var(--i) * 55ms + 250ms);
+    }
+
+    .hero__spin {
+      animation: idle-spin 140s linear infinite;
+    }
+
+    .hero__mark[data-offscreen] .hero__spin {
+      animation-play-state: paused;
     }
 
     @supports (animation-timeline: scroll()) {
       .hero__mark :global(.hero__asterisk) {
-        animation: asterisk-turn linear both;
+        animation-name: asterisk-turn;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: scroll(root);
         animation-range: 0 120vh;
+      }
+
+      /* El nombre se retira despacio al bajar: el asterisco toma el relevo. */
+      .hero__title {
+        animation-name: title-recede;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root);
+        animation-range: 0 90vh;
       }
     }
   }
 
-  @keyframes ray-draw {
+  @keyframes caret-travel {
     from {
-      stroke-dashoffset: 1;
+      translate: calc(var(--chars) * (-1ch - 0.04em)) 0;
+      opacity: 1;
     }
     to {
-      stroke-dashoffset: 0;
+      translate: 0 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes caret-blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes char-rise {
+    from {
+      translate: 0 105%;
+      rotate: 8deg;
+    }
+    to {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+  }
+
+  @keyframes focus-pull {
+    from {
+      opacity: 0;
+      filter: blur(10px);
+      translate: 0 0.3em;
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      translate: 0 0;
+    }
+  }
+
+  @keyframes mark-unfurl {
+    from {
+      rotate: -120deg;
+      scale: 0.55;
+    }
+    to {
+      rotate: 0deg;
+      scale: 1;
+    }
+  }
+
+  @keyframes ray-grow {
+    from {
+      scale: 0;
+    }
+    to {
+      scale: 1;
+    }
+  }
+
+  @keyframes idle-spin {
+    to {
+      rotate: 360deg;
     }
   }
 
   @keyframes asterisk-turn {
     to {
       rotate: 150deg;
-      scale: 0.85;
+      scale: 0.8;
+    }
+  }
+
+  @keyframes title-recede {
+    to {
+      translate: 0 -2.5rem;
+      opacity: 0.35;
     }
   }
 </style>

@@ -21,15 +21,15 @@ const { motivation, scene, reveal = false } = Astro.props;
       <Motif kind="badge" size="clamp(4.5rem, 10vw, 7rem)" class="letter__badge" />
     </div>
 
-    <div class="letter__sheet" data-tone="peach">
-      {motivation.getParagraphs().map((paragraph) => <p>{paragraph}</p>)}
+    <div class="letter__sheet" data-tone="peach" data-reveal={reveal ? '' : undefined}>
+      {motivation.getParagraphs().map((paragraph, i) => <p style={`--p:${i}`}>{paragraph}</p>)}
       <slot />
     </div>
   </div>
 
   {motivation.getClosing() && (
     <div class="container">
-      <p class="letter__closing">{motivation.getClosing()}</p>
+      <p class="letter__closing" data-reveal={reveal ? '' : undefined}>{motivation.getClosing()}</p>
     </div>
   )}
 </section>
@@ -64,10 +64,64 @@ const { motivation, scene, reveal = false } = Astro.props;
       }
 
       .letter__head :global(.letter__badge) {
-        animation: badge-turn linear both;
+        animation-name: badge-turn;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: --letter;
         animation-range: entry 0% exit 100%;
       }
+    }
+  }
+
+  /*
+   * La hoja sale de la máquina: se desenrolla de arriba abajo mientras sube,
+   * y los párrafos se asientan en cascada detrás del borde que baja.
+   * El cierre se enfoca como un último plano.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    .letter__sheet[data-reveal='pending'] {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    .letter__sheet[data-reveal='pending'] > :global(*),
+    .letter__closing[data-reveal='pending'] {
+      opacity: 0;
+    }
+
+    .letter__sheet[data-reveal='in'] {
+      animation: sheet-unroll 1300ms var(--ease-out) backwards;
+    }
+
+    .letter__sheet[data-reveal='in'] > :global(*) {
+      animation: settle 800ms var(--ease-out) calc(300ms + min(var(--p, 4), 5) * 120ms) backwards;
+    }
+
+    .letter__closing[data-reveal='in'] {
+      animation: closing-focus 1400ms var(--ease-out) 150ms backwards;
+    }
+  }
+
+  @keyframes sheet-unroll {
+    from {
+      clip-path: inset(0 0 100% 0);
+      translate: 0 3rem;
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      translate: 0 0;
+    }
+  }
+
+  @keyframes closing-focus {
+    from {
+      opacity: 0;
+      filter: blur(12px);
+      letter-spacing: 0.08em;
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      letter-spacing: normal;
     }
   }
 

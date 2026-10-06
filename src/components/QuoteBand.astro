@@ -11,15 +11,25 @@ interface Props {
 }
 
 const { text, tone = 'cobalt', size = 'lg', reveal = false } = Astro.props;
+// Con reveal, la frase se lee palabra a palabra al ritmo del scroll.
+const words = text.split(/\s+/);
 ---
 
-<section class:list={['quote', `quote--${size}`]} data-tone={tone}>
+<section class:list={['quote', `quote--${size}`, { 'quote--reveal': reveal }]} data-tone={tone}>
   <div class="container quote__inner" data-reveal={reveal ? '' : undefined}>
-    <Motif kind="sparkle" size="1.75rem" class="quote__spark quote__spark--a" />
+    <Motif kind="sparkle" size={reveal ? '2.75rem' : '1.75rem'} class="quote__spark quote__spark--a" />
     <blockquote class="quote__text">
-      <p class:list={{ 'reveal-line': reveal }} style="--line-delay: 260ms">{text}</p>
+      {reveal ? (
+        <p aria-label={text}>
+          {words.map((word, i) => (
+            <><span class="quote__word" aria-hidden="true" style={`--w:${i};--n:${words.length}`}>{word}</span>{' '}</>
+          ))}
+        </p>
+      ) : (
+        <p>{text}</p>
+      )}
     </blockquote>
-    <Motif kind="sparkle" size="1.1rem" class="quote__spark quote__spark--b" />
+    <Motif kind="sparkle" size={reveal ? '1.5rem' : '1.1rem'} class="quote__spark quote__spark--b" />
   </div>
 </section>
 
@@ -71,24 +81,114 @@ const { text, tone = 'cobalt', size = 'lg', reveal = false } = Astro.props;
     opacity: 0.8;
   }
 
+  .quote--reveal {
+    padding-block: clamp(5rem, 3rem + 9vw, 11rem);
+  }
+
+  .quote--reveal .quote__text p {
+    max-width: 22ch;
+    font-size: var(--text-3xl);
+    line-height: 1.15;
+  }
+
+  .quote__word {
+    display: inline-block;
+  }
+
+  /*
+   * La banda cobalto se abre como un telón al entrar (de franja a ancho completo),
+   * y la frase se lee: cada palabra pasa de apagada a encendida según avanza el scroll.
+   * Sin scroll-driven animations: los destellos se encienden y las palabras llegan en cascada.
+   */
   @media (prefers-reduced-motion: no-preference) {
     .quote__inner[data-reveal='pending'] :global(.quote__spark) {
       scale: 0;
     }
 
     .quote__inner[data-reveal='in'] :global(.quote__spark--a) {
-      animation: spark-on 900ms var(--ease-out) backwards;
+      animation: spark-on 1100ms var(--ease-out) backwards;
     }
 
     .quote__inner[data-reveal='in'] :global(.quote__spark--b) {
-      animation: spark-on 900ms var(--ease-out) 900ms backwards;
+      animation: spark-on 1100ms var(--ease-out) 700ms backwards;
+    }
+
+    .quote__inner :global(.quote__spark--a) {
+      transition: rotate 900ms var(--ease-out);
+    }
+
+    .quote:hover :global(.quote__spark--a) {
+      rotate: 90deg;
+    }
+
+    .quote__inner[data-reveal='pending'] .quote__word {
+      opacity: 0;
+    }
+
+    .quote__inner[data-reveal='in'] .quote__word {
+      animation: word-in 700ms var(--ease-out) calc(200ms + min(var(--w), 24) * 55ms) backwards;
+    }
+
+    @supports (animation-timeline: view()) {
+      .quote--reveal {
+        view-timeline: --quote block;
+        animation-name: curtain;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --quote;
+        animation-range: entry 0% entry 90%;
+      }
+
+      .quote--reveal .quote__inner[data-reveal] .quote__word {
+        opacity: 1;
+        animation-name: word-lit;
+        animation-duration: auto;
+        animation-delay: 0s;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --quote;
+        animation-range: cover calc(14% + var(--w) / var(--n) * 22%) cover calc(20% + var(--w) / var(--n) * 22%);
+      }
+    }
+  }
+
+  @keyframes curtain {
+    from {
+      clip-path: inset(0 clamp(1rem, 12vw, 12rem));
+    }
+    to {
+      clip-path: inset(0 0);
+    }
+  }
+
+  @keyframes word-in {
+    from {
+      opacity: 0;
+      translate: 0 0.35em;
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+      filter: blur(0);
+    }
+  }
+
+  @keyframes word-lit {
+    from {
+      opacity: 0.22;
+      translate: 0 0.12em;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
     }
   }
 
   @keyframes spark-on {
     from {
       scale: 0;
-      rotate: -90deg;
+      rotate: -180deg;
     }
     to {
       scale: 1;

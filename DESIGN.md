@@ -268,7 +268,13 @@ Etiquetas estáticas con borde de 1px `--line`, texto 0.875rem, relleno 0.25rem 
 Frase en Jost 300 cursiva a tamaño title (o subtitle en la variante media), centrada entre dos destellos, normalmente en banda cobalto.
 
 ### Asterisco del hero (firma)
-Los rayos se trazan uno a uno al cargar (1100ms, 90ms de desfase por rayo) y, con `animation-timeline: scroll()`, el asterisco gira 150° y se reduce a 0.85 durante los primeros 120vh. Todo se anula con `prefers-reduced-motion`.
+Asterisco grande que sangra por la derecha. Al cargar estalla desde el centro (doce semirrayos que crecen con `scale`, 55ms de desfase, en el sentido del reloj) mientras se despliega girando; después gira lento en reposo (pausado fuera de pantalla), se inclina hacia el puntero con inercia y, con `animation-timeline: scroll()`, gira 150° y se reduce a 0.8 durante los primeros 120vh. En la misma apertura la slugline se teclea con un cursor Courier que avanza con ella, y SARA / ABREU sube letra a letra desde la línea de corte. Todo se anula con `prefers-reduced-motion`.
+
+### Movimiento de la home
+- **Cita:** la banda cobalto se abre como un telón al entrar y la frase se lee palabra a palabra con el scroll (de 22% a 100% de opacidad).
+- **Intereses:** al pasar, una hoja cobalto barre la fila e invierte su tono; el asterisco gira 180°.
+- **Carta:** la hoja melocotón se desenrolla de arriba abajo y los párrafos se asientan en cascada; el cierre entra con un cambio de foco.
+- **Nota técnica:** las animaciones ligadas al scroll se escriben con propiedades sueltas (`animation-name`, `animation-timeline`…), nunca con el atajo `animation`: el minificador fusiona el timeline dentro del atajo y el navegador descarta la regla entera.
 
 ## Do's and Don'ts
 
