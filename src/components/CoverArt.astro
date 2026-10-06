@@ -10,10 +10,13 @@
  *   la grada, la silla vacía donde aparece Carmen de niña y saluda. Bucle de 8 s.
  * - tube («Cifras y letras»): la tele de tubo con las fichas del concurso y la barra del tiempo; entra
  *   el tubo de la aspiradora, golpe, la pantalla se agrieta y dentro aparece Yolanda mareada. Bucle de 8 s.
+ * - dentist («Un problema de halitosis»): Diego en el sillón del dentista, con pantalones de campana y el
+ *   aliento echando humo; hace girar el grifo como un lazo, revienta el fluorescente (caen cristales), el
+ *   grifo se vuelve fuente y del bote cae un caramelo que rebota hasta él. Bucle de 8 s.
  * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
  */
 interface Props {
-  kind: 'revival' | 'set' | 'tube';
+  kind: 'revival' | 'set' | 'tube' | 'dentist';
   title: string;
   class?: string;
   [attr: string]: unknown;
@@ -46,6 +49,20 @@ const bulbs = Array.from({ length: 10 }, (_, i) => 78 + i * 16);
 // Concurso: fichas de letras en dos filas.
 const tiles = [...'CIFRAS', ...'LETRAS'].map((letter, i) => ({ letter, x: 86 + (i % 6) * 18, y: i < 6 ? 170 : 196, i }));
 const cracks = 'M168 184l-14-20M168 184l22-14M168 184l-6 26M168 184l-30 8M168 184l18 16M154 164l-8-6M190 170l6-10M138 192l-8 8';
+
+// Dentista: cristales del fluorescente y gotas de la fuente.
+const shards = [
+  { x: 132, r: -120, d: 0 },
+  { x: 150, r: 160, d: 0.05 },
+  { x: 166, r: -200, d: 0.1 },
+  { x: 182, r: 140, d: 0.03 },
+];
+const drops = [
+  { dx: -16, h: 70, d: 0 },
+  { dx: 4, h: 92, d: 0.25 },
+  { dx: 20, h: 64, d: 0.5 },
+  { dx: -6, h: 82, d: 0.75 },
+];
 
 const seats = [
   { x: 44, y: 362, kid: true },
@@ -207,6 +224,60 @@ const seats = [
         <path class="cs-wave" d="M49 356l8-12" stroke="var(--peach)" stroke-width="3" />
       </g>
     </>)}
+    {kind === 'dentist' && (<>
+      <!-- Fluorescente del techo -->
+      <path d="M118 98v32M182 98v32" stroke="var(--peach)" stroke-width="1.5" opacity="0.6" />
+      <rect class="cd-tube" x="104" y="130" width="92" height="9" rx="4.5" fill="var(--peach-soft)" />
+      {shards.map((shard) => (
+        <path class="cd-shard" style={`--r:${shard.r}deg;--d:${shard.d}s`} d={`M${shard.x} 136l7 2-4 6Z`} fill="var(--peach-soft)" />
+      ))}
+
+      <!-- Suelo, mesa y bote de caramelos -->
+      <path d="M24 340h252" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+      <path d="M232 238h46M262 238v102" stroke="var(--peach)" stroke-width="4" />
+      <g class="cd-jar">
+        <rect x="240" y="204" width="26" height="32" rx="4" stroke="var(--peach)" stroke-width="2.5" />
+        <path d="M238 204h30" stroke="var(--peach)" stroke-width="4" />
+        <circle cx="248" cy="228" r="3.5" fill="var(--peach)" /><circle cx="258" cy="226" r="3.5" fill="var(--peach)" /><circle cx="253" cy="219" r="3.5" fill="var(--peach)" />
+      </g>
+      <g class="cd-candy">
+        <circle cx="253" cy="222" r="5" fill="var(--peach-soft)" />
+        <path d="M248 222l-5-4v8ZM258 222l5-4v8Z" fill="var(--peach-soft)" />
+      </g>
+
+      <!-- El sillón -->
+      <path d="M150 276v44M114 324h72" stroke="var(--peach)" stroke-width="6" />
+      <path d="M66 262l150 10" stroke="var(--peach)" stroke-width="7" />
+      <path d="M62 252l-8-34" stroke="var(--peach)" stroke-width="7" />
+
+      <!-- Diego: babero, pantalones de campana y aliento -->
+      <path d="M100 250l90 10" stroke="var(--peach)" stroke-width="15" />
+      <path d="M114 242l22 2-6 16-14-2Z" fill="var(--cobalt)" stroke="var(--peach-soft)" stroke-width="1.5" />
+      <path d="M190 260l26 4 14 30M196 264l24 2 6 30" stroke="var(--peach)" stroke-width="7" />
+      <path d="M220 290l20 0-4 12h-26Z" fill="var(--peach)" />
+      <circle cx="84" cy="240" r="13" fill="var(--peach)" />
+      <path d="M78 236h3M88 236h3" stroke="var(--cobalt)" stroke-width="2" />
+      <circle cx="86" cy="246" r="2.5" fill="var(--cobalt)" />
+      {[0, 1, 2].map((i) => (
+        <path class="cd-stink" style={`--s:${i * 0.6}s`} d={`M${80 + i * 10} 222q-5-6 0-12t0-12`} stroke="var(--peach-soft)" stroke-width="2" />
+      ))}
+
+      <!-- El grifo extensible, girando como un lazo -->
+      <path d="M112 246l8-40" stroke="var(--peach)" stroke-width="5" />
+      <g class="cd-lasso">
+        <path d="M120 206q30-46 50-60" stroke="var(--peach-soft)" stroke-width="3" />
+        <rect x="166" y="140" width="10" height="8" rx="2" fill="var(--peach)" />
+      </g>
+
+      <!-- La fuente -->
+      <g class="cd-fountain">
+        <rect x="32" y="332" width="12" height="8" rx="2" fill="var(--peach)" />
+        {drops.map((drop) => (
+          <circle class="cd-drop" style={`--dx:${drop.dx}px;--h:${-drop.h}px;--d:${drop.d}s`} cx="38" cy="330" r="3" fill="var(--peach-soft)" />
+        ))}
+      </g>
+    </>)}
+
     {kind === 'tube' && (<>
       <!-- Mueble y suelo -->
       <path d="M84 290v50M216 290v50M70 290h160" stroke="var(--peach)" stroke-width="4" />
@@ -416,6 +487,23 @@ const seats = [
     transform-origin: left center;
   }
 
+  .cd-fountain {
+    opacity: 0;
+  }
+
+  .cd-shard {
+    opacity: 0;
+  }
+
+  .cv .cd-lasso {
+    transform-box: view-box;
+    transform-origin: 120px 206px;
+  }
+
+  .cv .cd-jar {
+    transform-origin: right bottom;
+  }
+
   .cv:not([data-playing]) :global(*) {
     animation-play-state: paused !important;
   }
@@ -457,6 +545,39 @@ const seats = [
 
     .cv-gasp {
       animation: cv-gasp 8s linear infinite;
+    }
+
+    /* Halitosis */
+    .cd-stink {
+      animation: cd-stink 1.8s ease-out var(--s) infinite;
+    }
+
+    .cd-lasso {
+      animation: cd-lasso 8s ease-in-out infinite;
+    }
+
+    .cd-tube {
+      animation: cd-tube 8s steps(1, end) infinite;
+    }
+
+    .cd-shard {
+      animation: cd-shard 8s ease-in var(--d) infinite;
+    }
+
+    .cd-fountain {
+      animation: cd-fountain 8s steps(1, end) infinite;
+    }
+
+    .cd-drop {
+      animation: cd-drop 1s ease-in-out var(--d) infinite;
+    }
+
+    .cd-jar {
+      animation: cd-jar 8s var(--ease-out) infinite;
+    }
+
+    .cd-candy {
+      animation: cd-candy 8s linear infinite;
     }
 
     /* Cifras y letras */
@@ -541,6 +662,65 @@ const seats = [
     .cs-wave {
       animation: cs-wave 0.5s ease-in-out infinite alternate;
     }
+  }
+
+  @keyframes cd-stink {
+    0% { opacity: 0; translate: 0 6px; }
+    30% { opacity: 1; }
+    100% { opacity: 0; translate: 0 -18px; }
+  }
+
+  /* Tres vueltas de lazo; en la última revienta el fluorescente. */
+  @keyframes cd-lasso {
+    0%, 18% { rotate: 0deg; }
+    44% { rotate: 1080deg; }
+    48%, 100% { rotate: 1080deg; }
+  }
+
+  @keyframes cd-tube {
+    0% { opacity: 1; }
+    43% { opacity: 0.3; }
+    44% { opacity: 1; }
+    45%, 94% { opacity: 0; }
+    95%, 100% { opacity: 1; }
+  }
+
+  @keyframes cd-shard {
+    0%, 44% { opacity: 0; translate: 0 0; rotate: 0deg; }
+    45% { opacity: 1; translate: 0 0; rotate: 0deg; }
+    60% { opacity: 1; translate: 0 120px; rotate: var(--r); }
+    66%, 100% { opacity: 0; translate: 0 120px; rotate: var(--r); }
+  }
+
+  @keyframes cd-fountain {
+    0% { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    95%, 100% { opacity: 0; }
+  }
+
+  @keyframes cd-drop {
+    0% { translate: 0 0; opacity: 1; }
+    50% { translate: calc(var(--dx) * 0.5) var(--h); }
+    100% { translate: var(--dx) 0; opacity: 0.4; }
+  }
+
+  /* El bote se vuelca y el caramelo cae, rebota y rueda hasta Diego. */
+  @keyframes cd-jar {
+    0%, 68% { rotate: 0deg; }
+    71% { rotate: -24deg; }
+    74%, 92% { rotate: -16deg; }
+    96%, 100% { rotate: 0deg; }
+  }
+
+  @keyframes cd-candy {
+    0%, 70% { translate: 0 0; opacity: 0; }
+    71% { translate: -10px -6px; opacity: 1; }
+    76% { translate: -26px 112px; }
+    79% { translate: -38px 80px; }
+    82% { translate: -48px 112px; }
+    84% { translate: -54px 102px; }
+    86%, 93% { translate: -60px 112px; opacity: 1; }
+    95%, 100% { translate: -60px 112px; opacity: 0; }
   }
 
   @keyframes ct-letters {
