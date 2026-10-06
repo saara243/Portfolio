@@ -35,6 +35,8 @@ const scripts = defineCollection({
     format: z.enum(SCRIPT_FORMATS),
     genres: z.array(z.string()).default([]),
     year: z.number().int(),
+    // Fecha legible opcional ("Junio 2026"); si está, se muestra en lugar del año
+    date: z.string().optional(),
     status: z.enum(SCRIPT_STATUSES).default('finished'),
     pages: z.number().int().positive().optional(),
     duration: z.string().optional(),

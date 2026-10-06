@@ -19,6 +19,7 @@ export class AstroContentScriptRepository implements ScriptRepository {
           format: entry.data.format,
           genres: entry.data.genres,
           year: entry.data.year,
+          date: entry.data.date,
           status: entry.data.status,
           pages: entry.data.pages,
           duration: entry.data.duration,

@@ -258,7 +258,6 @@ const skillsNote = profile.getSkillsNote();
     align-items: center;
     justify-content: center;
     gap: var(--space-4);
-    max-width: 44ch;
     margin: clamp(3rem, 2rem + 3vw, 5rem) auto 0;
     font-family: var(--font-display);
     font-weight: 300;
@@ -268,6 +267,13 @@ const skillsNote = profile.getSkillsNote();
     text-align: center;
     text-wrap: balance;
     color: var(--heading);
+  }
+
+  /* En una sola línea desde tablet; en móvil puede partirse. */
+  @media (min-width: 768px) {
+    .skills-note span {
+      white-space: nowrap;
+    }
   }
 
   .skills-note :global(.skills-note__mark) {

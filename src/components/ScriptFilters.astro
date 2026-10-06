@@ -47,7 +47,8 @@ const t = useTranslations(lang);
   function initFilters() {
     const form = document.querySelector<HTMLFormElement>('[data-script-filters]');
     if (!form) return;
-    const cards = document.querySelectorAll<HTMLElement>('[data-script-card]');
+    // Solo filtra la lista principal; la sección de dramaturgia va aparte.
+    const cards = document.querySelectorAll<HTMLElement>('[data-script-results] [data-script-card]');
     const empty = document.querySelector<HTMLElement>('[data-script-empty]');
 
     const apply = () => {

@@ -32,7 +32,7 @@ const requestHref = `mailto:${profile.getEmail()}?subject=${encodeURIComponent(
 const details = [
   { label: t('script.format'), value: t(`format.${script.getFormat().getValue()}` as UiKey) },
   { label: t('script.genres'), value: script.getGenres().map((genre) => genre.getLabel()).join(', ') },
-  { label: t('script.year'), value: script.getYear() },
+  { label: script.getDate() ? t('script.date') : t('script.year'), value: script.getDisplayDate() },
   { label: t('script.pages'), value: script.getPages() },
   { label: t('script.duration'), value: script.getDuration() },
   { label: t('script.status'), value: t(`status.${script.getStatus().getValue()}` as UiKey) },

@@ -14,6 +14,9 @@ const lang = toLang(Astro.params.lang);
 const t = useTranslations(lang);
 const scripts = await scriptsModule.listScripts.execute({ locale: lang });
 const profile = await profileModule.getProfile.execute({ locale: lang });
+// El teatro tiene su propia sección (Dramaturgia); los filtros solo afectan al resto.
+const screen = scripts.excludingFormat('theatre');
+const plays = scripts.filter({ format: 'theatre' });
 ---
 
 <BaseLayout lang={lang} path={routes.projects} title={t('projects.title')} description={t('projects.intro')}>
@@ -29,14 +32,30 @@ const profile = await profileModule.getProfile.execute({ locale: lang });
       </div>
     </div>
 
-    <ScriptFilters lang={lang} formats={scripts.formats()} genres={scripts.genres()} />
+    {!screen.isEmpty() && (
+      <>
+        {!plays.isEmpty() && <h2 class="projects-group">{t('projects.audiovisual')}</h2>}
+        <ScriptFilters lang={lang} formats={screen.formats()} genres={screen.genres()} />
 
-    <div class="grid-cards">
-      {scripts.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
-    </div>
-    <p class="empty" data-script-empty hidden={!scripts.isEmpty()}>{t('projects.empty')}</p>
+        <div class="grid-cards" data-script-results>
+          {screen.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
+        </div>
+        <p class="empty" data-script-empty hidden>{t('projects.empty')}</p>
+      </>
+    )}
     </div>
   </section>
+
+  {!plays.isEmpty() && (
+    <section class="band" data-tone="taupe" id="dramaturgia">
+      <div class="container">
+        <SceneHeading scene={t('scene.theatre')} title={t('projects.theatre')} size="lg" />
+        <div class="grid-cards">
+          {plays.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
+        </div>
+      </div>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
@@ -56,6 +75,11 @@ const profile = await profileModule.getProfile.execute({ locale: lang });
       align-items: center;
       gap: var(--space-16);
     }
+  }
+
+  .projects-group {
+    margin-bottom: var(--space-6);
+    font-size: var(--text-2xl);
   }
 
   .empty {

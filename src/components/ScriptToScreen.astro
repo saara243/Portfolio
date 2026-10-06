@@ -31,7 +31,7 @@ const slides = scripts.slice(0, 5);
             <p class="s2s__page-title">{script.getTitle()}</p>
             <p class="s2s__page-by">{t('projects.writtenBy').toLowerCase()}</p>
             <p class="s2s__page-author">{author}</p>
-            <p class="s2s__page-meta">{t(`format.${script.getFormat().getValue()}` as UiKey)} · {script.getYear()}</p>
+            <p class="s2s__page-meta">{t(`format.${script.getFormat().getValue()}` as UiKey)} · {script.getDisplayDate()}</p>
           </div>
 
           <div class="s2s__screen">

@@ -34,7 +34,7 @@ const genres = script.getGenres().map((genre) => genre.getLabel()).join(' · ');
       )}
     </div>
     <p class="card__meta script-font">
-      {t(`format.${format}` as UiKey)} · {script.getYear()}
+      {t(`format.${format}` as UiKey)} · {script.getDisplayDate()}
     </p>
     <h3 class="card__title">{script.getTitle()}</h3>
     {genres && <p class="card__genres">{genres}</p>}

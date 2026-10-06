@@ -247,6 +247,8 @@ Rectos, finos y en mayúsculas: una etiqueta de rodaje, no una píldora.
 ### Chips (filtros)
 - **Style:** borde 1px `--line`, texto Jost en mayúsculas en `--accent`, 44px de alto.
 - **State:** hover refuerza el borde a `--accent`; seleccionado se rellena de `--accent` con texto `--on-accent`. Radio nativo oculto; el foco se dibuja en la etiqueta.
+- **Alcance:** los filtros solo actúan sobre la lista audiovisual (`[data-script-results]`). Las obras de teatro (`format: theatre`) van aparte, en la banda taupe `#dramaturgia` («INT. TEATRO — NOCHE» / Dramaturgia) con la misma tarjeta; si no hay obras, la banda y el subtítulo «Audiovisual» no se pintan.
+- **Fecha:** un guion puede llevar `date` (texto libre, p. ej. «Junio 2026»); tarjetas y ficha la muestran en lugar del año (`getDisplayDate()`), y la ficha la rotula «Fecha».
 
 ### Tags
 Etiquetas estáticas con borde de 1px `--line`, texto 0.875rem, relleno 0.25rem × 0.75rem.

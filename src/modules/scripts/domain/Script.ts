@@ -15,6 +15,7 @@ export interface ScriptPrimitive {
   format: string;
   genres: string[];
   year: number;
+  date?: string;
   status: string;
   pages?: number;
   duration?: string;
@@ -38,6 +39,7 @@ export class Script {
     private readonly format: ScriptFormat,
     private readonly genres: Genre[],
     private readonly year: number,
+    private readonly date: string | undefined,
     private readonly status: ScriptStatus,
     private readonly pages: number | undefined,
     private readonly duration: string | undefined,
@@ -61,6 +63,7 @@ export class Script {
       ScriptFormat.create(data.format),
       data.genres.map((genre) => Genre.create(genre)),
       data.year,
+      data.date?.trim() || undefined,
       ScriptStatus.create(data.status),
       data.pages,
       data.duration,
@@ -107,6 +110,9 @@ export class Script {
   getFormat(): ScriptFormat { return this.format; }
   getGenres(): Genre[] { return [...this.genres]; }
   getYear(): number { return this.year; }
+  getDate(): string | undefined { return this.date; }
+  /** Lo que se muestra como fecha: la fecha legible si existe, si no el año. */
+  getDisplayDate(): string { return this.date ?? String(this.year); }
   getStatus(): ScriptStatus { return this.status; }
   getPages(): number | undefined { return this.pages; }
   getDuration(): string | undefined { return this.duration; }
@@ -145,6 +151,7 @@ export class Script {
       format: this.format.toPrimitive(),
       genres: this.genres.map((genre) => genre.toPrimitive()),
       year: this.year,
+      date: this.date,
       status: this.status.toPrimitive(),
       pages: this.pages,
       duration: this.duration,
