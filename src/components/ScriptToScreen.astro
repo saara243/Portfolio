@@ -1,0 +1,385 @@
+---
+import type { Script } from '../modules/scripts/domain/Script';
+import type { UiKey } from '../i18n/ui';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+/**
+ * "Del papel a la pantalla" (cabecera de proyectos): la portadilla de un guion real se abre
+ * de lado a lado hasta ser una pantalla 16:9 con su cartel de título, la logline como subtítulo,
+ * barra de reproducción y código de tiempo; luego vuelve a ser papel y pasa al siguiente proyecto.
+ * Decorativo (aria-hidden): todo su texto está en las fichas de debajo.
+ * Sin JS o con movimiento reducido, se queda quieto en la pantalla del primer proyecto.
+ */
+interface Props {
+  lang: Lang;
+  scripts: Script[];
+  author: string;
+}
+
+const { lang, scripts, author } = Astro.props;
+const t = useTranslations(lang);
+const slides = scripts.slice(0, 5);
+---
+
+{slides.length > 0 && (
+  <div class="s2s" data-s2s data-phase="screen" aria-hidden="true">
+    <div class="s2s__frame">
+      {slides.map((script, i) => (
+        <div class="s2s__slide" data-slide={i} data-active={i === 0 ? '' : undefined}>
+          <div class="s2s__page script-font">
+            <span class="s2s__brads"><i></i><i></i><i></i></span>
+            <p class="s2s__page-title">{script.getTitle()}</p>
+            <p class="s2s__page-by">{t('projects.writtenBy').toLowerCase()}</p>
+            <p class="s2s__page-author">{author}</p>
+            <p class="s2s__page-meta">{t(`format.${script.getFormat().getValue()}` as UiKey)} · {script.getYear()}</p>
+          </div>
+
+          <div class="s2s__screen">
+            <p class="s2s__card-by">{t('projects.writtenBy')} {author}</p>
+            <p class="s2s__card-title">{script.getTitle()}</p>
+            <p class="s2s__sub">{script.getLogline()}</p>
+          </div>
+        </div>
+      ))}
+      <span class="s2s__timecode script-font" data-s2s-timecode>00:00:00:00</span>
+      <span class="s2s__playhead"></span>
+    </div>
+  </div>
+)}
+
+<script>
+  /*
+   * Bucle por proyecto: papel (1.8 s) → se abre en pantalla (1.1 s) y se proyecta (3.6 s) →
+   * se recoge en papel y cambia al siguiente. Se pausa fuera de pantalla y con la pestaña oculta.
+   */
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let stop: (() => void) | undefined;
+
+  function initScriptToScreen() {
+    stop?.();
+    stop = undefined;
+    const stage = document.querySelector<HTMLElement>('[data-s2s]');
+    if (!stage || reduce.matches) return;
+
+    const slides = [...stage.querySelectorAll<HTMLElement>('[data-slide]')];
+    const timecode = stage.querySelector<HTMLElement>('[data-s2s-timecode]');
+    let index = 0;
+    let step = 0;
+    let timer = 0;
+    let frame = 0;
+    let screenStart = 0;
+    let running = false;
+
+    const pad = (n: number) => String(Math.floor(n)).padStart(2, '0');
+    const tick = () => {
+      const elapsed = (performance.now() - screenStart) / 1000;
+      if (timecode) timecode.textContent = `00:00:${pad(elapsed)}:${pad((elapsed % 1) * 24)}`;
+      frame = requestAnimationFrame(tick);
+    };
+
+    const show = (n: number) => slides.forEach((slide, i) => slide.toggleAttribute('data-active', i === n));
+
+    // Cada paso fija un estado y devuelve cuánto dura.
+    const steps: (() => number)[] = [
+      () => {
+        stage.dataset.phase = 'page';
+        cancelAnimationFrame(frame);
+        return 1800;
+      },
+      () => {
+        stage.dataset.phase = 'screen';
+        screenStart = performance.now() + 1100;
+        frame = requestAnimationFrame(tick);
+        return 4700;
+      },
+      () => {
+        stage.dataset.phase = 'closing';
+        cancelAnimationFrame(frame);
+        return 500;
+      },
+      () => {
+        index = (index + 1) % slides.length;
+        show(index);
+        return 0;
+      },
+    ];
+
+    const run = () => {
+      const duration = steps[step]();
+      step = (step + 1) % steps.length;
+      timer = window.setTimeout(run, duration);
+    };
+
+    const pause = () => {
+      if (!running) return;
+      running = false;
+      clearTimeout(timer);
+      cancelAnimationFrame(frame);
+    };
+    const resume = () => {
+      if (running || document.hidden) return;
+      running = true;
+      run();
+    };
+
+    stage.dataset.phase = 'page';
+    const visibility = new IntersectionObserver(([entry]) => (entry.isIntersecting ? resume() : pause()));
+    visibility.observe(stage);
+    const onVisibility = () => (document.hidden ? pause() : resume());
+    document.addEventListener('visibilitychange', onVisibility);
+
+    stop = () => {
+      pause();
+      visibility.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }
+
+  document.addEventListener('astro:page-load', initScriptToScreen);
+  document.addEventListener('astro:before-swap', () => stop?.());
+</script>
+
+<style>
+  /* Todas las medidas en cqw: el escenario escala entero. */
+  .s2s {
+    container-type: inline-size;
+    width: 100%;
+  }
+
+  /*
+   * El marco es siempre 16:9; en fase papel se recorta a una hoja carta vertical (8.5:11)
+   * centrada, y se abre hasta la pantalla completa. El recorte lateral es (16/9 − 8.5/11) / 2.
+   */
+  .s2s__frame {
+    --page-inset: 28.27%;
+    --ease-morph: cubic-bezier(0.65, 0, 0.35, 1);
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--cobalt);
+    color: var(--peach);
+    clip-path: inset(0 0 0 0);
+    transition:
+      clip-path 1100ms var(--ease-morph),
+      rotate 1100ms var(--ease-morph);
+  }
+
+  .s2s[data-phase='page'] .s2s__frame,
+  .s2s[data-phase='closing'] .s2s__frame {
+    clip-path: inset(0 var(--page-inset));
+    rotate: -2deg;
+  }
+
+  .s2s[data-phase='closing'] .s2s__frame {
+    transition-duration: 500ms;
+  }
+
+  .s2s__slide {
+    position: absolute;
+    inset: 0;
+    visibility: hidden;
+  }
+
+  .s2s__slide[data-active] {
+    visibility: visible;
+  }
+
+  /* ---------- Portadilla ---------- */
+
+  .s2s__page {
+    position: absolute;
+    inset: 0 var(--page-inset);
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    padding: 4cqw 3cqw;
+    text-align: center;
+    font-size: 1.9cqw;
+    line-height: 1.3;
+    opacity: 0;
+    filter: blur(0.6cqw);
+    transition: opacity 300ms ease-out, filter 300ms ease-out;
+  }
+
+  .s2s[data-phase='page'] .s2s__page {
+    opacity: 1;
+    filter: blur(0);
+    transition-duration: 450ms;
+    transition-delay: 150ms;
+  }
+
+  .s2s__brads {
+    position: absolute;
+    left: 2.2cqw;
+    top: 0;
+    bottom: 0;
+  }
+
+  .s2s__brads i {
+    position: absolute;
+    width: 1cqw;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--peach);
+    translate: 0 -50%;
+  }
+
+  .s2s__brads i:nth-child(1) { top: 16%; }
+  .s2s__brads i:nth-child(2) { top: 50%; }
+  .s2s__brads i:nth-child(3) { top: 84%; }
+
+  .s2s__page p {
+    margin: 0;
+  }
+
+  .s2s__page-title {
+    max-width: 30cqw;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-thickness: 0.1cqw;
+    text-underline-offset: 0.35em;
+    text-wrap: balance;
+  }
+
+  .s2s__page-by {
+    margin-top: 2.6cqw !important;
+  }
+
+  .s2s__page-author {
+    margin-top: 0.6cqw !important;
+  }
+
+  .s2s__page-meta {
+    position: absolute;
+    left: 3cqw;
+    bottom: 3cqw;
+    font-size: 1.4cqw;
+    text-align: left;
+  }
+
+  /* ---------- Pantalla ---------- */
+
+  .s2s__screen {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    justify-items: center;
+    padding: 4cqw 6cqw 5.5cqw;
+    text-align: center;
+  }
+
+  .s2s__screen p {
+    margin: 0;
+  }
+
+  .s2s__card-by {
+    align-self: end;
+    margin-bottom: 1.6cqw !important;
+    font-family: var(--font-display);
+    font-size: 1.5cqw;
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+  }
+
+  .s2s__card-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 5.2cqw;
+    line-height: 1;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    opacity: 0;
+    filter: blur(0.8cqw);
+    transition: opacity 300ms ease-out, filter 300ms ease-out, letter-spacing 300ms ease-out;
+  }
+
+  .s2s__sub {
+    align-self: end;
+    max-width: 66cqw;
+    font-size: 2cqw;
+    font-weight: 400;
+    line-height: 1.35;
+    opacity: 0;
+    transition: opacity 250ms ease-out;
+  }
+
+  .s2s[data-phase='screen'] .s2s__card-title {
+    opacity: 1;
+    filter: blur(0);
+    letter-spacing: 0.12em;
+    transition:
+      opacity 900ms var(--ease-out) 700ms,
+      filter 1100ms var(--ease-out) 700ms,
+      letter-spacing 2800ms var(--ease-out) 700ms;
+  }
+
+  .s2s[data-phase='screen'] .s2s__card-by {
+    opacity: 0.85;
+    transition: opacity 700ms var(--ease-out) 1200ms;
+  }
+
+  .s2s[data-phase='screen'] .s2s__sub {
+    opacity: 1;
+    transition: opacity 500ms var(--ease-out) 1900ms;
+  }
+
+  /* Código de tiempo y barra de reproducción: solo mientras se proyecta. */
+  .s2s__timecode {
+    position: absolute;
+    top: 2.2cqw;
+    right: 2.6cqw;
+    font-size: 1.4cqw;
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    transition: opacity 250ms ease-out;
+  }
+
+  .s2s__playhead {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0.35cqw;
+    background: var(--peach);
+    transform-origin: left;
+    scale: 0 1;
+    opacity: 0;
+    transition: opacity 250ms ease-out;
+  }
+
+  .s2s[data-phase='screen'] .s2s__timecode {
+    opacity: 0.8;
+    transition-delay: 1100ms;
+  }
+
+  .s2s[data-phase='screen'] .s2s__playhead {
+    opacity: 1;
+    scale: 1 1;
+    transition:
+      opacity 250ms ease-out 1100ms,
+      scale 3600ms linear 1100ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .s2s__frame,
+    .s2s__page,
+    .s2s__card-title,
+    .s2s__card-by,
+    .s2s__sub,
+    .s2s__timecode,
+    .s2s__playhead {
+      transition: none;
+    }
+
+    .s2s__playhead,
+    .s2s__timecode {
+      display: none;
+    }
+  }
+</style>

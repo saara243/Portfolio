@@ -3,6 +3,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SceneHeading from '../../../components/SceneHeading.astro';
 import ScriptCard from '../../../components/ScriptCard.astro';
 import ScriptFilters from '../../../components/ScriptFilters.astro';
+import ScriptToScreen from '../../../components/ScriptToScreen.astro';
+import { profileModule } from '../../../modules/profile/application/factory';
 import { scriptsModule } from '../../../modules/scripts/application/factory';
 import { getLangStaticPaths, routes, toLang, useTranslations } from '../../../i18n/utils';
 
@@ -11,13 +13,21 @@ export const getStaticPaths = getLangStaticPaths;
 const lang = toLang(Astro.params.lang);
 const t = useTranslations(lang);
 const scripts = await scriptsModule.listScripts.execute({ locale: lang });
+const profile = await profileModule.getProfile.execute({ locale: lang });
 ---
 
 <BaseLayout lang={lang} path={routes.projects} title={t('projects.title')} description={t('projects.intro')}>
   <section class="band" data-tone="peach">
     <div class="container">
-    <SceneHeading scene={t('scene.projects')} title={t('projects.title')} level={1} size="lg" />
-    <p class="reading lead intro">{t('projects.intro')}</p>
+    <div class="projects-head">
+      <div class="projects-head__text">
+        <SceneHeading scene={t('scene.projects')} title={t('projects.title')} level={1} size="lg" />
+        <p class="reading lead intro">{t('projects.intro')}</p>
+      </div>
+      <div class="projects-head__stage">
+        <ScriptToScreen lang={lang} scripts={scripts.toArray()} author={profile.getName()} />
+      </div>
+    </div>
 
     <ScriptFilters lang={lang} formats={scripts.formats()} genres={scripts.genres()} />
 
@@ -30,8 +40,22 @@ const scripts = await scriptsModule.listScripts.execute({ locale: lang });
 </BaseLayout>
 
 <style>
+  .projects-head {
+    display: grid;
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+
   .intro {
-    margin: calc(-1 * var(--space-6)) 0 var(--space-12);
+    margin: calc(-1 * var(--space-6)) 0 0;
+  }
+
+  @media (min-width: 900px) {
+    .projects-head {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: center;
+      gap: var(--space-16);
+    }
   }
 
   .empty {

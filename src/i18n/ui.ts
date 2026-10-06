@@ -51,6 +51,7 @@ const es = {
   'projects.all': 'Todos',
   'projects.empty': 'No hay proyectos con estos filtros.',
   'projects.read': 'Leer más',
+  'projects.writtenBy': 'Escrito por',
   'projects.back': 'Volver a proyectos',
 
   'script.logline': 'Logline',
@@ -153,6 +154,7 @@ const ca: Record<UiKey, string> = {
   'projects.all': 'Tots',
   'projects.empty': 'No hi ha projectes amb aquests filtres.',
   'projects.read': 'Llegir més',
+  'projects.writtenBy': 'Escrit per',
   'projects.back': 'Tornar a projectes',
 
   'script.logline': 'Logline',
@@ -253,6 +255,7 @@ const en: Record<UiKey, string> = {
   'projects.all': 'All',
   'projects.empty': 'No projects match these filters.',
   'projects.read': 'Read more',
+  'projects.writtenBy': 'Written by',
   'projects.back': 'Back to projects',
 
   'script.logline': 'Logline',
