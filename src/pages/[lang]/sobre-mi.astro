@@ -136,19 +136,10 @@ const skillsNote = profile.getSkillsNote();
     color: var(--cobalt);
   }
 
-  /* Bio justificada; la partición silábica (según el idioma de la página) evita huecos entre palabras. */
   .about__bio {
     max-width: 62ch;
     font-size: var(--text-lg);
     font-weight: 300;
-    text-align: justify;
-    hyphens: auto;
-    hyphenate-limit-chars: 5 2 2;
-  }
-
-  /* El reparto «pretty» de los párrafos ensancha los huecos al justificar: aquí, corte normal. */
-  .about__bio :global(p) {
-    text-wrap: wrap;
   }
 
   .path__slug {

@@ -201,6 +201,8 @@ Los componentes nunca usan la paleta base directamente para texto y acentos: usa
 
 **The Real Slugline Rule.** Un encabezado de escena es una slugline de guion con forma real (`INT./EXT. LUGAR — DÍA/NOCHE`), no una etiqueta de categoría sobre el título. Si el texto no se lee como un encabezado de escena, no va en Courier ni encima del título.
 
+**The Justified Prose Rule.** El texto corrido (bio, sinopsis, loglines, entradillas, intereses, carta, descripciones del CV, notas) va justificado con partición silábica automática (`hyphens: auto`, idioma de la página) y sin `text-wrap: pretty`; la lista vive en una sola regla de `global.css`. Titulares, etiquetas, botones, citas centradas, subtítulos y la página de guion del hero no se justifican. En columnas estrechas de móvil, el texto se ensancha (p. ej. la descripción del CV pasa bajo la viñeta) antes que dejar huecos.
+
 **The Light Caps Rule.** Los titulares son Jost 300 en mayúsculas con tracking (0.08em o más). No se usan pesos de display por encima de 400.
 
 ## Layout

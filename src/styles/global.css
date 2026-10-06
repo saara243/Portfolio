@@ -118,6 +118,29 @@ a:hover {
   margin-top: var(--space-4);
 }
 
+/*
+ * Texto corrido justificado en todas las pestañas: bio, sinopsis, loglines, entradillas,
+ * intereses, carta, descripciones del CV y notas. La partición silábica (según el idioma de la
+ * página) evita huecos entre palabras; el reparto «pretty» se desactiva porque los ensancha.
+ * No se justifican titulares, etiquetas, botones, citas centradas ni la página de guion del hero.
+ */
+.prose p,
+.lead,
+.interests__text,
+.letter__sheet p,
+.card__logline,
+.reel__logline,
+.script__logline p,
+.script__note,
+.timeline__description,
+.cv-head__about p,
+.cv-entry__text {
+  text-align: justify;
+  hyphens: auto;
+  hyphenate-limit-chars: 5 2 2;
+  text-wrap: wrap;
+}
+
 .prose p {
   margin-bottom: 0;
 }

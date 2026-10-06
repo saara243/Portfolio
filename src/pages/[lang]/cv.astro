@@ -315,6 +315,39 @@ const sections: { title: string; entries: ResumeEntry[] }[] = resume
     line-height: 1.65;
   }
 
+  /*
+   * Móvil: la descripción ocupa todo el ancho bajo la viñeta. En una columna estrecha el
+   * texto justificado abriría huecos enormes entre palabras.
+   */
+  @media (max-width: 599px) {
+    .cv-line::before {
+      display: none;
+    }
+
+    .cv-entry {
+      row-gap: 0;
+    }
+
+    .cv-entry__body {
+      display: contents;
+    }
+
+    .cv-entry > :global(.ri) {
+      grid-row: 1 / span 3;
+    }
+
+    .cv-entry__period,
+    .cv-entry__title,
+    .cv-entry__place {
+      grid-column: 2;
+    }
+
+    .cv-entry__text {
+      grid-column: 1 / -1;
+      margin-top: var(--space-4);
+    }
+  }
+
   /* Revelado: la viñeta cae en su sitio sobre la línea y el texto se asienta. */
   @media (prefers-reduced-motion: no-preference) {
     .cv-entry[data-reveal='pending'] > :global(.ri) {
