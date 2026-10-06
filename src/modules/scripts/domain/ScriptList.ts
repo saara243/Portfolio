@@ -49,11 +49,6 @@ export class ScriptList {
     );
   }
 
-  /** Todos menos los de un formato (p. ej. el teatro, que tiene su propia sección). */
-  excludingFormat(format: string): ScriptList {
-    return new ScriptList(this.items.filter((script) => script.getFormat().getValue() !== format));
-  }
-
   featured(): ScriptList {
     return new ScriptList(this.items.filter((script) => script.isFeatured()));
   }

@@ -25,7 +25,7 @@ const t = useTranslations(lang);
       <label><input type="radio" name="format" value="" checked /> {t('projects.all')}</label>
       {formats.map((format) => (
         <label>
-          <input type="radio" name="format" value={format.getValue()} /> {t(`format.${format.getValue()}` as UiKey)}
+          <input type="radio" name="format" value={format.getValue()} /> {format.getValue() === 'theatre' ? t('projects.theatre') : t(`format.${format.getValue()}` as UiKey)}
         </label>
       ))}
     </fieldset>

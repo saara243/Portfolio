@@ -1,4 +1,5 @@
 ---
+import CoverArt from './CoverArt.astro';
 import type { Script } from '../modules/scripts/domain/Script';
 import type { UiKey } from '../i18n/ui';
 import { localizedPath, routes, useTranslations, withBase, type Lang } from '../i18n/utils';
@@ -11,6 +12,7 @@ interface Props {
 const { lang, script } = Astro.props;
 const t = useTranslations(lang);
 const cover = script.getCover();
+const coverArt = script.getCoverArt();
 const format = script.getFormat().getValue();
 const genreKeys = script.getGenres().map((genre) => genre.getKey()).join(' ');
 const genres = script.getGenres().map((genre) => genre.getLabel()).join(' · ');
@@ -29,6 +31,8 @@ const genres = script.getGenres().map((genre) => genre.getLabel()).join(' · ');
           loading="lazy"
           transition:name={`cover-${script.getSlug()}`}
         />
+      ) : coverArt ? (
+        <CoverArt kind={coverArt} title={script.getTitle()} class="card__cover" transition:name={`cover-${script.getSlug()}`} />
       ) : (
         <span class="card__cover card__cover--empty" aria-hidden="true">{script.getTitle()}</span>
       )}

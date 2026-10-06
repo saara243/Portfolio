@@ -1,0 +1,316 @@
+---
+/**
+ * Portada ilustrada y animada para guiones sin imagen (campo `coverArt` del guion).
+ * - revival («Los conflictos de estar vivo y muerto a la vez»): la tarta de cumpleaños de mamá
+ *   tiembla, el hermano muerto sale de dentro con el piso de arriba (y las velas) de sombrero,
+ *   ojos en X, canta con manos de jazz y suelta notas; las dos hermanas, opuestas (alta y rellena /
+ *   bajita y en trazo), saltan del susto. Vuelve a hundirse. Bucle de 8 s, pausado fuera de pantalla.
+ * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
+ */
+interface Props {
+  kind: 'revival';
+  title: string;
+  class?: string;
+  [attr: string]: unknown;
+}
+
+const { kind, title, class: className, ...rest } = Astro.props;
+
+// Título de cartel: lo que va tras la última coma es el subtítulo («el musical»).
+const comma = title.lastIndexOf(',');
+const main = comma > 0 ? title.slice(0, comma) : title;
+const sub = comma > 0 ? title.slice(comma + 1).trim() : '';
+const lines: string[] = [];
+for (const word of main.split(/\s+/)) {
+  const last = lines.at(-1);
+  if (last !== undefined && (last + ' ' + word).length <= 17) lines[lines.length - 1] = `${last} ${word}`;
+  else lines.push(word);
+}
+
+const candles = [125, 150, 175];
+const notes = [
+  { x: 76, y: 236, d: 0 },
+  { x: 226, y: 222, d: 0.35 },
+  { x: 62, y: 196, d: 0.7 },
+  { x: 238, y: 182, d: 1.05 },
+];
+const fingers = [-60, -30, 0, 30, 60];
+---
+
+<div class:list={['cv', `cv--${kind}`, className]} data-cover-art aria-hidden="true" {...rest}>
+  <svg viewBox="0 0 300 400" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="300" height="400" fill="var(--cobalt)" />
+
+    <g class="cv-title">
+      {lines.map((line, i) => (
+        <text x="150" y={48 + i * 26} text-anchor="middle">{line}</text>
+      ))}
+      {sub && <text class="cv-sub" x="150" y={48 + lines.length * 26 + 2} text-anchor="middle">— {sub} —</text>}
+    </g>
+
+    <!-- Notas que suelta al cantar -->
+    {notes.map((note) => (
+      <g transform={`translate(${note.x} ${note.y})`}>
+        <g class="cv-note" style={`--d:${note.d}s`}>
+          <circle cx="0" cy="0" r="4" fill="var(--peach)" />
+          <path d="M4 0V-16q7 3 6 10" stroke="var(--peach)" stroke-width="2" />
+        </g>
+      </g>
+    ))}
+
+    <!-- El hermano (detrás de la tarta), con el piso de arriba como sombrero -->
+    <g class="cv-rise">
+      <path d="M118 270v-18q0-14 16-16h32q16 2 16 16v18Z" fill="var(--peach)" />
+      <path d="M150 240l-10-6v12Zm0 0l10-6v12Z" fill="var(--cobalt)" />
+
+      {[-1, 1].map((side) => (
+        <g class:list={['cv-arm', side < 0 ? 'cv-arm--l' : 'cv-arm--r']}>
+          <path d={`M${150 + side * 26} 248q${side * 18}-6 ${side * 24}-30`} stroke="var(--peach)" stroke-width="6" />
+          <g class="cv-hand">
+            <circle cx={150 + side * 50} cy="212" r="7" fill="var(--peach)" />
+            {fingers.map((a) => {
+              const rad = ((a - 90) * Math.PI) / 180;
+              const cx = 150 + side * 50;
+              return <path d={`M${cx + Math.cos(rad) * 6} ${212 + Math.sin(rad) * 6}L${cx + Math.cos(rad) * 13} ${212 + Math.sin(rad) * 13}`} stroke="var(--peach)" stroke-width="3" />;
+            })}
+          </g>
+        </g>
+      ))}
+
+      <ellipse cx="150" cy="212" rx="26" ry="23" fill="var(--peach)" />
+      <path d="M137 203l7 7m0-7l-7 7M156 203l7 7m0-7l-7 7" stroke="var(--cobalt)" stroke-width="2.5" />
+      <ellipse class="cv-mouth" cx="150" cy="223" rx="5" ry="3.5" fill="var(--cobalt)" />
+
+      <g class="cv-cap">
+        <path d="M95 175h110v13q-5 7-10 0t-12 2-12-2-14 4-12-4-12 2-14-2-12 2-12-2Z" fill="var(--peach-soft)" />
+        {candles.map((x, i) => (
+          <>
+            <rect x={x - 3} y="158" width="6" height="17" fill="var(--peach)" />
+            <path d={`M${x - 3} 165l6-3M${x - 3} 171l6-3`} stroke="var(--cobalt)" stroke-width="1.5" />
+            <path class="cv-flame" style={`--f:${i * 0.17}s`} d={`M${x} 142q6 8 3.5 12a3.5 3.5 0 0 1-7 0q-2.5-4 3.5-12Z`} fill="var(--peach-soft)" />
+          </>
+        ))}
+      </g>
+    </g>
+
+    <!-- La tarta (delante) -->
+    <g class="cv-cake">
+      <rect x="95" y="262" width="110" height="38" fill="var(--peach)" />
+      <path d="M95 262h110" stroke="var(--cobalt)" stroke-opacity="0.35" />
+      <circle cx="112" cy="281" r="3" fill="var(--cobalt)" /><circle cx="150" cy="281" r="3" fill="var(--cobalt)" /><circle cx="188" cy="281" r="3" fill="var(--cobalt)" />
+      <rect x="70" y="300" width="160" height="60" fill="var(--peach)" />
+      <path d="M70 300h160v8q-8 8-16 0t-16 0-16 0-16 0-16 0-16 0-16 0-16 0-16 0-16 0Z" fill="var(--peach-soft)" />
+      <text class="cv-cake-text" x="150" y="342" text-anchor="middle">FELIZ CUMPLE MAMÁ</text>
+      <path d="M60 362h180" stroke="var(--peach)" stroke-width="3" />
+    </g>
+
+    <!-- Las hermanas: opuestas -->
+    <g class="cv-sister cv-sister--a">
+      <circle cx="38" cy="296" r="9" fill="var(--peach)" />
+      <path d="M44 290q10 2 8 14" stroke="var(--peach)" stroke-width="3" />
+      <path d="M38 307l-12 55h24Z" fill="var(--peach)" />
+      <text class="cv-gasp" x="38" y="276" text-anchor="middle">!</text>
+    </g>
+    <g class="cv-sister cv-sister--b">
+      <circle cx="264" cy="324" r="9" stroke="var(--peach)" stroke-width="2.5" />
+      <path d="M246 361q0-28 18-28t18 28Z" stroke="var(--peach)" stroke-width="2.5" />
+      <path d="M259 323h3m4 0h3" stroke="var(--peach)" stroke-width="2" />
+      <text class="cv-gasp" x="264" y="304" text-anchor="middle">!</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+  // Las portadas animadas solo se mueven mientras están a la vista.
+  function initCoverArt() {
+    const covers = document.querySelectorAll<HTMLElement>('[data-cover-art]');
+    if (!covers.length || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) entry.target.toggleAttribute('data-playing', entry.isIntersecting);
+    });
+    covers.forEach((cover) => observer.observe(cover));
+    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+  }
+
+  document.addEventListener('astro:page-load', initCoverArt);
+</script>
+
+<style>
+  .cv {
+    display: block;
+    background: var(--cobalt);
+  }
+
+  .cv svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cv-title text {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 19px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: var(--peach);
+  }
+
+  .cv-title .cv-sub {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .cv-cake-text {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    fill: var(--cobalt);
+  }
+
+  .cv-gasp {
+    font-family: var(--font-display);
+    font-size: 20px;
+    fill: var(--peach);
+    opacity: 0;
+  }
+
+  .cv :global(*) {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  /* Los brazos giran desde el hombro, en coordenadas del dibujo. */
+  .cv .cv-arm {
+    transform-box: view-box;
+  }
+
+  .cv .cv-arm--l {
+    transform-origin: 124px 248px;
+  }
+
+  .cv .cv-arm--r {
+    transform-origin: 176px 248px;
+  }
+
+  .cv-flame {
+    transform-origin: center bottom;
+  }
+
+  .cv-sister {
+    transform-origin: center bottom;
+  }
+
+  .cv:not([data-playing]) :global(*) {
+    animation-play-state: paused !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cv-rise {
+      animation: cv-rise 8s var(--ease-out) infinite;
+    }
+
+    .cv-arm {
+      animation: cv-jazz 8s ease-in-out infinite;
+    }
+
+    .cv-mouth {
+      animation: cv-sing 8s steps(1, end) infinite;
+    }
+
+    .cv-note {
+      opacity: 0;
+      animation: cv-note 8s var(--ease-out) infinite;
+      animation-delay: var(--d);
+    }
+
+    .cv-cake {
+      animation: cv-rumble 8s linear infinite;
+    }
+
+    .cv-flame {
+      animation: cv-flicker 0.7s ease-in-out var(--f) infinite alternate;
+    }
+
+    .cv-sister {
+      animation: cv-jump 8s var(--ease-out) infinite;
+    }
+
+    .cv-sister--b {
+      animation-delay: 0.12s;
+    }
+
+    .cv-gasp {
+      animation: cv-gasp 8s linear infinite;
+    }
+  }
+
+  /* Sale de la tarta con un rebote, se queda cantando y se vuelve a hundir. */
+  @keyframes cv-rise {
+    0%, 24% { translate: 0 75px; }
+    30% { translate: 0 -8px; }
+    34%, 68% { translate: 0 0; }
+    76%, 100% { translate: 0 75px; }
+  }
+
+  /* Manos de jazz: se abren tras salir y se agitan a compás. */
+  @keyframes cv-jazz {
+    0%, 29% { scale: 0; rotate: 0deg; }
+    34% { scale: 1; rotate: 0deg; }
+    40% { rotate: 10deg; }
+    46% { rotate: -6deg; }
+    52% { rotate: 10deg; }
+    58% { rotate: -6deg; }
+    64% { scale: 1; rotate: 0deg; }
+    70%, 100% { scale: 0; rotate: 0deg; }
+  }
+
+  @keyframes cv-sing {
+    0%, 36% { scale: 1 1; }
+    38% { scale: 1.3 2.2; }
+    44% { scale: 1 1.2; }
+    48% { scale: 1.3 2.4; }
+    54% { scale: 1 1.4; }
+    58% { scale: 1.4 2.6; }
+    66%, 100% { scale: 1 1; }
+  }
+
+  @keyframes cv-note {
+    0%, 36% { opacity: 0; translate: 0 6px; rotate: -10deg; }
+    40% { opacity: 1; }
+    58% { opacity: 1; }
+    66%, 100% { opacity: 0; translate: 6px -34px; rotate: 12deg; }
+  }
+
+  /* La tarta tiembla justo antes de que salga. */
+  @keyframes cv-rumble {
+    0%, 14% { translate: 0 0; }
+    16% { translate: -2px 0; }
+    18% { translate: 2px 0; }
+    20% { translate: -2px 0; }
+    22% { translate: 2px 0; }
+    24%, 100% { translate: 0 0; }
+  }
+
+  @keyframes cv-flicker {
+    from { scale: 1 1; }
+    to { scale: 0.8 1.15; }
+  }
+
+  @keyframes cv-jump {
+    0%, 28% { translate: 0 0; scale: 1; }
+    31% { translate: 0 -16px; scale: 0.95 1.05; }
+    35% { translate: 0 0; scale: 1.05 0.95; }
+    38%, 100% { translate: 0 0; scale: 1; }
+  }
+
+  @keyframes cv-gasp {
+    0%, 29% { opacity: 0; }
+    31%, 62% { opacity: 1; }
+    66%, 100% { opacity: 0; }
+  }
+</style>

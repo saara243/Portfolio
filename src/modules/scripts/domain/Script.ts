@@ -20,6 +20,7 @@ export interface ScriptPrimitive {
   pages?: number;
   duration?: string;
   cover?: string;
+  coverArt?: 'revival';
   still?: string;
   pdf?: string;
   download: DownloadAccess;
@@ -44,6 +45,7 @@ export class Script {
     private readonly pages: number | undefined,
     private readonly duration: string | undefined,
     private readonly cover: string | undefined,
+    private readonly coverArt: 'revival' | undefined,
     private readonly still: string | undefined,
     private readonly pdf: string | undefined,
     private readonly download: DownloadAccess,
@@ -68,6 +70,7 @@ export class Script {
       data.pages,
       data.duration,
       data.cover,
+      data.coverArt,
       data.still,
       data.pdf,
       data.download,
@@ -117,6 +120,7 @@ export class Script {
   getPages(): number | undefined { return this.pages; }
   getDuration(): string | undefined { return this.duration; }
   getCover(): string | undefined { return this.cover; }
+  getCoverArt(): 'revival' | undefined { return this.coverArt; }
   getStill(): string | undefined { return this.still; }
   getPdf(): string | undefined { return this.pdf; }
   getOrder(): number | undefined { return this.order; }
@@ -156,6 +160,7 @@ export class Script {
       pages: this.pages,
       duration: this.duration,
       cover: this.cover,
+      coverArt: this.coverArt,
       still: this.still,
       pdf: this.pdf,
       download: this.download,

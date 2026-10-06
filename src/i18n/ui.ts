@@ -56,9 +56,7 @@ const es = {
   'projects.read': 'Leer más',
   'projects.writtenBy': 'Escrito por',
   'projects.back': 'Volver a proyectos',
-  'projects.audiovisual': 'Audiovisual',
   'projects.theatre': 'Dramaturgia',
-  'scene.theatre': 'INT. TEATRO — NOCHE',
 
   'script.logline': 'Logline',
   'script.synopsis': 'Sinopsis',
@@ -174,9 +172,7 @@ const ca: Record<UiKey, string> = {
   'projects.read': 'Llegir més',
   'projects.writtenBy': 'Escrit per',
   'projects.back': 'Tornar a projectes',
-  'projects.audiovisual': 'Audiovisual',
   'projects.theatre': 'Dramatúrgia',
-  'scene.theatre': 'INT. TEATRE — NIT',
 
   'script.logline': 'Logline',
   'script.synopsis': 'Sinopsi',
@@ -290,9 +286,7 @@ const en: Record<UiKey, string> = {
   'projects.read': 'Read more',
   'projects.writtenBy': 'Written by',
   'projects.back': 'Back to projects',
-  'projects.audiovisual': 'Screen',
   'projects.theatre': 'Playwriting',
-  'scene.theatre': 'INT. THEATRE — NIGHT',
 
   'script.logline': 'Logline',
   'script.synopsis': 'Synopsis',

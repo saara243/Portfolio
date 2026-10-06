@@ -6,6 +6,7 @@ genres: [Comedia musical absurda]
 year: 2026
 date: Junio 2026
 status: finished
+coverArt: revival
 pages: 56
 pdf: files/scripts/los-conflictos-de-estar-vivo-y-muerto-a-la-vez.pdf
 download: public
