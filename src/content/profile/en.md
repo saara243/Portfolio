@@ -53,6 +53,72 @@ motivation:
     - "I’m especially interested in learning from the collective process: how an idea is born, how it develops, how a writers’ room works and how it changes on its way to the screen."
     - I’m looking for an internship where I can learn, observe and take part, while also contributing my writing, creativity and audiovisual experience.
   closing: I want to learn how stories are told when millions of people are on the other side of the screen.
+resume:
+  fullName: Sara Abreu Sorribas
+  about: I’m drawn to working in film and theatre, and above all to writing scripts for plays and films. I specialised in film directing during my degree, but I’m now focused on screenwriting for film and television, and I’m studying the Master’s in Screenwriting at ESCAC. I’m responsible, I work well in a team, and I love writing and building stories.
+  experience:
+    - title: Third assistant director
+      place: Spot Cinema Catalunya
+      period: February 2025
+      description: In charge of organising the extras.
+      icon: megafono
+    - title: First assistant director and casting co-director
+      place: "ESCAC graduation film: short «Garabatos»"
+      period: February 2025 – July 2025
+      description: In charge of pre-production at assistant-director level, drawing up the shooting schedule, organising the shooting blocks and, once filming began, acting as assistant director on set. Also responsible for finding actors and actresses to meet the needs of the script.
+      icon: walkie
+    - title: Casting director
+      place: "ESCAC graduation film: short «Gus quiere recordar»"
+      period: February 2025 – May 2025
+      description: Finding actors and actresses to meet the needs of the script. Arranging castings with the chosen actors and advising the director on the final selection.
+      icon: casting
+    - title: Screenwriting teacher
+      place: CineBase Guion
+      period: July 2026
+      description: Teaching the basic structure of a script to children aged nine to seventeen.
+      icon: guion
+    - title: First assistant director
+      place: Short film «Pell de préssec»
+      period: September 2026 – October 2026
+      description: In charge of pre-production at assistant-director level, drawing up the shooting schedule, organising the shooting blocks and, once filming began, acting as assistant director on set. On set, coordinating 100 extras on a night shoot together with the extras coordinators and the second AD.
+      icon: rodaje-noche
+    - title: Tennis coach
+      place: Club Natació Sant Andreu
+      period: September 2024 – present
+      description: Teaching tennis to children aged three to six, teenagers and adults.
+      icon: tenis
+  education:
+    - title: Baccalaureate in Humanities
+      place: Escola Violai
+      period: September 2020 – June 2022
+      description: Humanities baccalaureate with electives in Latin and audiovisual communication, graduating with honours.
+      icon: libro
+    - title: Bachelor’s Degree in Cinematography
+      place: ESCAC
+      period: September 2022 – March 2025
+      description: University degree in Cinematography at ESCAC, specialising in directing.
+      icon: rodaje
+    - title: Master’s in Screenwriting
+      place: ESCAC
+      period: September 2025 – present
+      description: Currently studying the Master’s in Screenwriting.
+      icon: maquina
+  certificates:
+    - title: BC1 Advanced
+      place: Cambridge English
+      period: 2022
+      icon: idioma
+    - title: Level 1 tennis coach
+      place: Federació Catalana de l’Esport
+      period: 2025
+      icon: tenis
+  itSkills: [Adobe Premiere, Adobe Photoshop, PowerPoint, Word]
+  languages:
+    - { name: Spanish, level: native, value: 4 }
+    - { name: Catalan, level: native, value: 4 }
+    - { name: English, level: advanced, value: 3 }
+    - { name: Italian, level: beginner, value: 1 }
+  competencies: [Problem solving, Organisation, Responsibility, Teamwork, Communication]
 ---
 
 I’m a screenwriter trained at ESCAC, where I learned to develop stories from the first idea to the screen, and to see a script as a tool for building characters, conflicts and worlds.

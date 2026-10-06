@@ -1,6 +1,7 @@
 import { Locale } from '../../shared/domain/Locale';
 import { Interest, type InterestPrimitive } from './Interest';
 import { Motivation, type MotivationPrimitive } from './Motivation';
+import { Resume, type ResumePrimitive } from './Resume';
 import { SkillGroup, type SkillGroupPrimitive } from './SkillGroup';
 import { SocialLink, type SocialLinkPrimitive } from './SocialLink';
 import { TimelineEntry, type TimelineEntryPrimitive } from './TimelineEntry';
@@ -26,6 +27,7 @@ export interface ProfilePrimitive {
   skillsNote?: string;
   motivation?: MotivationPrimitive;
   languages: string[];
+  resume?: ResumePrimitive;
 }
 
 /** Perfil de la guionista en un idioma. Identidad: idioma. */
@@ -51,6 +53,7 @@ export class Profile {
     private readonly skillsNote: string | undefined,
     private readonly motivation: Motivation | undefined,
     private readonly languages: string[],
+    private readonly resume: Resume | undefined,
   ) {}
 
   static create(data: ProfilePrimitive): Profile {
@@ -76,6 +79,7 @@ export class Profile {
       data.skillsNote?.trim() || undefined,
       data.motivation ? Motivation.create(data.motivation) : undefined,
       [...data.languages],
+      data.resume ? Resume.create(data.resume) : undefined,
     );
   }
 
@@ -111,6 +115,7 @@ export class Profile {
   getSkillsNote(): string | undefined { return this.skillsNote; }
   getMotivation(): Motivation | undefined { return this.motivation; }
   getLanguages(): string[] { return [...this.languages]; }
+  getResume(): Resume | undefined { return this.resume; }
 
   hasCv(): boolean {
     return Boolean(this.cv);
@@ -142,6 +147,7 @@ export class Profile {
       skillsNote: this.skillsNote,
       motivation: this.motivation?.toPrimitive(),
       languages: [...this.languages],
+      resume: this.resume?.toPrimitive(),
     };
   }
 }

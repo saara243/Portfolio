@@ -4,6 +4,7 @@ import { z } from 'astro/zod';
 import { SCRIPT_FORMATS } from './modules/scripts/domain/ScriptFormat';
 import { SCRIPT_STATUSES } from './modules/scripts/domain/ScriptStatus';
 import { DOWNLOAD_ACCESS } from './modules/scripts/domain/Script';
+import { RESUME_ICONS } from './modules/profile/domain/Resume';
 
 // Rutas de ficheros (pdf, cover, photo, cv) relativas a /public, p.ej. "files/scripts/mi-guion.pdf"
 const publicFile = z.string().regex(/^[^/].*/, 'Sin barra inicial: "files/..." o "images/..."');
@@ -14,6 +15,15 @@ const timelineEntry = z.object({
   // Admite `2025` o `"2022 – 2026"` en el frontmatter
   period: z.union([z.string(), z.number()]).transform(String).optional(),
   description: z.string().optional(),
+});
+
+// Entrada del CV con su viñeta animada (ver RESUME_ICONS).
+const resumeEntry = z.object({
+  title: z.string(),
+  place: z.string().optional(),
+  period: z.union([z.string(), z.number()]).transform(String).optional(),
+  description: z.string().optional(),
+  icon: z.enum(RESUME_ICONS).default('estrella'),
 });
 
 /** Un fichero por guion e idioma: src/content/scripts/{es|ca|en}/{slug}.md (el cuerpo es la sinopsis). */
@@ -64,6 +74,21 @@ const profile = defineCollection({
       .object({ title: z.string(), paragraphs: z.array(z.string()).min(1), closing: z.string().optional() })
       .optional(),
     languages: z.array(z.string()).default([]),
+    // Currículum completo de la pestaña CV (independiente del resumen de "Sobre mí").
+    resume: z
+      .object({
+        fullName: z.string().optional(),
+        about: z.string().optional(),
+        experience: z.array(resumeEntry).default([]),
+        education: z.array(resumeEntry).default([]),
+        certificates: z.array(resumeEntry).default([]),
+        itSkills: z.array(z.string()).default([]),
+        languages: z
+          .array(z.object({ name: z.string(), level: z.string(), value: z.number().int().min(1).max(4) }))
+          .default([]),
+        competencies: z.array(z.string()).default([]),
+      })
+      .optional(),
   }),
 });
 

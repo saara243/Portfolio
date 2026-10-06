@@ -1,8 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DownloadButton from '../../components/DownloadButton.astro';
+import ResumeIcon from '../../components/ResumeIcon.astro';
+import RevealOnScroll from '../../components/RevealOnScroll.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
 import Timeline from '../../components/Timeline.astro';
+import type { ResumeEntry } from '../../modules/profile/domain/Resume';
 import { profileModule } from '../../modules/profile/application/factory';
 import { getLangStaticPaths, routes, toLang, useTranslations } from '../../i18n/utils';
 
@@ -12,31 +15,500 @@ const lang = toLang(Astro.params.lang);
 const t = useTranslations(lang);
 const profile = await profileModule.getProfile.execute({ locale: lang });
 const cv = profile.getCv();
+const resume = profile.getResume();
+
+const sections: { title: string; entries: ResumeEntry[] }[] = resume
+  ? [
+      { title: t('cv.experience'), entries: resume.getExperience() },
+      { title: t('cv.education'), entries: resume.getEducation() },
+    ].filter((section) => section.entries.length > 0)
+  : [];
 ---
 
 <BaseLayout lang={lang} path={routes.cv} title={t('cv.title')}>
   <section class="band" data-tone="peach">
-    <div class="container cv">
-    <SceneHeading scene={t('scene.cv')} title={t('cv.title')} level={1} size="lg" />
-    {cv && (
-      <p class="cv__download">
-        <DownloadButton file={cv} label={t('cv.download')} />
-      </p>
-    )}
+    <div class="container">
+      <header class="cv-head">
+        <SceneHeading scene={t('scene.cv')} title={t('cv.title')} level={1} size="lg" />
+        {resume?.getFullName() && <p class="cv-head__name">{resume.getFullName()}</p>}
+        {resume?.getAbout() && (
+          <div class="cv-head__about">
+            <h2 class="cv-label">{t('cv.about')}</h2>
+            <p>{resume.getAbout()}</p>
+          </div>
+        )}
+        {cv && (
+          <p class="cv-head__download">
+            <DownloadButton file={cv} label={t('cv.download')} />
+          </p>
+        )}
+      </header>
 
-    <Timeline title={t('cv.experience')} entries={profile.getExperience()} />
-    <Timeline title={t('cv.education')} entries={profile.getEducation()} />
-    <Timeline title={t('cv.awards')} entries={profile.getAwards()} />
+      {resume ? (
+        <div class="cv-body">
+          <div class="cv-main">
+            {sections.map((section) => (
+              <section class="cv-section">
+                <h2 class="cv-section__title">{section.title}</h2>
+                <ol class="cv-line">
+                  {section.entries.map((entry, i) => (
+                    <li class="cv-entry" data-reveal style={`--n:${i % 4}`}>
+                      <ResumeIcon kind={entry.getIcon()} />
+                      <div class="cv-entry__body">
+                        {entry.getPeriod() && <p class="cv-entry__period script-font">{entry.getPeriod()}</p>}
+                        <h3 class="cv-entry__title">{entry.getTitle()}</h3>
+                        {entry.getPlace() && <p class="cv-entry__place">{entry.getPlace()}</p>}
+                        {entry.getDescription() && <p class="cv-entry__text">{entry.getDescription()}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))}
+
+            <Timeline title={t('cv.awards')} entries={profile.getAwards()} />
+          </div>
+
+          <aside class="cv-side" data-tone="cobalt">
+            {resume.getCertificates().length > 0 && (
+              <section class="cv-side__block">
+                <h2 class="cv-label">{t('cv.certificates')}</h2>
+                <ul class="cv-certs">
+                  {resume.getCertificates().map((entry) => (
+                    <li class="cv-cert">
+                      <ResumeIcon kind={entry.getIcon()} size="sm" />
+                      <div>
+                        {entry.getPeriod() && <p class="cv-cert__year script-font">{entry.getPeriod()}</p>}
+                        <p class="cv-cert__title">{entry.getTitle()}</p>
+                        {entry.getPlace() && <p class="cv-cert__place">{entry.getPlace()}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {resume.getItSkills().length > 0 && (
+              <section class="cv-side__block">
+                <div class="cv-side__head">
+                  <ResumeIcon kind="ordenador" size="sm" />
+                  <h2 class="cv-label">{t('cv.itSkills')}</h2>
+                </div>
+                <ul class="cv-tags">
+                  {resume.getItSkills().map((skill) => <li>{skill}</li>)}
+                </ul>
+              </section>
+            )}
+
+            {resume.getLanguages().length > 0 && (
+              <section class="cv-side__block">
+                <div class="cv-side__head">
+                  <ResumeIcon kind="idioma" size="sm" />
+                  <h2 class="cv-label">{t('cv.languages')}</h2>
+                </div>
+                <ul class="cv-langs">
+                  {resume.getLanguages().map((language) => (
+                    <li class="cv-lang" data-value={language.getValue()}>
+                      <span class="cv-lang__name">{language.getName()}</span>
+                      <span class="cv-lang__level">{language.getLevel()}</span>
+                      <span class="cv-lang__meter" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {resume.getCompetencies().length > 0 && (
+              <section class="cv-side__block">
+                <div class="cv-side__head">
+                  <ResumeIcon kind="estrella" size="sm" />
+                  <h2 class="cv-label">{t('cv.competencies')}</h2>
+                </div>
+                <ul class="cv-comps">
+                  {resume.getCompetencies().map((item) => <li>{item}</li>)}
+                </ul>
+              </section>
+            )}
+
+            <section class="cv-side__block">
+              <h2 class="cv-label">{t('cv.contact')}</h2>
+              <ul class="cv-contact">
+                <li><a href={`mailto:${profile.getEmail()}`}>{profile.getEmail()}</a></li>
+                {profile.getSocials().map((link) => (
+                  <li><a href={link.getUrl()} target="_blank" rel="noopener noreferrer">{link.getLabel()}</a></li>
+                ))}
+              </ul>
+            </section>
+          </aside>
+        </div>
+      ) : (
+        <div class="cv-fallback">
+          <Timeline title={t('cv.experience')} entries={profile.getExperience()} />
+          <Timeline title={t('cv.education')} entries={profile.getEducation()} />
+          <Timeline title={t('cv.awards')} entries={profile.getAwards()} />
+        </div>
+      )}
     </div>
   </section>
+
+  <RevealOnScroll />
 </BaseLayout>
 
-<style>
-  .cv {
-    max-width: 60rem;
+<script>
+  // Las viñetas solo se animan mientras están a la vista.
+  function initResumeIcons() {
+    const icons = document.querySelectorAll<HTMLElement>('[data-ri]');
+    if (!icons.length || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) entry.target.toggleAttribute('data-playing', entry.isIntersecting);
+    });
+    icons.forEach((icon) => observer.observe(icon));
+    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
   }
 
-  .cv__download {
-    margin-bottom: var(--space-16);
+  document.addEventListener('astro:page-load', initResumeIcons);
+</script>
+
+<style>
+  /* ---------- Cabecera ---------- */
+
+  .cv-head {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 52rem;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+
+  .cv-head :global(.scene) {
+    margin-bottom: 0;
+  }
+
+  .cv-head__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-2xl);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .cv-head__about p {
+    margin: 0;
+    max-width: 62ch;
+    font-size: var(--text-lg);
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .cv-head__download {
+    margin: 0;
+  }
+
+  .cv-label {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ---------- Cuerpo ---------- */
+
+  .cv-body {
+    display: grid;
+    gap: var(--space-16);
+  }
+
+  @media (min-width: 1000px) {
+    .cv-body {
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+      align-items: start;
+      gap: clamp(3rem, 2rem + 3vw, 6rem);
+    }
+  }
+
+  .cv-section + .cv-section {
+    margin-top: var(--space-16);
+  }
+
+  .cv-section__title {
+    margin-bottom: var(--space-8);
+    font-size: var(--text-2xl);
+  }
+
+  /* Línea de tiempo: un filete vertical une las viñetas. */
+  .cv-line {
+    --tile: clamp(4rem, 3rem + 2.5vw, 5.5rem);
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-line::before {
+    content: '';
+    position: absolute;
+    top: var(--space-4);
+    bottom: var(--space-4);
+    left: calc(var(--tile) / 2);
+    width: 1px;
+    background: var(--line);
+  }
+
+  .cv-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--tile) minmax(0, 1fr);
+    gap: clamp(1rem, 0.5rem + 2vw, 2.25rem);
+    padding-bottom: var(--space-12);
+  }
+
+  .cv-entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .cv-entry > :global(.ri) {
+    position: relative;
+    transition: rotate 500ms var(--ease-out), scale 500ms var(--ease-out);
+  }
+
+  .cv-entry:hover > :global(.ri) {
+    rotate: -4deg;
+    scale: 1.06;
+  }
+
+  .cv-entry__body {
+    padding-top: var(--space-1);
+  }
+
+  .cv-entry__period {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .cv-entry__title {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .cv-entry__place {
+    margin: var(--space-2) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+
+  .cv-entry__text {
+    margin: var(--space-3) 0 0;
+    max-width: 62ch;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  /* Revelado: la viñeta cae en su sitio sobre la línea y el texto se asienta. */
+  @media (prefers-reduced-motion: no-preference) {
+    .cv-entry[data-reveal='pending'] > :global(.ri) {
+      scale: 0.4;
+      opacity: 0;
+    }
+
+    .cv-entry[data-reveal='pending'] .cv-entry__body {
+      opacity: 0;
+    }
+
+    .cv-entry[data-reveal='in'] > :global(.ri) {
+      animation: cv-tile-in 800ms var(--ease-out) calc(var(--n) * 90ms) backwards;
+    }
+
+    .cv-entry[data-reveal='in'] .cv-entry__body {
+      animation: settle 700ms var(--ease-out) calc(var(--n) * 90ms + 200ms) backwards;
+    }
+  }
+
+  @keyframes cv-tile-in {
+    from {
+      opacity: 0;
+      scale: 0.4;
+      rotate: -25deg;
+    }
+    to {
+      opacity: 1;
+      scale: 1;
+      rotate: 0deg;
+    }
+  }
+
+  /* ---------- Columna lateral (eco del lateral del CV en PDF) ---------- */
+
+  .cv-side {
+    display: grid;
+    gap: var(--space-12);
+    padding: clamp(1.75rem, 1rem + 2.5vw, 2.75rem);
+  }
+
+  .cv-side__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .cv-side__head .cv-label {
+    margin: 0;
+  }
+
+  .cv-side ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-certs {
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-2) !important;
+  }
+
+  .cv-cert {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .cv-cert p {
+    margin: 0;
+  }
+
+  .cv-cert__year {
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .cv-cert__title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: 1.2;
+  }
+
+  .cv-cert__place {
+    font-size: var(--text-sm);
+    opacity: 0.85;
+  }
+
+  .cv-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .cv-tags li {
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--line);
+    font-size: var(--text-sm);
+  }
+
+  .cv-langs {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .cv-lang {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-3);
+  }
+
+  .cv-lang__name {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+  }
+
+  .cv-lang__level {
+    font-size: var(--text-sm);
+    opacity: 0.85;
+  }
+
+  /* Nivel en cuatro casillas que se rellenan de izquierda a derecha. */
+  .cv-lang__meter {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+  }
+
+  .cv-lang__meter i {
+    height: 4px;
+    background: var(--line);
+  }
+
+  .cv-lang__meter i:nth-child(1),
+  .cv-lang[data-value='2'] .cv-lang__meter i:nth-child(-n + 2),
+  .cv-lang[data-value='3'] .cv-lang__meter i:nth-child(-n + 3),
+  .cv-lang[data-value='4'] .cv-lang__meter i:nth-child(-n + 4) {
+    background: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cv-lang__meter i {
+      transform-origin: left;
+      animation: cv-meter 900ms var(--ease-out) backwards;
+    }
+
+    .cv-lang__meter i:nth-child(2) { animation-delay: 120ms; }
+    .cv-lang__meter i:nth-child(3) { animation-delay: 240ms; }
+    .cv-lang__meter i:nth-child(4) { animation-delay: 360ms; }
+  }
+
+  @keyframes cv-meter {
+    from {
+      scale: 0 1;
+    }
+  }
+
+  .cv-comps {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .cv-comps li {
+    position: relative;
+    padding-left: var(--space-6);
+  }
+
+  .cv-comps li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.85em;
+    width: 0.75rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cv-contact {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .cv-contact a {
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+  }
+
+  .cv-fallback {
+    max-width: 60rem;
   }
 </style>

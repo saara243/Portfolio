@@ -29,6 +29,7 @@ export class AstroContentProfileRepository implements ProfileRepository {
       skillsNote: entry.data.skillsNote,
       motivation: entry.data.motivation,
       languages: entry.data.languages,
+      resume: entry.data.resume,
     });
   }
 }

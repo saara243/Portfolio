@@ -53,6 +53,72 @@ motivation:
     - "Me interesa especialmente aprender del proceso colectivo: cómo nace una idea, cómo se desarrolla, cómo se trabaja en una redacción y cómo se transforma hasta llegar a pantalla."
     - Busco unas prácticas en las que poder aprender, observar y participar, pero también aportar mi capacidad de escritura, creatividad y experiencia audiovisual.
   closing: Quiero aprender cómo se cuentan historias cuando millones de personas están al otro lado de la pantalla.
+resume:
+  fullName: Sara Abreu Sorribas
+  about: Estoy interesada en el mundo laboral del cine y el teatro, y en particular, en la creación del guion de obras y películas. Me he especializado en dirección cinematográfica durante la carrera, pero ahora estoy centrada en el guion cinematográfico y televisivo, y estoy cursando el máster superior de especialidad de guion de la ESCAC. Soy una persona responsable y con capacidad de trabajo en equipo, a la que le encanta escribir y construir historias.
+  experience:
+    - title: Tercera ayudante de dirección
+      place: Spot Cinema Catalunya
+      period: Febrero 2025
+      description: Responsable de organizar a la figuración.
+      icon: megafono
+    - title: Primera ayudante de dirección y codirección de casting
+      place: "TFG ESCAC: cortometraje «Garabatos»"
+      period: Febrero 2025 – julio 2025
+      description: Responsable de la preproducción de rodaje a nivel de ayudantía, realizar el PDR, organizar las tandas de rodaje y, una vez se ruede el corto, ser la ayudante de dirección en set. Aparte, ser la responsable de buscar actores y actrices respondiendo a las necesidades del guion.
+      icon: walkie
+    - title: Dirección de casting
+      place: "TFG ESCAC: cortometraje «Gus quiere recordar»"
+      period: Febrero 2025 – mayo 2025
+      description: Buscar actores y actrices respondiendo a las necesidades del guion. Concertar castings con los actores elegidos y asesorar al director en la selección de estos.
+      icon: casting
+    - title: Profesora de guion
+      place: CineBase Guion
+      period: Julio 2026
+      description: Explicar la estructura básica de guion a niños de entre nueve y diecisiete años.
+      icon: guion
+    - title: Primera ayudante de dirección
+      place: Cortometraje «Pell de préssec»
+      period: Septiembre 2026 – octubre 2026
+      description: Responsable de la preproducción de rodaje a nivel de ayudantía, realizar el PDR, organizar las tandas de rodaje y, una vez se ruede el corto, ser la ayudante de dirección en set. En set, coordinar junto con los coordinadores de figuración y la segunda AD a 100 extras de figuración en un rodaje nocturno.
+      icon: rodaje-noche
+    - title: Entrenadora de tenis
+      place: Club Natació Sant Andreu
+      period: Septiembre 2024 – actualidad
+      description: Responsable de enseñar tenis a niños de entre tres y seis años, adolescentes y adultos.
+      icon: tenis
+  education:
+    - title: Bachillerato humanístico
+      place: Escola Violai
+      period: Septiembre 2020 – junio 2022
+      description: Cursé el bachillerato humanístico, con optativa de latín y comunicación audiovisual, obteniendo matrícula de honor.
+      icon: libro
+    - title: Grado de Cinematografía
+      place: ESCAC
+      period: Septiembre 2022 – marzo 2025
+      description: Cursé el grado universitario de Cinematografía en la ESCAC, haciendo la especialidad de dirección.
+      icon: rodaje
+    - title: Máster Superior de Especialidad de Guion
+      place: ESCAC
+      period: Septiembre 2025 – actualidad
+      description: Estoy cursando el máster de guion.
+      icon: maquina
+  certificates:
+    - title: BC1 Advanced
+      place: Cambridge English
+      period: 2022
+      icon: idioma
+    - title: Nivel 1 entrenadora de tenis
+      place: Federació Catalana de l’Esport
+      period: 2025
+      icon: tenis
+  itSkills: [Adobe Premiere, Adobe Photoshop, PowerPoint, Word]
+  languages:
+    - { name: Español, level: nativo, value: 4 }
+    - { name: Catalán, level: nativo, value: 4 }
+    - { name: Inglés, level: avanzado, value: 3 }
+    - { name: Italiano, level: principiante, value: 1 }
+  competencies: [Resolución de problemas, Organización, Responsabilidad, Trabajo en equipo, Comunicación]
 ---
 
 Soy guionista audiovisual formada en ESCAC, donde he aprendido a desarrollar historias desde la idea hasta la pantalla y a entender el guion como una herramienta para construir personajes, conflictos y mundos.

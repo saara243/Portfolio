@@ -1,0 +1,483 @@
+---
+import type { ResumeIcon } from '../modules/profile/domain/Resume';
+
+/**
+ * Viñeta animada del CV: ilustración de línea en una baldosa del color de acento de la banda.
+ * Cada tipo tiene su gesto (la raqueta golpea, el megáfono suena, la máquina teclea…).
+ * Las animaciones solo corren con [data-playing] (lo pone el IntersectionObserver de la página)
+ * y desaparecen con movimiento reducido: el dibujo en reposo está completo.
+ */
+interface Props {
+  kind: ResumeIcon;
+  size?: 'md' | 'sm';
+}
+
+const { kind, size = 'md' } = Astro.props;
+---
+
+<span class:list={['ri', `ri--${size}`, `ri--${kind}`]} data-ri aria-hidden="true">
+  <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    {kind === 'tenis' && (
+      <>
+        <line x1="34" y1="59" x2="62" y2="59" opacity="0.5" />
+        <g transform="rotate(28 22 56)">
+          <g class="ri-racket">
+            <ellipse cx="22" cy="20" rx="10" ry="13" />
+            <path d="M17 9.5v21M22 7.5v25M27 9.5v21M13 14h18M12 20h20M13 26h18" stroke-width="1" />
+            <path d="M19 32.5 22 38l3-5.5" />
+            <line x1="22" y1="38" x2="22" y2="56" stroke-width="4" />
+          </g>
+        </g>
+        <g class="ri-ball">
+          <circle cx="44" cy="22" r="5" fill="currentColor" fill-opacity="0.18" />
+          <path d="M40.2 19.2c2.6 1.6 2.6 4.6 0 6.2M47.8 18.6c-2.6 1.6-2.6 5.2 0 6.8" stroke-width="1.2" />
+        </g>
+      </>
+    )}
+
+    {kind === 'megafono' && (
+      <>
+        <g class="ri-mega">
+          <path d="M12 26 34 15v34L12 38Z" fill="currentColor" fill-opacity="0.18" />
+          <rect x="7" y="26" width="5" height="12" rx="1" />
+          <path d="M19 41l2 9h5l-1-7" />
+        </g>
+        <path class="ri-wave ri-wave--1" d="M40 25q4 7 0 14" />
+        <path class="ri-wave ri-wave--2" d="M46 20q7 12 0 24" />
+        <path class="ri-wave ri-wave--3" d="M52 15q10 17 0 34" />
+      </>
+    )}
+
+    {kind === 'walkie' && (
+      <>
+        <g class="ri-walkie">
+          <line x1="36" y1="18" x2="36" y2="5" stroke-width="2.5" />
+          <rect x="22" y="13" width="5" height="5" />
+          <rect x="18" y="18" width="24" height="40" rx="3" fill="currentColor" fill-opacity="0.18" />
+          <path d="M23 27h14M23 31h14M23 35h14" stroke-width="1.5" />
+          <rect x="23" y="42" width="14" height="9" rx="1" />
+          <circle class="ri-led" cx="37" cy="23" r="1.6" fill="currentColor" stroke="none" />
+        </g>
+        <path class="ri-wave ri-wave--1" d="M41 4q4 5 0 10" />
+        <path class="ri-wave ri-wave--2" d="M46 1q7 8 0 16" />
+      </>
+    )}
+
+    {kind === 'casting' && (
+      <>
+        <g class="ri-card ri-card--back">
+          <rect x="10" y="14" width="24" height="32" rx="1.5" fill="currentColor" fill-opacity="0.12" />
+          <circle cx="22" cy="26" r="5" />
+          <path d="M14 42c1-6 4-8 8-8s7 2 8 8" />
+        </g>
+        <g class="ri-card ri-card--front">
+          <rect x="28" y="18" width="24" height="32" rx="1.5" fill="currentColor" fill-opacity="0.22" />
+          <circle cx="40" cy="30" r="5" />
+          <path d="M32 46c1-6 4-8 8-8s7 2 8 8" />
+        </g>
+        <path class="ri-tick" d="M44 10l4 4 8-9" stroke-width="2.5" pathLength="1" />
+      </>
+    )}
+
+    {kind === 'guion' && (
+      <>
+        <path d="M14 6h28l8 8v44H14Z" fill="currentColor" fill-opacity="0.12" />
+        <path d="M42 6v8h8" />
+        <g class="ri-lines" stroke-width="1.6">
+          <path d="M20 19h16" stroke-width="2.6" pathLength="1" />
+          <path d="M20 25h24" pathLength="1" />
+          <path d="M20 29h20" pathLength="1" />
+          <path d="M28 35h10" pathLength="1" />
+          <path d="M24 39h18" pathLength="1" />
+          <path d="M24 43h14" pathLength="1" />
+          <path d="M20 49h22" pathLength="1" />
+        </g>
+        <g class="ri-pencil">
+          <path d="M44 40l12-12 4 4-12 12-6 2Z" fill="currentColor" fill-opacity="0.25" />
+          <path d="M53 31l4 4" />
+        </g>
+      </>
+    )}
+
+    {(kind === 'rodaje' || kind === 'rodaje-noche') && (
+      <>
+        {kind === 'rodaje-noche' && (
+          <>
+            <path class="ri-moon" d="M52 3a8 8 0 1 0 8 11 6.4 6.4 0 1 1-8-11Z" fill="currentColor" fill-opacity="0.35" />
+            <circle class="ri-star ri-star--1" cx="43" cy="6" r="1" fill="currentColor" stroke="none" />
+            <circle class="ri-star ri-star--2" cx="60" cy="24" r="1" fill="currentColor" stroke="none" />
+            <circle class="ri-star ri-star--3" cx="6" cy="8" r="1" fill="currentColor" stroke="none" />
+          </>
+        )}
+        <g class="ri-reel ri-reel--a">
+          <circle cx="19" cy="19" r="7.5" />
+          <path d="M19 19v-7.5M19 19l6.5 3.75M19 19l-6.5 3.75" stroke-width="1.4" />
+        </g>
+        <g class="ri-reel ri-reel--b">
+          <circle cx="35" cy="19" r="7.5" />
+          <path d="M35 19v-7.5M35 19l6.5 3.75M35 19l-6.5 3.75" stroke-width="1.4" />
+        </g>
+        <rect x="10" y="27" width="32" height="18" rx="2" fill="currentColor" fill-opacity="0.18" />
+        <path d="M42 31l11-5v20l-11-5" />
+        <circle class="ri-rec" cx="15.5" cy="32" r="1.8" fill="currentColor" stroke="none" />
+        <path d="M26 45l-9 15M26 45l9 15M26 45v15" />
+      </>
+    )}
+
+    {kind === 'libro' && (
+      <>
+        <path d="M32 18c-6-4-14-5-22-3v34c8-2 16-1 22 3Z" fill="currentColor" fill-opacity="0.12" />
+        <path d="M32 18c6-4 14-5 22-3v34c-8-2-16-1-22 3Z" fill="currentColor" fill-opacity="0.12" />
+        <path d="M15 24c4-1 9-1 13 1M15 30c4-1 9-1 13 1M15 36c4-1 9-1 13 1M36 25c4-2 9-2 13-1M36 31c4-2 9-2 13-1" stroke-width="1.2" opacity="0.7" />
+        <path class="ri-page" d="M32 18c6-4 14-5 22-3v34c-8-2-16-1-22 3Z" fill="currentColor" fill-opacity="0.3" />
+        <path d="M32 18v34" />
+      </>
+    )}
+
+    {kind === 'maquina' && (
+      <>
+        <g class="ri-carriage">
+          <g class="ri-paper">
+            <path d="M20 4h24v26H20Z" fill="currentColor" fill-opacity="0.12" />
+            <g class="ri-lines" stroke-width="1.4">
+              <path d="M24 10h14" pathLength="1" />
+              <path d="M24 15h16" pathLength="1" />
+              <path d="M24 20h10" pathLength="1" />
+            </g>
+          </g>
+          <rect x="12" y="27" width="40" height="6" rx="3" fill="currentColor" fill-opacity="0.3" />
+        </g>
+        <path d="M10 35h44l5 19H5Z" fill="currentColor" fill-opacity="0.18" />
+        <g class="ri-keys" fill="currentColor" stroke="none">
+          <circle cx="16" cy="41" r="1.8" /><circle cx="24" cy="41" r="1.8" /><circle cx="32" cy="41" r="1.8" />
+          <circle cx="40" cy="41" r="1.8" /><circle cx="48" cy="41" r="1.8" />
+          <circle cx="14" cy="47" r="1.8" /><circle cx="22" cy="47" r="1.8" /><circle cx="30" cy="47" r="1.8" />
+          <circle cx="38" cy="47" r="1.8" /><circle cx="46" cy="47" r="1.8" /><circle cx="52" cy="47" r="1.8" />
+        </g>
+      </>
+    )}
+
+    {kind === 'idioma' && (
+      <>
+        <g class="ri-bubble ri-bubble--a">
+          <path d="M6 10h30v18H16l-6 6v-6H6Z" fill="currentColor" fill-opacity="0.18" />
+          <text x="21" y="23" text-anchor="middle" class="ri-text" fill="currentColor" stroke="none">Hi</text>
+        </g>
+        <g class="ri-bubble ri-bubble--b">
+          <path d="M58 30H26v18h20l6 6v-6h6Z" fill="currentColor" fill-opacity="0.3" />
+          <text x="42" y="43" text-anchor="middle" class="ri-text" fill="currentColor" stroke="none">Hola</text>
+        </g>
+      </>
+    )}
+
+    {kind === 'ordenador' && (
+      <>
+        <rect x="6" y="8" width="52" height="36" rx="2" fill="currentColor" fill-opacity="0.12" />
+        <path d="M26 44l-3 10h18l-3-10M18 56h28" />
+        <g stroke="none" fill="currentColor">
+          <rect x="12" y="16" width="18" height="5" fill-opacity="0.6" />
+          <rect x="32" y="16" width="16" height="5" fill-opacity="0.35" />
+          <rect x="16" y="25" width="26" height="5" fill-opacity="0.45" />
+          <rect x="12" y="34" width="12" height="5" fill-opacity="0.3" />
+          <rect x="26" y="34" width="24" height="5" fill-opacity="0.55" />
+        </g>
+        <line class="ri-playhead" x1="20" y1="13" x2="20" y2="41" stroke-width="1.6" />
+      </>
+    )}
+
+    {kind === 'estrella' && (
+      <path class="ri-spark" d="M32 6c2 16 9 23 26 26-17 3-24 10-26 26-2-16-9-23-26-26 17-3 24-10 26-26Z" fill="currentColor" fill-opacity="0.3" />
+    )}
+  </svg>
+</span>
+
+<style>
+  .ri {
+    display: grid;
+    place-items: center;
+    flex: none;
+    aspect-ratio: 1;
+    width: var(--ri-size, clamp(4rem, 3rem + 2.5vw, 5.5rem));
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .ri--sm {
+    --ri-size: 3rem;
+  }
+
+  .ri svg {
+    width: 86%;
+    height: 86%;
+    overflow: visible;
+  }
+
+  .ri :global(*) {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .ri-text {
+    font-family: var(--font-display);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  /* Solo se mueven cuando están en pantalla. */
+  .ri:not([data-playing]) :global(*) {
+    animation-play-state: paused !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Tenis: la raqueta golpea y la pelota sale botando. */
+    .ri-racket {
+      transform-box: view-box;
+      transform-origin: 22px 56px;
+      animation: ri-swing 1.8s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+    }
+
+    .ri-ball {
+      animation: ri-ball 1.8s linear infinite;
+    }
+
+    /* Megáfono: suena en ondas y vibra un poco. */
+    .ri-mega {
+      animation: ri-buzz 1.6s ease-in-out infinite;
+    }
+
+    .ri-wave {
+      transform-origin: left center;
+      animation: ri-wave 1.6s ease-out infinite;
+    }
+
+    .ri-wave--2 { animation-delay: 0.2s; }
+    .ri-wave--3 { animation-delay: 0.4s; }
+
+    /* Walkie: transmite y parpadea el piloto. */
+    .ri-walkie {
+      transform-origin: bottom center;
+      animation: ri-tilt 2.4s ease-in-out infinite;
+    }
+
+    .ri-led {
+      animation: ri-blink 0.8s steps(1, end) infinite;
+    }
+
+    .ri--walkie .ri-wave {
+      animation-duration: 1.2s;
+    }
+
+    /* Casting: las fotos se barajan y se marca la elegida. */
+    .ri-card--front {
+      animation: ri-shuffle-front 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+
+    .ri-card--back {
+      animation: ri-shuffle-back 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+
+    .ri-tick {
+      stroke-dasharray: 1;
+      animation: ri-tick 3.2s ease-out infinite;
+    }
+
+    /* Guion y máquina: las líneas se escriben una tras otra. */
+    .ri-lines :global(path) {
+      stroke-dasharray: 1;
+      animation: ri-write 3.6s ease-out infinite;
+    }
+
+    .ri-lines :global(path:nth-child(2)) { animation-delay: 0.25s; }
+    .ri-lines :global(path:nth-child(3)) { animation-delay: 0.5s; }
+    .ri-lines :global(path:nth-child(4)) { animation-delay: 0.75s; }
+    .ri-lines :global(path:nth-child(5)) { animation-delay: 1s; }
+    .ri-lines :global(path:nth-child(6)) { animation-delay: 1.25s; }
+    .ri-lines :global(path:nth-child(7)) { animation-delay: 1.5s; }
+
+    .ri-pencil {
+      animation: ri-pencil 3.6s ease-in-out infinite;
+    }
+
+    .ri-carriage {
+      animation: ri-carriage 3.6s steps(12, end) infinite;
+    }
+
+    .ri-keys :global(circle) {
+      animation: ri-key 0.6s steps(1, end) infinite;
+    }
+
+    .ri-keys :global(circle:nth-child(3n)) { animation-delay: 0.2s; }
+    .ri-keys :global(circle:nth-child(3n + 1)) { animation-delay: 0.4s; }
+
+    /* Rodaje: giran las bobinas y parpadea el REC; de noche, titilan las estrellas. */
+    .ri-reel {
+      animation: ri-spin 2.4s linear infinite;
+    }
+
+    .ri-reel--b {
+      animation-duration: 1.8s;
+    }
+
+    .ri-rec {
+      animation: ri-blink 1.2s steps(1, end) infinite;
+    }
+
+    .ri-star {
+      animation: ri-twinkle 2.4s ease-in-out infinite;
+    }
+
+    .ri-star--2 { animation-delay: 0.8s; }
+    .ri-star--3 { animation-delay: 1.6s; }
+
+    .ri-moon {
+      animation: ri-float 4s ease-in-out infinite;
+    }
+
+    /* Libro: se pasa la página. */
+    .ri-page {
+      transform-box: view-box;
+      transform-origin: 32px 32px;
+      animation: ri-flip 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+
+    /* Idiomas: las dos voces se contestan. */
+    .ri-bubble--a {
+      transform-origin: 10px 34px;
+      animation: ri-pop 3s ease-in-out infinite;
+    }
+
+    .ri-bubble--b {
+      transform-origin: 52px 54px;
+      animation: ri-pop 3s ease-in-out 1.5s infinite;
+    }
+
+    /* Ordenador: corre el cabezal de la línea de tiempo. */
+    .ri-playhead {
+      animation: ri-scrub 3s linear infinite;
+    }
+
+    .ri-spark {
+      animation: ri-twirl 4s ease-in-out infinite;
+    }
+  }
+
+  @keyframes ri-swing {
+    0%, 100% { rotate: -40deg; }
+    35% { rotate: 22deg; }
+    55% { rotate: 14deg; }
+  }
+
+  @keyframes ri-ball {
+    0%, 30% { translate: -14px 6px; opacity: 0; }
+    34% { translate: -12px 4px; opacity: 1; }
+    60% { translate: 2px 30px; }
+    78% { translate: 10px 14px; }
+    94% { translate: 16px 30px; opacity: 1; }
+    100% { translate: 16px 30px; opacity: 0; }
+  }
+
+  @keyframes ri-buzz {
+    0%, 100% { rotate: 0deg; }
+    10% { rotate: -4deg; }
+    20% { rotate: 3deg; }
+    30% { rotate: 0deg; }
+  }
+
+  @keyframes ri-wave {
+    0% { opacity: 0; scale: 0.6; }
+    30% { opacity: 1; }
+    100% { opacity: 0; scale: 1.15; }
+  }
+
+  @keyframes ri-tilt {
+    0%, 100% { rotate: -3deg; }
+    50% { rotate: 3deg; }
+  }
+
+  @keyframes ri-blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.15; }
+  }
+
+  @keyframes ri-shuffle-front {
+    0%, 20% { translate: 0 0; rotate: 0deg; }
+    40% { translate: 10px -4px; rotate: 10deg; }
+    60%, 100% { translate: 0 0; rotate: 0deg; }
+  }
+
+  @keyframes ri-shuffle-back {
+    0%, 20% { translate: 0 0; rotate: -8deg; }
+    40% { translate: -6px 2px; rotate: -14deg; }
+    60%, 100% { translate: 0 0; rotate: -8deg; }
+  }
+
+  @keyframes ri-tick {
+    0%, 55% { stroke-dashoffset: 1; opacity: 1; }
+    75%, 92% { stroke-dashoffset: 0; opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  @keyframes ri-write {
+    0% { stroke-dashoffset: 1; opacity: 1; }
+    25%, 88% { stroke-dashoffset: 0; opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  @keyframes ri-pencil {
+    0% { translate: -26px -26px; }
+    15% { translate: -10px -24px; }
+    30% { translate: -18px -16px; }
+    45% { translate: -8px -12px; }
+    60% { translate: -16px -6px; }
+    75% { translate: -6px 2px; }
+    90%, 100% { translate: 0 0; }
+  }
+
+  @keyframes ri-carriage {
+    0% { translate: 6px 0; }
+    85% { translate: -6px 0; }
+    100% { translate: 6px 0; }
+  }
+
+  @keyframes ri-key {
+    0% { translate: 0 1px; }
+    50% { translate: 0 0; }
+  }
+
+  @keyframes ri-spin {
+    to { rotate: 360deg; }
+  }
+
+  @keyframes ri-twinkle {
+    0%, 100% { opacity: 0.2; scale: 0.6; }
+    50% { opacity: 1; scale: 1.4; }
+  }
+
+  @keyframes ri-float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -2px; }
+  }
+
+  @keyframes ri-flip {
+    0%, 15% { scale: 1 1; }
+    50%, 65% { scale: -1 1; }
+    100% { scale: 1 1; }
+  }
+
+  @keyframes ri-pop {
+    0%, 100% { scale: 0.85; opacity: 0.55; }
+    15%, 45% { scale: 1; opacity: 1; }
+    60% { scale: 0.85; opacity: 0.55; }
+  }
+
+  @keyframes ri-scrub {
+    from { translate: 0 0; }
+    to { translate: 30px 0; }
+  }
+
+  @keyframes ri-twirl {
+    0%, 100% { rotate: 0deg; scale: 0.9; }
+    50% { rotate: 90deg; scale: 1.05; }
+  }
+</style>

@@ -53,6 +53,72 @@ motivation:
     - "M’interessa especialment aprendre del procés col·lectiu: com neix una idea, com es desenvolupa, com es treballa en una redacció i com es transforma fins a arribar a pantalla."
     - Busco unes pràctiques on pugui aprendre, observar i participar, però també aportar la meva capacitat d’escriptura, creativitat i experiència audiovisual.
   closing: Vull aprendre com s’expliquen històries quan milions de persones són a l’altra banda de la pantalla.
+resume:
+  fullName: Sara Abreu Sorribas
+  about: M’interessa el món laboral del cinema i el teatre i, en particular, la creació del guió d’obres i pel·lícules. Durant la carrera em vaig especialitzar en direcció cinematogràfica, però ara estic centrada en el guió cinematogràfic i televisiu, i estic cursant el màster superior d’especialitat de guió de l’ESCAC. Soc una persona responsable i amb capacitat de treball en equip, a qui li encanta escriure i construir històries.
+  experience:
+    - title: Tercera ajudant de direcció
+      place: Spot Cinema Catalunya
+      period: Febrer 2025
+      description: Responsable d’organitzar la figuració.
+      icon: megafono
+    - title: Primera ajudant de direcció i codirecció de càsting
+      place: "TFG ESCAC: curtmetratge «Garabatos»"
+      period: Febrer 2025 – juliol 2025
+      description: Responsable de la preproducció del rodatge a nivell d’ajudantia, fer el PDR, organitzar les tandes de rodatge i, un cop es roda el curt, ser l’ajudant de direcció al set. A més, responsable de buscar actors i actrius d’acord amb les necessitats del guió.
+      icon: walkie
+    - title: Direcció de càsting
+      place: "TFG ESCAC: curtmetratge «Gus quiere recordar»"
+      period: Febrer 2025 – maig 2025
+      description: Buscar actors i actrius d’acord amb les necessitats del guió. Concertar càstings amb els actors escollits i assessorar el director en la selecció.
+      icon: casting
+    - title: Professora de guió
+      place: CineBase Guion
+      period: Juliol 2026
+      description: Explicar l’estructura bàsica del guió a nens i nenes d’entre nou i disset anys.
+      icon: guion
+    - title: Primera ajudant de direcció
+      place: Curtmetratge «Pell de préssec»
+      period: Setembre 2026 – octubre 2026
+      description: Responsable de la preproducció del rodatge a nivell d’ajudantia, fer el PDR, organitzar les tandes de rodatge i, un cop es roda el curt, ser l’ajudant de direcció al set. Al set, coordinar juntament amb els coordinadors de figuració i la segona AD 100 extres de figuració en un rodatge nocturn.
+      icon: rodaje-noche
+    - title: Entrenadora de tennis
+      place: Club Natació Sant Andreu
+      period: Setembre 2024 – actualitat
+      description: Responsable d’ensenyar tennis a nens i nenes d’entre tres i sis anys, adolescents i adults.
+      icon: tenis
+  education:
+    - title: Batxillerat humanístic
+      place: Escola Violai
+      period: Setembre 2020 – juny 2022
+      description: Vaig cursar el batxillerat humanístic, amb optativa de llatí i comunicació audiovisual, i vaig obtenir matrícula d’honor.
+      icon: libro
+    - title: Grau en Cinematografia
+      place: ESCAC
+      period: Setembre 2022 – març 2025
+      description: Vaig cursar el grau universitari de Cinematografia a l’ESCAC, amb l’especialitat de direcció.
+      icon: rodaje
+    - title: Màster Superior d’Especialitat de Guió
+      place: ESCAC
+      period: Setembre 2025 – actualitat
+      description: Estic cursant el màster de guió.
+      icon: maquina
+  certificates:
+    - title: BC1 Advanced
+      place: Cambridge English
+      period: 2022
+      icon: idioma
+    - title: Nivell 1 entrenadora de tennis
+      place: Federació Catalana de l’Esport
+      period: 2025
+      icon: tenis
+  itSkills: [Adobe Premiere, Adobe Photoshop, PowerPoint, Word]
+  languages:
+    - { name: Castellà, level: natiu, value: 4 }
+    - { name: Català, level: natiu, value: 4 }
+    - { name: Anglès, level: avançat, value: 3 }
+    - { name: Italià, level: principiant, value: 1 }
+  competencies: [Resolució de problemes, Organització, Responsabilitat, Treball en equip, Comunicació]
 ---
 
 Soc guionista audiovisual formada a l’ESCAC, on he après a desenvolupar històries des de la idea fins a la pantalla i a entendre el guió com una eina per construir personatges, conflictes i mons.
