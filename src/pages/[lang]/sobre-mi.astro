@@ -23,7 +23,7 @@ const skillsNote = profile.getSkillsNote();
     <div class="container about__inner">
       {photo && (
         <figure class="about__figure">
-          <img class="about__photo" src={withBase(photo)} alt={profile.getName()} width="480" height="600" />
+          <img class="about__photo" src={withBase(photo)} alt={t('about.photoAlt')} width="840" height="1050" />
           <Motif kind="sparkle" size="3rem" class="about__spark" />
         </figure>
       )}

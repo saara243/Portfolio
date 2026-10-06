@@ -3,7 +3,7 @@ name: Sara Abreu
 role: Screenwriter
 tagline: "I want to write stories people see themselves in, so they think: I know someone like that."
 statement: "I want to write stories people see themselves in, so they think: I know someone like that."
-photo: images/profile.svg
+photo: images/profile.jpg
 email: saara.sorribaas@gmail.com
 location: Barcelona, Spain
 cv: files/cv/cv-en.pdf

@@ -3,7 +3,7 @@ name: Sara Abreu
 role: Guionista audiovisual
 tagline: "Quiero escribir historias donde la gente se vea reflejada, que piensen: yo conozco a alguien así."
 statement: "Quiero escribir historias donde la gente se vea reflejada, que piensen: yo conozco a alguien así."
-photo: images/profile.svg
+photo: images/profile.jpg
 email: saara.sorribaas@gmail.com
 location: Barcelona, España
 cv: files/cv/cv-es.pdf

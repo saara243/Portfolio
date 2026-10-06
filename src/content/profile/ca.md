@@ -3,7 +3,7 @@ name: Sara Abreu
 role: Guionista audiovisual
 tagline: "Vull escriure històries on la gent s’hi vegi reflectida, que pensin: jo conec algú així."
 statement: "Vull escriure històries on la gent s’hi vegi reflectida, que pensin: jo conec algú així."
-photo: images/profile.svg
+photo: images/profile.jpg
 email: saara.sorribaas@gmail.com
 location: Barcelona
 cv: files/cv/cv-ca.pdf
