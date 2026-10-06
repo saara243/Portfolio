@@ -43,8 +43,7 @@ const clauses = [
   <svg class="contract__svg" viewBox="0 0 300 400" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <g class="contract__paper">
       <rect width="300" height="400" fill="var(--peach)" />
-      <text class="contract__head" x="150" y="58" text-anchor="middle">{t('contact.contract').toUpperCase()}</text>
-      <text class="contract__sub" x="150" y="78" text-anchor="middle">{role}</text>
+      <text class="contract__sub" x="150" y="70" text-anchor="middle">{role}</text>
       <line x1="34" y1="94" x2="266" y2="94" stroke="var(--cobalt)" stroke-opacity="0.35" />
 
       {clauses.map(({ y, w }, i) => (
@@ -111,20 +110,12 @@ const clauses = [
     transform-origin: center;
   }
 
-  .contract__head {
-    font-family: var(--font-script);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    fill: var(--cobalt);
-  }
-
   .contract__sub {
     font-family: var(--font-display);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    fill: var(--ink);
+    fill: var(--cobalt);
   }
 
   .contract__label {

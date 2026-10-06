@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DownloadButton from '../../components/DownloadButton.astro';
 import Motif from '../../components/Motif.astro';
 import QuoteBand from '../../components/QuoteBand.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
@@ -14,8 +13,6 @@ const lang = toLang(Astro.params.lang);
 const t = useTranslations(lang);
 const profile = await profileModule.getProfile.execute({ locale: lang });
 const photo = profile.getPhoto();
-const cv = profile.getCv();
-const education = profile.getEducation();
 const experience = profile.getExperience();
 const learnings = profile.getLearnings();
 const skillsNote = profile.getSkillsNote();
@@ -37,26 +34,11 @@ const skillsNote = profile.getSkillsNote();
     </div>
   </section>
 
-  {(education.length > 0 || experience.length > 0) && (
+  {(experience.length > 0 || learnings.length > 0) && (
     <section class="band path" data-tone="cobalt">
       <div class="container">
         <p class="path__slug script-font">{t('scene.studies')}</p>
         <div class="path__grid">
-          {education.length > 0 && (
-            <section class="path__panel path__panel--outline">
-              <Motif kind="badge" size="3.5rem" class="path__mark" />
-              <h2 class="path__title">{t('about.education')}</h2>
-              <ul class="path__list">
-                {education.map((entry) => (
-                  <li>
-                    <span class="path__entry">{entry.getTitle()}</span>
-                    {entry.getPlace() && <span class="path__place">{entry.getPlace()}</span>}
-                  </li>
-                ))}
-              </ul>
-              {cv && <DownloadButton file={cv} label={t('nav.cv')} variant="secondary" />}
-            </section>
-          )}
           {experience.length > 0 && (
             <section class="path__panel" data-tone="peach">
               <Motif kind="badge" size="3.5rem" class="path__mark" />
@@ -73,16 +55,20 @@ const skillsNote = profile.getSkillsNote();
               </ul>
             </section>
           )}
+          {learnings.length > 0 && (
+            <section class="path__panel" data-tone="peach">
+              <Motif kind="badge" size="3.5rem" class="path__mark" />
+              <h2 class="path__title">{t('about.learnings')}</h2>
+              <ul class="path__list">
+                {learnings.map((learning) => (
+                  <li>
+                    <span class="path__entry">{learning}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
-
-        {learnings.length > 0 && (
-          <div class="learnings">
-            <h2 class="learnings__title">{t('about.learnings')}</h2>
-            <ul class="learnings__list">
-              {learnings.map((learning) => <li>{learning}</li>)}
-            </ul>
-          </div>
-        )}
       </div>
     </section>
   )}
@@ -164,10 +150,6 @@ const skillsNote = profile.getSkillsNote();
     text-align: center;
   }
 
-  .path__panel--outline {
-    border: 1px solid var(--line);
-  }
-
   .path__panel :global(.path__mark) {
     color: var(--accent);
   }
@@ -214,37 +196,6 @@ const skillsNote = profile.getSkillsNote();
     max-width: 38ch;
     margin-inline: auto;
     font-weight: 300;
-  }
-
-  .learnings {
-    display: grid;
-    justify-items: center;
-    margin-top: var(--space-24);
-    text-align: center;
-  }
-
-  .learnings__title {
-    margin-bottom: var(--space-8);
-    font-family: var(--font-script);
-    font-weight: 700;
-    font-size: var(--text-sm);
-    letter-spacing: 0.04em;
-  }
-
-  .learnings__list {
-    display: grid;
-    gap: var(--space-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .learnings__list li {
-    font-family: var(--font-display);
-    font-weight: 300;
-    font-size: var(--text-2xl);
-    line-height: 1.15;
-    letter-spacing: 0.02em;
   }
 
   .languages__title {
