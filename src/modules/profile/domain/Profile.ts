@@ -25,6 +25,7 @@ export interface ProfilePrimitive {
   interests: InterestPrimitive[];
   skills: SkillGroupPrimitive[];
   skillsNote?: string;
+  pathNote?: string;
   motivation?: MotivationPrimitive;
   languages: string[];
   resume?: ResumePrimitive;
@@ -51,6 +52,7 @@ export class Profile {
     private readonly interests: Interest[],
     private readonly skills: SkillGroup[],
     private readonly skillsNote: string | undefined,
+    private readonly pathNote: string | undefined,
     private readonly motivation: Motivation | undefined,
     private readonly languages: string[],
     private readonly resume: Resume | undefined,
@@ -77,6 +79,7 @@ export class Profile {
       data.interests.map((interest) => Interest.create(interest)),
       data.skills.map((group) => SkillGroup.create(group)),
       data.skillsNote?.trim() || undefined,
+      data.pathNote?.trim() || undefined,
       data.motivation ? Motivation.create(data.motivation) : undefined,
       [...data.languages],
       data.resume ? Resume.create(data.resume) : undefined,
@@ -113,6 +116,7 @@ export class Profile {
   getInterests(): Interest[] { return [...this.interests]; }
   getSkills(): SkillGroup[] { return [...this.skills]; }
   getSkillsNote(): string | undefined { return this.skillsNote; }
+  getPathNote(): string | undefined { return this.pathNote; }
   getMotivation(): Motivation | undefined { return this.motivation; }
   getLanguages(): string[] { return [...this.languages]; }
   getResume(): Resume | undefined { return this.resume; }
@@ -145,6 +149,7 @@ export class Profile {
       interests: this.interests.map((interest) => interest.toPrimitive()),
       skills: this.skills.map((group) => group.toPrimitive()),
       skillsNote: this.skillsNote,
+      pathNote: this.pathNote,
       motivation: this.motivation?.toPrimitive(),
       languages: [...this.languages],
       resume: this.resume?.toPrimitive(),

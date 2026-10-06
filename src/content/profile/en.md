@@ -22,10 +22,13 @@ experience:
   - title: Shoots as assistant director, extras coordinator and casting director
     period: 2022 – 2026
     description: Developing projects from the page to the shoot.
+pathNote: My training at ESCAC has let me understand film and television from the perspective of different departments, seeing screenwriting as the foundation of them all.
 learnings:
   - Narrative structure
   - Television dialogue
   - Character development
+  - Dramaturgy
+  - Audiovisual project development
 interests:
   - title: Characters
     description: I’m drawn to contradictory, vulnerable characters who can still surprise you. People who want something very specific, even when they don’t quite know what it is.

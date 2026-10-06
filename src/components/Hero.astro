@@ -191,6 +191,31 @@ const typedMs = Math.round(clock);
   }
 
   document.addEventListener('astro:page-load', initHeroMark);
+
+  /*
+   * Al pasar el ratón por una letra del nombre, repite el gesto de la apertura: cae bajo la
+   * línea de corte y vuelve a subir girando. No se reinicia mientras está en marcha.
+   */
+  function initNameHover() {
+    if (reduce.matches || !finePointer.matches) return;
+    document.querySelectorAll<HTMLElement>('.hero__char').forEach((char) => {
+      if (char.dataset.hover) return;
+      char.dataset.hover = 'true';
+      char.addEventListener('pointerenter', () => {
+        if (char.getAnimations().some((animation) => animation.playState === 'running')) return;
+        char.animate(
+          [
+            { translate: '0 0', rotate: '0deg', easing: 'cubic-bezier(0.7, 0, 0.84, 0)' },
+            { translate: '0 105%', rotate: '8deg', offset: 0.3, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+            { translate: '0 0', rotate: '0deg' },
+          ],
+          { duration: 1100 },
+        );
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initNameHover);
 </script>
 
 <style>

@@ -70,6 +70,8 @@ const profile = defineCollection({
     interests: z.array(z.object({ title: z.string(), description: z.string() })).default([]),
     skills: z.array(z.object({ title: z.string(), items: z.array(z.string()).min(1) })).default([]),
     skillsNote: z.string().optional(),
+    // Frase que introduce Experiencias y Aprendizajes clave en Sobre mí
+    pathNote: z.string().optional(),
     motivation: z
       .object({ title: z.string(), paragraphs: z.array(z.string()).min(1), closing: z.string().optional() })
       .optional(),

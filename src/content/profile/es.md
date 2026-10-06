@@ -22,10 +22,13 @@ experience:
   - title: Rodajes como ayudante de dirección, coordinación de figuración y dirección de casting
     period: 2022 – 2026
     description: Desarrollo de proyectos desde la escritura hasta el rodaje.
+pathNote: Mi formación en ESCAC me ha permitido entender el audiovisual desde distintos departamentos, entendiendo la escritura del guion como base de todos ellos.
 learnings:
   - Estructura narrativa de guion
   - Diálogo televisivo
   - Desarrollo de personajes
+  - Dramaturgia
+  - Desarrollo de proyectos audiovisuales
 interests:
   - title: Personajes
     description: Me interesan los personajes contradictorios, vulnerables y capaces de sorprender. Personas que quieren algo muy concreto, aunque a veces ni siquiera sepan qué es.

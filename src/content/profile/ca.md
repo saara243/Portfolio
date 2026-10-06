@@ -22,10 +22,13 @@ experience:
   - title: Rodatges com a ajudant de direcció, coordinació de figuració i direcció de càsting
     period: 2022 – 2026
     description: Desenvolupament de projectes des de l’escriptura fins al rodatge.
+pathNote: La meva formació a l’ESCAC m’ha permès entendre l’audiovisual des de diferents departaments, entenent l’escriptura del guió com la base de tots ells.
 learnings:
   - Estructura narrativa de guió
   - Diàleg televisiu
   - Desenvolupament de personatges
+  - Dramatúrgia
+  - Desenvolupament de projectes audiovisuals
 interests:
   - title: Personatges
     description: M’interessen els personatges contradictoris, vulnerables i capaços de sorprendre. Persones que volen una cosa molt concreta, encara que de vegades ni tan sols sàpiguen què és.

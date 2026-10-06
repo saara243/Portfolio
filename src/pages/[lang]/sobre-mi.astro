@@ -15,6 +15,7 @@ const profile = await profileModule.getProfile.execute({ locale: lang });
 const photo = profile.getPhoto();
 const experience = profile.getExperience();
 const learnings = profile.getLearnings();
+const pathNote = profile.getPathNote();
 const skillsNote = profile.getSkillsNote();
 ---
 
@@ -38,6 +39,7 @@ const skillsNote = profile.getSkillsNote();
     <section class="band path" data-tone="cobalt">
       <div class="container">
         <p class="path__slug script-font">{t('scene.studies')}</p>
+        {pathNote && <p class="path__note">{pathNote}</p>}
         <div class="path__grid">
           {experience.length > 0 && (
             <section class="path__panel" data-tone="peach">
@@ -134,6 +136,18 @@ const skillsNote = profile.getSkillsNote();
     font-size: var(--text-sm);
     text-transform: uppercase;
     text-align: center;
+  }
+
+  .path__note {
+    max-width: 46ch;
+    margin: calc(-1 * var(--space-4)) auto var(--space-12);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--text-xl);
+    line-height: 1.4;
+    text-align: center;
+    text-wrap: balance;
   }
 
   .path__grid {

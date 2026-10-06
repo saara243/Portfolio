@@ -27,6 +27,7 @@ export class AstroContentProfileRepository implements ProfileRepository {
       interests: entry.data.interests,
       skills: entry.data.skills,
       skillsNote: entry.data.skillsNote,
+      pathNote: entry.data.pathNote,
       motivation: entry.data.motivation,
       languages: entry.data.languages,
       resume: entry.data.resume,
