@@ -19,6 +19,8 @@ const es = {
   'scene.cv': 'INT. OFICINA — DÍA',
   'scene.contact': 'EXT. CALLE — ATARDECER',
   'scene.cut': 'CORTE A:',
+  'scene.fadeIn': 'FUNDIDO DE ENTRADA:',
+  'scene.toCamera': '(a cámara)',
 
   'home.featured': 'Proyectos destacados',
   'home.allProjects': 'Ver todos los proyectos',
@@ -119,6 +121,8 @@ const ca: Record<UiKey, string> = {
   'scene.cv': 'INT. OFICINA — DIA',
   'scene.contact': 'EXT. CARRER — CAPVESPRE',
   'scene.cut': 'TALL A:',
+  'scene.fadeIn': "FOS D'ENTRADA:",
+  'scene.toCamera': '(a càmera)',
 
   'home.featured': 'Projectes destacats',
   'home.allProjects': 'Veure tots els projectes',
@@ -217,6 +221,8 @@ const en: Record<UiKey, string> = {
   'scene.cv': 'INT. OFFICE — DAY',
   'scene.contact': 'EXT. STREET — DUSK',
   'scene.cut': 'CUT TO:',
+  'scene.fadeIn': 'FADE IN:',
+  'scene.toCamera': '(to camera)',
 
   'home.featured': 'Featured projects',
   'home.allProjects': 'See all projects',

@@ -140,7 +140,7 @@ Solo hay tema claro: el melocotón y el cobalto son la identidad, no un modo.
 - Titulares Jost 300 en mayúsculas con tracking; cuerpo Barlow 300/400.
 - Esquinas rectas, sin sombras, filetes de 1px.
 - Motivos de trazo (asterisco, estrella-sello, destello) como única ornamentación.
-- Firma: el asterisco del hero se traza al cargar y gira con el scroll.
+- Firma: la página de guion del hero cae y se teclea al cargar, y sigue al puntero y al scroll.
 
 ## Colors
 
@@ -269,8 +269,8 @@ Etiquetas estáticas con borde de 1px `--line`, texto 0.875rem, relleno 0.25rem 
 ### Banda de cita
 Frase en Jost 300 cursiva a tamaño title (o subtitle en la variante media), centrada entre dos destellos, normalmente en banda cobalto.
 
-### Asterisco del hero (firma)
-Asterisco grande que sangra por la derecha. Al cargar estalla desde el centro (doce semirrayos que crecen con `scale`, 55ms de desfase, en el sentido del reloj) mientras se despliega girando; después gira lento en reposo (pausado fuera de pantalla), se inclina hacia el puntero con inercia y, con `animation-timeline: scroll()`, gira 150° y se reduce a 0.8 durante los primeros 120vh. En la misma apertura la slugline se teclea con un cursor Courier que avanza con ella, y SARA / ABREU sube letra a letra desde la línea de corte. Todo se anula con `prefers-reduced-motion`.
+### Página de guion del hero (firma)
+Junto al nombre, una página de guion en formato carta (8.5:11): hoja cobalto girada −2.5° con texto Courier melocotón, tres agujeros de encuadernación que dejan ver el papel, número de página «1.» y una hoja taupe asomando detrás. El texto se monta con contenido real del perfil en formato profesional: transición de entrada, slugline de la home, el lema y los títulos de los intereses como acción, el nombre como personaje con la acotación «(a cámara)», la frase-manifiesto como diálogo y «CORTE A:» alineado a la derecha. Maqueta de página carta real en `cqw` (márgenes 1.5"/1", diálogo a 2.5", acotación a 3.1", personaje a 3.7"), interlineado sencillo dentro de cada bloque y una línea en blanco (`1lh`) entre bloques. Al cargar, la página cae a su sitio, la hoja de detrás se desliza y el guion se teclea como a máquina (unos 5 s: ritmo irregular determinista, pausas tras la puntuación y entre bloques) con un cursor que viaja con las letras y se queda parpadeando al final. Después la página se inclina en 3D hacia el puntero y se levanta y endereza con el scroll. Es decorativa (`aria-hidden`): su texto ya está en la página. En la misma apertura la slugline superior se teclea con cursor y SARA / ABREU sube letra a letra. Todo se anula con `prefers-reduced-motion`.
 
 ### Movimiento de la home
 - **Cita:** la banda cobalto se abre como un telón al entrar y la frase se lee palabra a palabra con el scroll (de 22% a 100% de opacidad).

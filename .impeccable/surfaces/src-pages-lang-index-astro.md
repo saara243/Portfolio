@@ -17,7 +17,7 @@ OWN-WORLD: Peach #FFE3D0 ground, cobalt #0262DE drench bands, taupe #CCB6A6 pane
 
 STORY: The visitor meets Sara, reads what she wants to write, sees her projects and what she brings, and leaves by requesting a script, writing to her or downloading her CV.
 
-FIRST VIEWPORT: Peach. Slugline INT. PORTFOLIO — DÍA top left. SARA ABREU in cobalt caps at ~8vw with the role beneath. A large stroke asterisk draws itself in at the right and turns with scroll. Three actions sit under the name: projects, CV, contact.
+FIRST VIEWPORT: Peach. Slugline INT. PORTFOLIO — DÍA top left. SARA ABREU in cobalt caps at ~8vw with the role beneath. A cobalt screenplay page drops in at the right and types itself out in Courier from real profile copy, then tilts toward the pointer and lifts with scroll. Three actions sit under the name: projects, CV, contact.
 
 FORM: User-pinned reference world (no seed key: the roll was skipped because the user pinned the world).
 
@@ -25,7 +25,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 ## Memorable moment
 
-The asterisk that draws itself and turns as you scroll; sluglines in Courier opening every band.
+The screenplay page that types itself beside the name; sluglines in Courier opening every band.
 
 ## Constraints
 
