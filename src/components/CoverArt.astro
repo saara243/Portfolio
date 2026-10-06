@@ -8,10 +8,12 @@
  * - set («Último casting»): el plató de ¡Baila, Baila! — rótulo con bombillas que corren, focos que
  *   barren el escenario, una bailarina con vestido de cuadros que gira, la cámara grabando (REC) y, en
  *   la grada, la silla vacía donde aparece Carmen de niña y saluda. Bucle de 8 s.
+ * - tube («Cifras y letras»): la tele de tubo con las fichas del concurso y la barra del tiempo; entra
+ *   el tubo de la aspiradora, golpe, la pantalla se agrieta y dentro aparece Yolanda mareada. Bucle de 8 s.
  * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
  */
 interface Props {
-  kind: 'revival' | 'set';
+  kind: 'revival' | 'set' | 'tube';
   title: string;
   class?: string;
   [attr: string]: unknown;
@@ -41,6 +43,10 @@ const fingers = [-60, -30, 0, 30, 60];
 
 // Plató: bombillas del rótulo y sillas de la grada (la vacía, `kid`, es donde aparece Carmen niña).
 const bulbs = Array.from({ length: 10 }, (_, i) => 78 + i * 16);
+// Concurso: fichas de letras en dos filas.
+const tiles = [...'CIFRAS', ...'LETRAS'].map((letter, i) => ({ letter, x: 86 + (i % 6) * 18, y: i < 6 ? 170 : 196, i }));
+const cracks = 'M168 184l-14-20M168 184l22-14M168 184l-6 26M168 184l-30 8M168 184l18 16M154 164l-8-6M190 170l6-10M138 192l-8 8';
+
 const seats = [
   { x: 44, y: 362, kid: true },
   { x: 82, y: 362 },
@@ -201,6 +207,51 @@ const seats = [
         <path class="cs-wave" d="M49 356l8-12" stroke="var(--peach)" stroke-width="3" />
       </g>
     </>)}
+    {kind === 'tube' && (<>
+      <!-- Mueble y suelo -->
+      <path d="M84 290v50M216 290v50M70 290h160" stroke="var(--peach)" stroke-width="4" />
+      <path d="M30 342h240" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+
+      <g class="ct-tv">
+        <g class="ct-antenna">
+          <path d="M150 130l-42-46M150 130l40-42" stroke="var(--peach)" stroke-width="3" />
+          <circle cx="108" cy="84" r="4" fill="var(--peach)" /><circle cx="190" cy="88" r="4" fill="var(--peach)" />
+        </g>
+        <rect x="60" y="128" width="180" height="162" rx="16" fill="var(--peach)" />
+        <rect x="76" y="144" width="122" height="130" rx="22" fill="var(--cobalt)" />
+        <circle cx="219" cy="168" r="9" stroke="var(--cobalt)" stroke-width="3" />
+        <circle cx="219" cy="198" r="9" stroke="var(--cobalt)" stroke-width="3" />
+        <path d="M209 230h20M209 240h20M209 250h20" stroke="var(--cobalt)" stroke-width="2.5" />
+
+        <!-- Pantalla: el concurso -->
+        <g class="ct-letters">
+          {tiles.map((tile) => (
+            <g class="ct-tile" style={`--t:${tile.i * 0.08}s`}>
+              <rect x={tile.x} y={tile.y} width="15" height="20" rx="2" fill="var(--peach-soft)" />
+              <text class="ct-letter" x={tile.x + 7.5} y={tile.y + 15} text-anchor="middle">{tile.letter}</text>
+            </g>
+          ))}
+          <rect class="ct-timer" x="90" y="238" width="94" height="6" rx="3" fill="var(--peach)" />
+        </g>
+
+        <!-- Pantalla: Yolanda dentro, mareada -->
+        <g class="ct-face">
+          <path d="M100 176q10-12 22-4q12-10 24-2q12-8 22 4" stroke="var(--peach)" stroke-width="3" />
+          <path class="ct-eye" d="M118 206m-8 0a8 8 0 1 0 16 0a5 5 0 1 0-10 0a2 2 0 1 0 4 0" stroke="var(--peach)" stroke-width="2" />
+          <path class="ct-eye" d="M156 206m-8 0a8 8 0 1 0 16 0a5 5 0 1 0-10 0a2 2 0 1 0 4 0" stroke="var(--peach)" stroke-width="2" />
+          <path d="M120 240q8-6 16 0t16 0" stroke="var(--peach)" stroke-width="3" />
+        </g>
+        <rect class="ct-static" x="76" y="144" width="122" height="130" rx="22" fill="var(--peach-soft)" />
+        <path class="ct-crack" d={cracks} stroke="var(--peach-soft)" stroke-width="2" />
+      </g>
+
+      <!-- El tubo de la aspiradora -->
+      <g class="ct-vacuum">
+        <path d="M312 70L188 176" stroke="var(--peach)" stroke-width="9" />
+        <path d="M312 70L188 176" stroke="var(--cobalt)" stroke-width="9" stroke-dasharray="2 10" />
+        <path d="M176 168l18 22 10-8-18-22Z" fill="var(--peach)" />
+      </g>
+    </>)}
   </svg>
 </div>
 
@@ -338,6 +389,33 @@ const seats = [
     transform-origin: center bottom;
   }
 
+  .ct-letter {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 13px;
+    fill: var(--cobalt);
+  }
+
+  /* Sin movimiento: el final, con ella dentro de la tele. */
+  .ct-letters,
+  .ct-static {
+    opacity: 0;
+  }
+
+  .cv .ct-vacuum {
+    transform-box: view-box;
+    transform-origin: 312px 70px;
+    rotate: -24deg;
+  }
+
+  .cv .ct-antenna {
+    transform-origin: center bottom;
+  }
+
+  .cv .ct-timer {
+    transform-origin: left center;
+  }
+
   .cv:not([data-playing]) :global(*) {
     animation-play-state: paused !important;
   }
@@ -379,6 +457,44 @@ const seats = [
 
     .cv-gasp {
       animation: cv-gasp 8s linear infinite;
+    }
+
+    /* Cifras y letras */
+    .ct-letters {
+      animation: ct-letters 8s steps(1, end) infinite;
+    }
+
+    .ct-tile {
+      animation: ct-tile 8s var(--ease-out) var(--t) infinite;
+    }
+
+    .ct-timer {
+      animation: ct-timer 8s linear infinite;
+    }
+
+    .ct-vacuum {
+      animation: ct-vacuum 8s var(--ease-out) infinite;
+    }
+
+    .ct-tv {
+      animation: ct-shake 8s linear infinite;
+    }
+
+    .ct-antenna {
+      animation: ct-antenna 8s ease-out infinite;
+    }
+
+    .ct-static {
+      animation: ct-static 8s linear infinite;
+    }
+
+    .ct-crack,
+    .ct-face {
+      animation: ct-after 8s steps(1, end) infinite;
+    }
+
+    .ct-eye {
+      animation: ct-spin 1.2s linear infinite;
     }
 
     /* Plató */
@@ -425,6 +541,66 @@ const seats = [
     .cs-wave {
       animation: cs-wave 0.5s ease-in-out infinite alternate;
     }
+  }
+
+  @keyframes ct-letters {
+    0% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes ct-tile {
+    0% { opacity: 0; scale: 1 0; }
+    4%, 100% { opacity: 1; scale: 1 1; }
+  }
+
+  @keyframes ct-timer {
+    0%, 8% { scale: 1 1; }
+    48%, 100% { scale: 0 1; }
+  }
+
+  /* El tubo espera fuera, entra de golpe contra la pantalla y se retira. */
+  @keyframes ct-vacuum {
+    0%, 40% { rotate: -60deg; }
+    47% { rotate: -66deg; }
+    50% { rotate: 0deg; }
+    54% { rotate: -6deg; }
+    70% { rotate: -24deg; }
+    90% { rotate: -24deg; }
+    100% { rotate: -60deg; }
+  }
+
+  @keyframes ct-shake {
+    0%, 49% { translate: 0 0; rotate: 0deg; }
+    51% { translate: -5px 2px; rotate: -2deg; }
+    53% { translate: 4px -1px; rotate: 1.5deg; }
+    55% { translate: -2px 0; rotate: -0.5deg; }
+    58%, 100% { translate: 0 0; rotate: 0deg; }
+  }
+
+  @keyframes ct-antenna {
+    0%, 50% { rotate: 0deg; }
+    53% { rotate: 14deg; }
+    57% { rotate: -10deg; }
+    61% { rotate: 6deg; }
+    66%, 100% { rotate: 0deg; }
+  }
+
+  @keyframes ct-static {
+    0%, 49.9% { opacity: 0; }
+    50% { opacity: 0.95; }
+    53% { opacity: 0.3; }
+    55% { opacity: 0.8; }
+    58%, 100% { opacity: 0; }
+  }
+
+  @keyframes ct-after {
+    0% { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    94.1%, 100% { opacity: 0; }
+  }
+
+  @keyframes ct-spin {
+    to { rotate: 360deg; }
   }
 
   @keyframes cs-bulb {

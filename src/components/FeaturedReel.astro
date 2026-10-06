@@ -1,4 +1,5 @@
 ---
+import CoverArt from './CoverArt.astro';
 import Motif from './Motif.astro';
 import type { Script } from '../modules/scripts/domain/Script';
 import type { UiKey } from '../i18n/ui';
@@ -11,7 +12,7 @@ import { localizedPath, routes, useTranslations, withBase, type Lang } from '../
  * ficha va fija debajo del plano.
  *
  * Imagen: `still` (fotograma horizontal) a sangre; si falta, la portada vertical entera sobre
- * un panel cobalto; si tampoco hay, el asterisco.
+ * un panel cobalto (o la portada animada, `coverArt`); si tampoco hay, el asterisco.
  */
 interface Props {
   lang: Lang;
@@ -27,16 +28,19 @@ const columns = Math.min(scripts.length, 3);
   {scripts.map((script, i) => {
     const still = script.getStill();
     const cover = script.getCover();
+    const coverArt = script.getCoverArt();
     const format = script.getFormat().getValue();
     const genres = script.getGenres().map((genre) => genre.getLabel()).join(' · ');
     return (
       <li class="reel__item" style={`--i:${Math.min(i, 5)}`}>
         <a class="reel__link" href={localizedPath(lang, routes.project(script.getSlug()))}>
-          <div class:list={['reel__shot', still ? 'reel__shot--still' : cover ? 'reel__shot--poster' : 'reel__shot--empty']}>
+          <div class:list={['reel__shot', still ? 'reel__shot--still' : cover || coverArt ? 'reel__shot--poster' : 'reel__shot--empty']}>
             {still ? (
               <img class="reel__img" src={withBase(still)} alt="" width="1600" height="900" loading="lazy" decoding="async" />
             ) : cover ? (
               <img class="reel__poster" src={withBase(cover)} alt="" width="600" height="800" loading="lazy" decoding="async" />
+            ) : coverArt ? (
+              <span class="reel__poster reel__poster--art"><CoverArt kind={coverArt} title={script.getTitle()} /></span>
             ) : (
               <Motif kind="asterisk" size="34%" class="reel__mark" />
             )}
@@ -159,6 +163,15 @@ const columns = Math.min(scripts.length, 3);
     outline: 1px solid rgb(255 227 208 / 0.45);
     outline-offset: 6px;
     transition: scale 1100ms var(--ease-out), rotate 1100ms var(--ease-out);
+  }
+
+  .reel__poster--art {
+    display: block;
+  }
+
+  .reel__poster--art > :global(.cv) {
+    width: 100%;
+    height: 100%;
   }
 
   .reel__shot :global(.reel__mark) {
