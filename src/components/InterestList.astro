@@ -55,30 +55,6 @@ const { interests, reveal = false } = Astro.props;
 
   document.addEventListener('astro:page-load', initInterests);
 
-  /*
-   * En reposo, cada palabra se centra en su fila: --shift es la distancia desde su sitio
-   * (a la izquierda) hasta el centro. Se recalcula al cambiar el ancho.
-   */
-  let resizeObserver: ResizeObserver | undefined;
-  function centerInterests() {
-    resizeObserver?.disconnect();
-    const list = document.querySelector<HTMLElement>('.interests');
-    if (!list) return;
-    const measure = () => {
-      list.querySelectorAll<HTMLElement>('[data-interest]').forEach((item) => {
-        const toggle = item.querySelector<HTMLElement>('.interests__toggle');
-        if (!toggle) return;
-        const shift = Math.max(0, (item.clientWidth - toggle.offsetWidth) / 2);
-        item.style.setProperty('--shift', `${shift.toFixed(1)}px`);
-      });
-    };
-    measure();
-    document.fonts?.ready.then(measure);
-    resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(list);
-  }
-
-  document.addEventListener('astro:page-load', centerInterests);
 </script>
 
 <style>
@@ -251,8 +227,16 @@ const { interests, reveal = false } = Astro.props;
   /*
    * Palabra centrada en reposo; al abrir la fila se desliza a la izquierda y después entra el texto.
    */
+  /*
+   * Centrado sin JavaScript: cada fila es un contenedor de consulta, así que 50cqw es la mitad
+   * de la fila y 50% la mitad de la palabra.
+   */
+  .interests--folded .interests__item {
+    container-type: inline-size;
+  }
+
   .interests--folded .interests__toggle {
-    translate: var(--shift, 0) 0;
+    translate: calc(50cqw - 50%) 0;
     transition: translate 650ms var(--ease-out);
   }
 
