@@ -5,10 +5,13 @@
  *   tiembla, el hermano muerto sale de dentro con el piso de arriba (y las velas) de sombrero,
  *   ojos en X, canta con manos de jazz y suelta notas; las dos hermanas, opuestas (alta y rellena /
  *   bajita y en trazo), saltan del susto. Vuelve a hundirse. Bucle de 8 s, pausado fuera de pantalla.
+ * - set («Último casting»): el plató de ¡Baila, Baila! — rótulo con bombillas que corren, focos que
+ *   barren el escenario, una bailarina con vestido de cuadros que gira, la cámara grabando (REC) y, en
+ *   la grada, la silla vacía donde aparece Carmen de niña y saluda. Bucle de 8 s.
  * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
  */
 interface Props {
-  kind: 'revival';
+  kind: 'revival' | 'set';
   title: string;
   class?: string;
   [attr: string]: unknown;
@@ -35,6 +38,15 @@ const notes = [
   { x: 238, y: 182, d: 1.05 },
 ];
 const fingers = [-60, -30, 0, 30, 60];
+
+// Plató: bombillas del rótulo y sillas de la grada (la vacía, `kid`, es donde aparece Carmen niña).
+const bulbs = Array.from({ length: 10 }, (_, i) => 78 + i * 16);
+const seats = [
+  { x: 44, y: 362, kid: true },
+  { x: 82, y: 362 },
+  { x: 120, y: 362 },
+  { x: 158, y: 362 },
+];
 ---
 
 <div class:list={['cv', `cv--${kind}`, className]} data-cover-art aria-hidden="true" {...rest}>
@@ -48,6 +60,7 @@ const fingers = [-60, -30, 0, 30, 60];
       {sub && <text class="cv-sub" x="150" y={48 + lines.length * 26 + 2} text-anchor="middle">— {sub} —</text>}
     </g>
 
+    {kind === 'revival' && (<>
     <!-- Notas que suelta al cantar -->
     {notes.map((note) => (
       <g transform={`translate(${note.x} ${note.y})`}>
@@ -117,6 +130,77 @@ const fingers = [-60, -30, 0, 30, 60];
       <path d="M259 323h3m4 0h3" stroke="var(--peach)" stroke-width="2" />
       <text class="cv-gasp" x="264" y="304" text-anchor="middle">!</text>
     </g>
+    </>)}
+
+    {kind === 'set' && (<>
+      <defs>
+        <pattern id="cs-checks" width="8" height="8" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="var(--peach-soft)" />
+          <rect width="4" height="4" fill="var(--cobalt)" />
+          <rect x="4" y="4" width="4" height="4" fill="var(--cobalt)" />
+        </pattern>
+      </defs>
+
+      <!-- Focos que barren el escenario -->
+      {[-1, 1].map((side) => (
+        <g class:list={['cs-spot', side < 0 ? 'cs-spot--l' : 'cs-spot--r']}>
+          <path d={`M${150 + side * 112} 126L${150 + side * 40} 304H${150 - side * 34}Z`} fill="var(--peach)" opacity="0.16" />
+          <path d={`M${150 + side * 104} 116h${side * 16}l${side * 4} 14h${-side * 24}Z`} fill="var(--peach)" />
+        </g>
+      ))}
+
+      <!-- Rótulo del programa -->
+      <rect x="66" y="72" width="168" height="38" rx="4" stroke="var(--peach)" stroke-width="2" />
+      <text class="cs-sign" x="150" y="96" text-anchor="middle">¡BAILA, BAILA!</text>
+      {bulbs.map((x, i) => (
+        <>
+          <circle class="cs-bulb" style={`--b:${(i % 2) * 0.4}s`} cx={x} cy="72" r="2.4" fill="var(--peach-soft)" />
+          <circle class="cs-bulb" style={`--b:${((i + 1) % 2) * 0.4}s`} cx={x} cy="110" r="2.4" fill="var(--peach-soft)" />
+        </>
+      ))}
+
+      <!-- Escenario y círculo de luz -->
+      <ellipse cx="150" cy="300" rx="54" ry="8" fill="var(--peach-soft)" opacity="0.45" />
+      <path d="M24 304h252v10H24Z" fill="var(--peach)" />
+
+      <!-- La bailarina, vestido de cuadros -->
+      <g class="cs-dancer">
+        <path class="cs-arm cs-arm--l" d="M145 229l-18-14" stroke="var(--peach)" stroke-width="4" />
+        <path class="cs-arm cs-arm--r" d="M155 229l18-14" stroke="var(--peach)" stroke-width="4" />
+        <path d="M145 284l-4 18M155 284l4 18" stroke="var(--peach)" stroke-width="4" />
+        <circle cx="150" cy="210" r="10" fill="var(--peach)" />
+        <circle cx="150" cy="197" r="5" fill="var(--peach)" />
+        <path d="M144 222h12v20h-12Z" fill="url(#cs-checks)" />
+        <path class="cs-skirt" d="M144 240h12l20 46h-52Z" fill="url(#cs-checks)" stroke="var(--peach-soft)" stroke-width="1.5" />
+      </g>
+
+      <!-- Cámara grabando -->
+      <g transform="translate(0 8)">
+      <g class="cs-camera">
+        <path d="M242 352l-16 42M242 352l16 42M242 352v42" stroke="var(--peach)" stroke-width="3" />
+        <rect x="220" y="324" width="44" height="28" rx="3" fill="var(--peach)" />
+        <path d="M220 330l-16-7v28l16-7Z" fill="var(--peach)" />
+        <circle cx="232" cy="318" r="7" stroke="var(--peach)" stroke-width="3" />
+        <circle cx="250" cy="318" r="7" stroke="var(--peach)" stroke-width="3" />
+        <circle class="cs-rec" cx="256" cy="331" r="3" fill="var(--cobalt)" />
+        <text class="cs-rec-label" x="228" y="346">REC</text>
+      </g>
+      </g>
+
+      <!-- La grada: en la silla vacía aparece ella de niña -->
+      {seats.map((seat) => (
+        <>
+          <path d={`M${seat.x - 11} ${seat.y + 16}v-18q0-6 6-6h10q6 0 6 6v18`} stroke="var(--peach)" stroke-width="2.5" />
+          {!seat.kid && <circle cx={seat.x} cy={seat.y - 12} r="6" stroke="var(--peach)" stroke-width="2" />}
+        </>
+      ))}
+      <g class="cs-kid">
+        <circle cx="44" cy="346" r="6" fill="var(--peach)" />
+        <circle cx="44" cy="338" r="3" fill="var(--peach)" />
+        <path d="M38 366q0-12 6-12t6 12Z" fill="var(--peach)" />
+        <path class="cs-wave" d="M49 356l8-12" stroke="var(--peach)" stroke-width="3" />
+      </g>
+    </>)}
   </svg>
 </div>
 
@@ -205,6 +289,55 @@ const fingers = [-60, -30, 0, 30, 60];
     transform-origin: center bottom;
   }
 
+  .cs-sign {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    fill: var(--peach);
+  }
+
+  .cs-rec-label {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 7px;
+    fill: var(--cobalt);
+  }
+
+  /* Focos: giran desde la lámpara. */
+  .cv .cs-spot {
+    transform-box: view-box;
+  }
+
+  .cv .cs-spot--l {
+    transform-origin: 46px 122px;
+  }
+
+  .cv .cs-spot--r {
+    transform-origin: 254px 122px;
+  }
+
+  .cv .cs-dancer,
+  .cv .cs-skirt {
+    transform-origin: center bottom;
+  }
+
+  .cv .cs-arm--l {
+    transform-origin: right bottom;
+  }
+
+  .cv .cs-arm--r {
+    transform-origin: left bottom;
+  }
+
+  .cv .cs-wave {
+    transform-origin: left bottom;
+  }
+
+  .cv .cs-camera {
+    transform-origin: center bottom;
+  }
+
   .cv:not([data-playing]) :global(*) {
     animation-play-state: paused !important;
   }
@@ -247,6 +380,96 @@ const fingers = [-60, -30, 0, 30, 60];
     .cv-gasp {
       animation: cv-gasp 8s linear infinite;
     }
+
+    /* Plató */
+    .cs-bulb {
+      animation: cs-bulb 0.8s steps(1, end) var(--b) infinite;
+    }
+
+    .cs-spot--l {
+      animation: cs-sweep 4s ease-in-out infinite alternate;
+    }
+
+    .cs-spot--r {
+      animation: cs-sweep 4s ease-in-out -2s infinite alternate-reverse;
+    }
+
+    .cs-dancer {
+      animation: cs-sway 2s ease-in-out infinite;
+    }
+
+    .cs-arm {
+      animation: cs-arm 1s ease-in-out infinite alternate;
+    }
+
+    .cs-arm--r {
+      animation-delay: -0.5s;
+    }
+
+    .cs-skirt {
+      animation: cs-twirl 8s ease-in-out infinite;
+    }
+
+    .cs-camera {
+      animation: cs-pan 8s ease-in-out infinite;
+    }
+
+    .cs-rec {
+      animation: cs-bulb 1.2s steps(1, end) infinite;
+    }
+
+    .cs-kid {
+      animation: cs-kid 8s ease-out infinite;
+    }
+
+    .cs-wave {
+      animation: cs-wave 0.5s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes cs-bulb {
+    0% { opacity: 1; }
+    50%, 100% { opacity: 0.25; }
+  }
+
+  @keyframes cs-sweep {
+    from { rotate: -9deg; }
+    to { rotate: 9deg; }
+  }
+
+  @keyframes cs-sway {
+    0%, 100% { translate: -14px 0; rotate: -3deg; }
+    50% { translate: 14px 0; rotate: 3deg; }
+  }
+
+  @keyframes cs-arm {
+    from { rotate: -25deg; }
+    to { rotate: 35deg; }
+  }
+
+  /* La falda gira (vuelta completa) a mitad de ciclo. */
+  @keyframes cs-twirl {
+    0%, 36% { scale: 1 1; }
+    42% { scale: -1 1.04; }
+    48%, 100% { scale: 1 1; }
+  }
+
+  @keyframes cs-pan {
+    0%, 100% { rotate: 0deg; }
+    30% { rotate: -5deg; }
+    65% { rotate: 4deg; }
+  }
+
+  /* Carmen niña aparece en la silla vacía, saluda y se desvanece. */
+  @keyframes cs-kid {
+    0%, 44% { opacity: 0; translate: 0 6px; }
+    52%, 86% { opacity: 1; translate: 0 0; }
+    96%, 100% { opacity: 0; translate: 0 0; }
+  }
+
+  @keyframes cs-wave {
+    from { rotate: -20deg; }
+    to { rotate: 25deg; }
   }
 
   /* Sale de la tarta con un rebote, se queda cantando y se vuelve a hundir. */

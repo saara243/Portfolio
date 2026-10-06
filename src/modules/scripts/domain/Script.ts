@@ -5,6 +5,7 @@ import { ScriptStatus } from './ScriptStatus';
 
 export const DOWNLOAD_ACCESS = ['public', 'on-request'] as const;
 export type DownloadAccess = (typeof DOWNLOAD_ACCESS)[number];
+export type CoverArtKind = 'revival' | 'set';
 
 export interface ScriptPrimitive {
   slug: string;
@@ -20,7 +21,7 @@ export interface ScriptPrimitive {
   pages?: number;
   duration?: string;
   cover?: string;
-  coverArt?: 'revival';
+  coverArt?: CoverArtKind;
   still?: string;
   pdf?: string;
   download: DownloadAccess;
@@ -45,7 +46,7 @@ export class Script {
     private readonly pages: number | undefined,
     private readonly duration: string | undefined,
     private readonly cover: string | undefined,
-    private readonly coverArt: 'revival' | undefined,
+    private readonly coverArt: CoverArtKind | undefined,
     private readonly still: string | undefined,
     private readonly pdf: string | undefined,
     private readonly download: DownloadAccess,
@@ -120,7 +121,7 @@ export class Script {
   getPages(): number | undefined { return this.pages; }
   getDuration(): string | undefined { return this.duration; }
   getCover(): string | undefined { return this.cover; }
-  getCoverArt(): 'revival' | undefined { return this.coverArt; }
+  getCoverArt(): CoverArtKind | undefined { return this.coverArt; }
   getStill(): string | undefined { return this.still; }
   getPdf(): string | undefined { return this.pdf; }
   getOrder(): number | undefined { return this.order; }
