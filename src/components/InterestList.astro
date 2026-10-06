@@ -37,13 +37,15 @@ const { interests, reveal = false } = Astro.props;
 )}
 
 <script>
-  // Tocar (o pulsar Enter en) la palabra fija su texto abierto; volver a tocar lo recoge.
+  // En táctil o con teclado, tocar (o pulsar Enter en) la palabra fija su texto; volver a tocar lo recoge.
   function initInterests() {
     document.querySelectorAll<HTMLButtonElement>('[data-interest-toggle]').forEach((toggle) => {
       if (toggle.dataset.ready) return;
       toggle.dataset.ready = 'true';
       const item = toggle.closest<HTMLElement>('[data-interest]');
-      toggle.addEventListener('click', () => {
+      toggle.addEventListener('click', (event) => {
+        // Con ratón manda el :hover; el clic solo fija el texto en táctil o con teclado.
+        if (event instanceof PointerEvent && event.pointerType === 'mouse') return;
         const open = !item?.hasAttribute('data-open');
         item?.toggleAttribute('data-open', open);
         toggle.setAttribute('aria-expanded', String(open));
@@ -87,7 +89,7 @@ const { interests, reveal = false } = Astro.props;
     align-items: center;
     gap: var(--space-4);
     margin: 0;
-    font-size: var(--text-3xl);
+    font-size: var(--text-2xl);
     line-height: 1;
     overflow-wrap: anywhere;
     transition: color 400ms var(--ease-out), translate 650ms var(--ease-out);
@@ -157,7 +159,7 @@ const { interests, reveal = false } = Astro.props;
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       align-items: center;
       gap: var(--space-12);
-      padding-block: var(--space-12);
+      padding-block: var(--space-8);
     }
 
     @media (hover: hover) and (prefers-reduced-motion: no-preference) {

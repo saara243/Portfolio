@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Motif from '../../components/Motif.astro';
-import QuoteBand from '../../components/QuoteBand.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
 import SkillGroups from '../../components/SkillGroups.astro';
 import { profileModule } from '../../modules/profile/application/factory';
@@ -80,11 +79,17 @@ const skillsNote = profile.getSkillsNote();
       <div class="container">
         <SceneHeading scene={t('scene.skills')} title={t('about.contribute')} align="center" size="lg" />
         <SkillGroups groups={profile.getSkills()} lang={lang} />
+        {skillsNote && (
+          <p class="skills-note">
+            <Motif kind="sparkle" size="1.25rem" class="skills-note__mark" />
+            <span>{skillsNote}</span>
+            <Motif kind="sparkle" size="1.25rem" class="skills-note__mark" />
+          </p>
+        )}
       </div>
     </section>
   )}
 
-  {skillsNote && <QuoteBand text={skillsNote} tone="cobalt" size="md" />}
 
   {profile.getLanguages().length > 0 && (
     <section class="band" data-tone="peach">
@@ -232,5 +237,27 @@ const skillsNote = profile.getSkillsNote();
     .path__grid {
       grid-template-columns: 1fr 1fr;
     }
+  }
+
+  /* Cierre de «¿Qué puedo aportar?»: la frase va dentro de la misma banda, bajo los sobres. */
+  .skills-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    max-width: 44ch;
+    margin: clamp(3rem, 2rem + 3vw, 5rem) auto 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    font-size: var(--text-xl);
+    line-height: 1.35;
+    text-align: center;
+    text-wrap: balance;
+    color: var(--heading);
+  }
+
+  .skills-note :global(.skills-note__mark) {
+    color: var(--accent);
   }
 </style>
