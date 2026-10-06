@@ -1,0 +1,241 @@
+---
+import { useTranslations, type Lang } from '../i18n/utils';
+
+/**
+ * Ilustración de contacto: un contrato que se firma. Las cláusulas se escriben, firma la autora,
+ * una pluma firma en el hueco de quien contrata y cae la estrella-sello. Bucle de ~9 s, pausado
+ * fuera de pantalla. Decorativo (aria-hidden). Sin movimiento, se ve firmado y sellado.
+ */
+interface Props {
+  lang: Lang;
+  name: string;
+  role: string;
+}
+
+const { lang, name, role } = Astro.props;
+const t = useTranslations(lang);
+
+// Estrella-sello (misma geometría que el motivo `badge`), centrada en el sello.
+const POINTS = 12;
+const seal = { x: 228, y: 262, r: 36 };
+const badge =
+  Array.from({ length: POINTS * 2 }, (_, i) => {
+    const angle = (Math.PI / POINTS) * i - Math.PI / 2;
+    const radius = i % 2 === 0 ? seal.r : seal.r * 0.78;
+    return `${(seal.x + Math.cos(angle) * radius).toFixed(1)} ${(seal.y + Math.sin(angle) * radius).toFixed(1)}`;
+  })
+    .map((point, i) => `${i === 0 ? 'M' : 'L'}${point}`)
+    .join('') + 'Z';
+const s = 14;
+const sparkle = `M${seal.x} ${seal.y - s}C${seal.x + 1} ${seal.y - 4} ${seal.x + 4} ${seal.y - 1} ${seal.x + s} ${seal.y}C${seal.x + 4} ${seal.y + 1} ${seal.x + 1} ${seal.y + 4} ${seal.x} ${seal.y + s}C${seal.x - 1} ${seal.y + 4} ${seal.x - 4} ${seal.y + 1} ${seal.x - s} ${seal.y}C${seal.x - 4} ${seal.y - 1} ${seal.x - 1} ${seal.y - 4} ${seal.x} ${seal.y - s}Z`;
+
+const clauses = [
+  { y: 122, w: 230 },
+  { y: 140, w: 206 },
+  { y: 158, w: 224 },
+  { y: 176, w: 150 },
+  { y: 200, w: 218 },
+  { y: 218, w: 120 },
+];
+---
+
+<div class="contract" data-contract aria-hidden="true">
+  <svg class="contract__svg" viewBox="0 0 300 400" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g class="contract__paper">
+      <rect width="300" height="400" fill="var(--peach)" />
+      <text class="contract__head" x="150" y="58" text-anchor="middle">{t('contact.contract').toUpperCase()}</text>
+      <text class="contract__sub" x="150" y="78" text-anchor="middle">{role}</text>
+      <line x1="34" y1="94" x2="266" y2="94" stroke="var(--cobalt)" stroke-opacity="0.35" />
+
+      {clauses.map(({ y, w }, i) => (
+        <path class="contract__clause" d={`M34 ${y}H${34 + w}`} pathLength="1" style={`--i:${i}`} />
+      ))}
+
+      <line x1="34" y1="330" x2="132" y2="330" stroke="var(--cobalt)" />
+      <line x1="168" y1="330" x2="266" y2="330" stroke="var(--cobalt)" />
+      <text class="contract__label" x="34" y="346">{name}</text>
+      <text class="contract__label" x="168" y="346">{t('contact.yourSignature')}</text>
+
+      <path
+        class="contract__sig contract__sig--author"
+        d="M40 320c4-16 10-24 12-14s-8 16-2 10 10-18 14-8-2 10 4 6 8-12 12-6 2 8 8 4 8-8 14-4 8 4 14-2"
+        pathLength="1"
+      />
+      <path
+        class="contract__sig contract__sig--guest"
+        d="M172 322c6-4 8-18 14-14s-4 14 2 12 6-16 12-12-2 12 4 8 10-14 14-8-4 10 4 6 10-6 16-4 6 2 14-6"
+        pathLength="1"
+      />
+
+      <g class="contract__seal">
+        <path d={badge} fill="var(--cobalt)" />
+        <path d={sparkle} fill="var(--peach)" />
+      </g>
+    </g>
+
+    <g class="contract__pen">
+      <path d="M0 0l7-3 34-34a4 4 0 0 0-6-6L1-9Z" fill="var(--peach)" stroke="var(--cobalt)" stroke-width="2" />
+      <path d="M30-38l6 6" stroke="var(--cobalt)" stroke-width="2" />
+    </g>
+  </svg>
+</div>
+
+<script>
+  // El contrato solo se anima mientras está a la vista.
+  function initContract() {
+    const contract = document.querySelector<HTMLElement>('[data-contract]');
+    if (!contract || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(([entry]) => contract.toggleAttribute('data-playing', entry.isIntersecting));
+    observer.observe(contract);
+    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+  }
+
+  document.addEventListener('astro:page-load', initContract);
+</script>
+
+<style>
+  .contract {
+    width: 100%;
+    rotate: -3deg;
+  }
+
+  .contract__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .contract :global(*) {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .contract__head {
+    font-family: var(--font-script);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    fill: var(--cobalt);
+  }
+
+  .contract__sub {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    fill: var(--ink);
+  }
+
+  .contract__label {
+    font-family: var(--font-script);
+    font-size: 9px;
+    fill: var(--ink);
+  }
+
+  .contract__clause {
+    stroke: var(--cobalt);
+    stroke-width: 3.5;
+    stroke-opacity: 0.35;
+  }
+
+  .contract__sig {
+    stroke: var(--cobalt);
+    stroke-width: 2.2;
+  }
+
+  .contract__seal {
+    rotate: -14deg;
+    opacity: 0.92;
+  }
+
+  .contract__pen {
+    opacity: 0;
+    transform-box: view-box;
+    transform-origin: 0 0;
+    translate: 268px 318px;
+  }
+
+  .contract:not([data-playing]) :global(*) {
+    animation-play-state: paused !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .contract__paper {
+      animation: contract-jolt 9s ease-out infinite;
+    }
+
+    .contract__clause {
+      stroke-dasharray: 1;
+      animation: contract-clause 9s ease-out infinite;
+      animation-delay: calc(var(--i) * 0.28s);
+    }
+
+    .contract__sig {
+      stroke-dasharray: 1;
+    }
+
+    .contract__sig--author {
+      animation: contract-sign-author 9s ease-in-out infinite;
+    }
+
+    .contract__sig--guest {
+      animation: contract-sign-guest 9s ease-in-out infinite;
+    }
+
+    .contract__pen {
+      animation: contract-pen 9s ease-in-out infinite;
+    }
+
+    .contract__seal {
+      animation: contract-stamp 9s var(--ease-out) infinite;
+    }
+  }
+
+  /* Cláusulas: se escriben al principio y se borran al final del ciclo. */
+  @keyframes contract-clause {
+    0% { stroke-dashoffset: 1; opacity: 1; }
+    8%, 88% { stroke-dashoffset: 0; opacity: 1; }
+    96%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  @keyframes contract-sign-author {
+    0%, 26% { stroke-dashoffset: 1; opacity: 1; }
+    38%, 88% { stroke-dashoffset: 0; opacity: 1; }
+    96%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  @keyframes contract-sign-guest {
+    0%, 46% { stroke-dashoffset: 1; opacity: 1; }
+    60%, 88% { stroke-dashoffset: 0; opacity: 1; }
+    96%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  /* La pluma entra, sigue la firma de izquierda a derecha y sale. */
+  @keyframes contract-pen {
+    0%, 40% { opacity: 0; translate: 200px 270px; rotate: 0deg; }
+    44% { opacity: 1; translate: 172px 322px; rotate: 0deg; }
+    48% { translate: 186px 306px; rotate: -6deg; }
+    51% { translate: 200px 318px; rotate: 4deg; }
+    54% { translate: 214px 308px; rotate: -6deg; }
+    57% { translate: 234px 316px; rotate: 4deg; }
+    60% { translate: 262px 312px; rotate: 0deg; opacity: 1; }
+    66%, 100% { translate: 300px 280px; opacity: 0; }
+  }
+
+  /* Sello: cae de arriba con un golpe seco y se queda. */
+  @keyframes contract-stamp {
+    0%, 63% { opacity: 0; scale: 2.2; rotate: -30deg; }
+    68% { opacity: 0.92; scale: 1; rotate: -14deg; }
+    71% { scale: 1.08; }
+    74%, 88% { opacity: 0.92; scale: 1; rotate: -14deg; }
+    96%, 100% { opacity: 0; scale: 1; rotate: -14deg; }
+  }
+
+  /* La hoja da un respingo cuando cae el sello. */
+  @keyframes contract-jolt {
+    0%, 67% { translate: 0 0; }
+    69% { translate: 0 3px; }
+    72%, 100% { translate: 0 0; }
+  }
+</style>

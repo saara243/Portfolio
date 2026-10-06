@@ -1,16 +1,21 @@
 ---
-import Motif from './Motif.astro';
 import type { Motivation } from '../modules/profile/domain/Motivation';
 
 /** Carta de motivación: título grande en cobalto + hoja melocotón con los párrafos. */
 interface Props {
   motivation: Motivation;
   scene: string;
+  /** Acreditación de equipo que cuelga junto al título: «empezar a trabajar en un plató». */
+  pass?: { label: string; name: string; role: string };
   /** Slugline tecleada y título con corte al llegar a pantalla (ver RevealOnScroll). */
   reveal?: boolean;
 }
 
-const { motivation, scene, reveal = false } = Astro.props;
+const { motivation, scene, pass, reveal = false } = Astro.props;
+// Código de barras decorativo, siempre igual para el mismo nombre.
+const bars = pass
+  ? Array.from(pass.name.toUpperCase() + pass.role).slice(0, 22).map((char, i) => ({ x: i * 4.4, w: (char.charCodeAt(0) % 3) + 1 }))
+  : [];
 ---
 
 <section class="band letter" data-tone="cobalt">
@@ -18,7 +23,30 @@ const { motivation, scene, reveal = false } = Astro.props;
     <div class="letter__head" data-reveal={reveal ? '' : undefined}>
       <p class:list={['letter__slug script-font', { 'reveal-type': reveal }]} style={reveal ? `--chars:${scene.length}` : undefined}>{scene}</p>
       <h2 class:list={['letter__title', { 'reveal-line': reveal }]}>{motivation.getTitle()}</h2>
-      <Motif kind="badge" size="clamp(4.5rem, 10vw, 7rem)" class="letter__badge" />
+      {pass && (
+        <div class="pass" data-pass aria-hidden="true">
+          <div class="pass__swing">
+            <svg class="pass__strap" viewBox="0 0 40 40" preserveAspectRatio="none">
+              <path d="M2 0 18 40M38 0 22 40" stroke="currentColor" stroke-width="2.5" vector-effect="non-scaling-stroke" />
+            </svg>
+            <span class="pass__clip"></span>
+            <div class="pass__card" data-tone="peach">
+              <span class="pass__slot"></span>
+              <p class="pass__label script-font">{pass.label}</p>
+              <svg class="pass__photo" viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="1" y="1" width="38" height="46" fill="currentColor" fill-opacity="0.1" />
+                <circle cx="20" cy="19" r="8" />
+                <path d="M6 47c1-10 7-14 14-14s13 4 14 14" />
+              </svg>
+              <p class="pass__name">{pass.name}</p>
+              <p class="pass__role">{pass.role}</p>
+              <svg class="pass__barcode" viewBox="0 0 97 12" preserveAspectRatio="none">
+                {bars.map(({ x, w }) => <rect x={x} y="0" width={w} height="12" fill="currentColor" />)}
+              </svg>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
 
     <div class="letter__sheet" data-tone="peach" data-reveal={reveal ? '' : undefined}>
@@ -52,25 +80,139 @@ const { motivation, scene, reveal = false } = Astro.props;
     font-size: var(--text-3xl);
   }
 
-  .letter__head :global(.letter__badge) {
-    color: var(--peach);
+  /*
+   * Acreditación colgada de su cinta. Al entrar en pantalla cae y se balancea como un péndulo
+   * hasta casi pararse; luego se mece suave (pausado fuera de pantalla). Al pasar el ratón,
+   * se balancea con más fuerza.
+   */
+  .pass {
+    --amp: 2.5;
+    width: clamp(8.5rem, 6rem + 6vw, 12.5rem);
+    margin-top: calc(-1 * var(--space-4));
   }
 
-  /* La estrella-sello gira mientras la carta recorre la pantalla: eco del asterisco del hero. */
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .letter {
-        view-timeline: --letter block;
-      }
+  .pass__swing {
+    display: grid;
+    justify-items: center;
+    transform-origin: 50% 0;
+  }
 
-      .letter__head :global(.letter__badge) {
-        animation-name: badge-turn;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-        animation-timeline: --letter;
-        animation-range: entry 0% exit 100%;
+  /* Cinta en V que sube fuera del encuadre. */
+  .pass__strap {
+    width: 46%;
+    height: clamp(2.5rem, 2rem + 2vw, 4rem);
+    color: var(--peach);
+    overflow: visible;
+  }
+
+  .pass__clip {
+    width: 16%;
+    aspect-ratio: 1.6;
+    margin-top: -1px;
+    border: 2px solid var(--peach);
+    border-bottom-width: 4px;
+  }
+
+  .pass__card {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    margin-top: -2px;
+    padding: 1.4rem 0.9rem 0.9rem;
+    color: var(--cobalt);
+    text-align: center;
+  }
+
+  .pass__slot {
+    position: absolute;
+    top: 0.55rem;
+    left: 50%;
+    width: 26%;
+    height: 0.35rem;
+    translate: -50% 0;
+    background: var(--cobalt);
+    opacity: 0.85;
+  }
+
+  .pass__card p {
+    margin: 0;
+  }
+
+  .pass__label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .pass__photo {
+    width: 46%;
+    margin-block: 0.2rem;
+  }
+
+  .pass__name {
+    font-family: var(--font-display);
+    font-size: clamp(0.85rem, 0.7rem + 0.5vw, 1.1rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+  }
+
+  .pass__role {
+    font-size: 0.7rem;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .pass__barcode {
+    width: 80%;
+    height: 0.85rem;
+    margin-top: 0.3rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pass__swing {
+      animation: pass-sway 4.8s ease-in-out infinite;
+    }
+
+    .pass:not([data-playing]) .pass__swing {
+      animation-play-state: paused;
+    }
+
+    .letter__head[data-reveal='pending'] .pass__swing {
+      opacity: 0;
+    }
+
+    .letter__head[data-reveal='in'] .pass__swing {
+      animation:
+        pass-drop 2200ms cubic-bezier(0.2, 0.7, 0.3, 1) 300ms backwards,
+        pass-sway 4.8s ease-in-out 2500ms infinite;
+    }
+
+    @media (hover: hover) {
+      .pass:hover {
+        --amp: 7;
       }
     }
+  }
+
+  @keyframes pass-drop {
+    0% { opacity: 0; translate: 0 -35%; rotate: 0deg; }
+    18% { opacity: 1; translate: 0 0; rotate: 0deg; }
+    34% { rotate: 13deg; }
+    50% { rotate: -9deg; }
+    64% { rotate: 6deg; }
+    77% { rotate: -3.5deg; }
+    89% { rotate: 1.5deg; }
+    100% { rotate: calc(var(--amp) * -1deg); }
+  }
+
+  @keyframes pass-sway {
+    0%, 100% { rotate: calc(var(--amp) * -1deg); }
+    50% { rotate: calc(var(--amp) * 1deg); }
   }
 
   /*
@@ -125,15 +267,6 @@ const { motivation, scene, reveal = false } = Astro.props;
     }
   }
 
-  @keyframes badge-turn {
-    from {
-      rotate: -45deg;
-    }
-    to {
-      rotate: 135deg;
-    }
-  }
-
   .letter__sheet {
     padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
     font-size: var(--text-base);
@@ -171,3 +304,16 @@ const { motivation, scene, reveal = false } = Astro.props;
     }
   }
 </style>
+
+<script>
+  // La acreditación solo se mece mientras está a la vista.
+  function initPass() {
+    const pass = document.querySelector<HTMLElement>('[data-pass]');
+    if (!pass || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(([entry]) => pass.toggleAttribute('data-playing', entry.isIntersecting));
+    observer.observe(pass);
+    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+  }
+
+  document.addEventListener('astro:page-load', initPass);
+</script>

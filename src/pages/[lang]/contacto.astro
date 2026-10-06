@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Motif from '../../components/Motif.astro';
+import ContractArt from '../../components/ContractArt.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
 import SocialLinks from '../../components/SocialLinks.astro';
 import { profileModule } from '../../modules/profile/application/factory';
@@ -45,7 +45,7 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
         </form>
       ) : (
         <div class="contact__art">
-          <Motif kind="asterisk" size="100%" class="contact__mark" />
+          <ContractArt lang={lang} name={profile.getName()} role={profile.getRole()} />
         </div>
       )}
     </div>
@@ -83,9 +83,8 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
   }
 
   .contact__art {
-    width: clamp(6rem, 30vw, 9rem);
-    aspect-ratio: 1;
-    color: var(--peach);
+    width: min(100%, 20rem);
+    justify-self: center;
   }
 
   .contact__form {
@@ -146,7 +145,7 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
     }
 
     .contact__art {
-      width: min(100%, 24rem);
+      width: min(100%, 26rem);
       justify-self: center;
       align-self: center;
     }

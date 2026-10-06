@@ -2,7 +2,12 @@
 import Motif from './Motif.astro';
 import type { Interest } from '../modules/profile/domain/Interest';
 
-/** Temas que la autora quiere contar: palabra grande + descripción, en filas con filete. */
+/**
+ * Temas que la autora quiere contar: palabra grande + descripción, en filas con filete.
+ * En reposo solo se ve la palabra; al pasar (o enfocar con el teclado) la fila se vuelve cobalto
+ * y entra la descripción. En pantallas táctiles, tocar la palabra despliega o recoge su texto.
+ * Sin JavaScript se ven todas las descripciones (el plegado solo existe con .interests--folded).
+ */
 interface Props {
   interests: Interest[];
   /** Cada fila se escribe al llegar a pantalla: filete, asterisco, palabra y texto (ver RevealOnScroll). */
@@ -14,17 +19,40 @@ const { interests, reveal = false } = Astro.props;
 
 {interests.length > 0 && (
   <ul class="interests">
+    <script is:inline>document.currentScript.parentElement.classList.add('interests--folded');</script>
     {interests.map((interest, i) => (
-      <li class="interests__item" data-reveal={reveal ? '' : undefined} style={`--row:${i % 3}`}>
+      <li class="interests__item" data-interest data-reveal={reveal ? '' : undefined} style={`--row:${i % 3}`}>
         <h3 class:list={['interests__title', { 'reveal-line': reveal }]}>
-          <Motif kind="asterisk" size="0.7em" class="interests__mark" />
-          {interest.getTitle()}
+          <button class="interests__toggle" type="button" aria-expanded="false" aria-controls={`interest-${i}`} data-interest-toggle>
+            <Motif kind="asterisk" size="0.7em" class="interests__mark" />
+            {interest.getTitle()}
+          </button>
         </h3>
-        <p class:list={['interests__text', { 'reveal-fade': reveal }]}>{interest.getDescription()}</p>
+        <div class="interests__reveal" id={`interest-${i}`}>
+          <p class="interests__text">{interest.getDescription()}</p>
+        </div>
       </li>
     ))}
   </ul>
 )}
+
+<script>
+  // Tocar (o pulsar Enter en) la palabra fija su texto abierto; volver a tocar lo recoge.
+  function initInterests() {
+    document.querySelectorAll<HTMLButtonElement>('[data-interest-toggle]').forEach((toggle) => {
+      if (toggle.dataset.ready) return;
+      toggle.dataset.ready = 'true';
+      const item = toggle.closest<HTMLElement>('[data-interest]');
+      toggle.addEventListener('click', () => {
+        const open = !item?.hasAttribute('data-open');
+        item?.toggleAttribute('data-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initInterests);
+</script>
 
 <style>
   .interests {
@@ -70,6 +98,29 @@ const { interests, reveal = false } = Astro.props;
     transition: rotate 900ms var(--ease-out), scale 900ms var(--ease-out), color 400ms var(--ease-out);
   }
 
+  .interests__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .interests__toggle:focus-visible {
+    outline-offset: 6px;
+  }
+
+  .interests__reveal {
+    min-height: 0;
+  }
+
   .interests__text {
     max-width: 52ch;
     margin: 0;
@@ -113,6 +164,91 @@ const { interests, reveal = false } = Astro.props;
       .interests__item:hover .interests__title {
         translate: var(--space-6) 0;
       }
+    }
+  }
+
+  /*
+   * Plegado (solo con JS): en reposo, solo la palabra. Al pasar, enfocar o abrir, la descripción
+   * entra desde la derecha. En una columna (móvil/tableta) la fila además crece para hacerle sitio;
+   * en dos columnas el hueco ya está reservado y no hay saltos de maquetación.
+   */
+  .interests--folded .interests__text {
+    opacity: 0;
+    translate: 1.5rem 0;
+    transition:
+      opacity 250ms var(--ease-out),
+      translate 250ms var(--ease-out),
+      color 400ms var(--ease-out);
+  }
+
+  .interests--folded .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) .interests__text {
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity 500ms var(--ease-out) 150ms,
+      translate 600ms var(--ease-out) 150ms,
+      color 400ms var(--ease-out);
+  }
+
+  /* Pasar por encima solo cuenta con ratón: en táctil el :hover se queda pegado tras tocar. */
+  @media (hover: hover) {
+    .interests--folded .interests__item:hover .interests__text {
+      opacity: 1;
+      translate: 0 0;
+      transition:
+        opacity 500ms var(--ease-out) 150ms,
+        translate 600ms var(--ease-out) 150ms,
+        color 400ms var(--ease-out);
+    }
+  }
+
+  @media (max-width: 899px) {
+    .interests--folded .interests__item {
+      grid-template-rows: auto 0fr;
+      row-gap: 0;
+      transition: grid-template-rows 500ms var(--ease-out), row-gap 500ms var(--ease-out);
+    }
+
+    .interests--folded .interests__reveal {
+      overflow: hidden;
+    }
+
+    .interests--folded .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) {
+      grid-template-rows: auto 1fr;
+      row-gap: var(--space-3);
+    }
+
+    @media (hover: hover) {
+      .interests--folded .interests__item:hover {
+        grid-template-rows: auto 1fr;
+        row-gap: var(--space-3);
+      }
+    }
+  }
+
+  /* La fila se vuelve cobalto también al enfocarla con el teclado o al dejarla abierta. */
+  .interests__item:is([data-open], :has(.interests__toggle:focus-visible))::before {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) :is(.interests__title, .interests__text) {
+    color: var(--peach);
+  }
+
+  .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) :global(.interests__mark) {
+    color: var(--peach);
+  }
+
+  .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) :global(.interests__mark) {
+    rotate: 180deg;
+    scale: 1.25;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .interests--folded .interests__text,
+    .interests--folded .interests__item {
+      transition: none !important;
+      translate: none !important;
     }
   }
 

@@ -48,7 +48,7 @@ const motivation = profile.getMotivation();
   )}
 
   {motivation && (
-    <MotivationLetter motivation={motivation} scene={t('scene.motivation')} reveal>
+    <MotivationLetter motivation={motivation} scene={t('scene.motivation')} pass={{ label: t('motivation.pass'), name: profile.getName(), role: profile.getRole() }} reveal>
       <div class="letter-actions">
         <a class="button button--primary" href={localizedPath(lang, routes.contact)}>{t('contact.write')}</a>
         <a class="button" href={localizedPath(lang, routes.about)}>{t('nav.about')}</a>
