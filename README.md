@@ -15,7 +15,7 @@ npm run preview    # sirve /dist como en producción
 
 ### Un guion o proyecto nuevo
 
-1. Sube el PDF a `public/files/scripts/mi-guion.pdf` y la portada a `public/images/covers/mi-guion.jpg`. La portada debe ser vertical, en proporción 3:4.
+1. Sube el PDF a `public/files/scripts/mi-guion.pdf` y la portada a `public/images/covers/mi-guion.jpg`. La portada debe ser vertical, en proporción 3:4. Si el proyecto sale en la portada de la web (`featured: true`), puedes añadir también un fotograma horizontal 16:9 en `public/images/stills/mi-guion.jpg`: es la imagen de la cuadrícula de destacados. Sin fotograma, la cuadrícula muestra la portada vertical entera sobre un panel azul.
 2. Crea `src/content/scripts/es/mi-guion.md`. El nombre del fichero es la URL del proyecto:
 
 ```md
@@ -29,6 +29,7 @@ status: finished         # in-development | finished | produced
 pages: 95                # opcional
 duration: 90 min         # opcional
 cover: images/covers/mi-guion.jpg
+still: images/stills/mi-guion.jpg   # opcional, fotograma horizontal 16:9 para destacados
 pdf: files/scripts/mi-guion.pdf
 download: public         # public = descarga directa · on-request = botón "Solicitar guion" por email
 featured: true           # sale en la portada

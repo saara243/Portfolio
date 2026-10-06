@@ -88,10 +88,10 @@ const skillsNote = profile.getSkillsNote();
   )}
 
   {profile.getSkills().length > 0 && (
-    <section class="band" data-tone="peach">
+    <section class="band" data-tone="taupe">
       <div class="container">
         <SceneHeading scene={t('scene.skills')} title={t('about.contribute')} align="center" size="lg" />
-        <SkillGroups groups={profile.getSkills()} />
+        <SkillGroups groups={profile.getSkills()} lang={lang} />
       </div>
     </section>
   )}

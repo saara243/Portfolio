@@ -1,88 +1,375 @@
 ---
 import Motif from './Motif.astro';
 import type { SkillGroup } from '../modules/profile/domain/SkillGroup';
+import { useTranslations, type Lang } from '../i18n/utils';
 
-/** Bloques de capacidades en paneles taupe, con un destello en el cruce. */
+/**
+ * "¿Qué puedo aportar?": cada bloque es un sobre cobalto cerrado con su estrella-sello.
+ * Al pulsarlo, el sello salta, la solapa se abre y sale una hoja pautada con las habilidades.
+ * Sin JavaScript, las cartas se muestran abiertas (el estado cerrado solo existe con .skills--sealed).
+ */
 interface Props {
   groups: SkillGroup[];
+  lang: Lang;
 }
 
-const { groups } = Astro.props;
+const { groups, lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
 {groups.length > 0 && (
   <div class="skills">
-    {groups.map((group) => (
-      <section class="skills__group" data-tone="taupe">
-        <h3 class="skills__title">{group.getTitle()}</h3>
-        <ul class="skills__list">
-          {group.getItems().map((item) => <li>{item}</li>)}
-        </ul>
-      </section>
-    ))}
-    {groups.length === 4 && <Motif kind="sparkle" size="3.5rem" class="skills__spark" />}
+    <script is:inline>document.currentScript.parentElement.classList.add('skills--sealed');</script>
+    {groups.map((group, i) => {
+      const id = `skill-letter-${i}`;
+      return (
+        <article class="env" data-env>
+          <div class="env__slot" id={id} data-env-slot>
+            <div class="env__letter" data-tone="peach">
+              <p class="env__salute">
+                <Motif kind="sparkle" size="0.9rem" class="env__salute-mark" />
+                {group.getTitle()}
+              </p>
+              <ul class="env__list">
+                {group.getItems().map((item, n) => <li style={`--n:${Math.min(n, 8)}`}>{item}</li>)}
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="env__heading">
+            <button class="env__front" type="button" aria-expanded="true" aria-controls={id} data-env-toggle>
+              <span class="env__flap" aria-hidden="true"></span>
+              <svg class="env__folds" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                <polyline points="0,100 50,52 100,100" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="env__seal" aria-hidden="true">
+                <Motif kind="badge" size="100%" class="env__seal-badge" />
+                <Motif kind="sparkle" size="38%" class="env__seal-spark" />
+              </span>
+              <span class="env__title">{group.getTitle()}</span>
+              <span class="env__hint" aria-hidden="true">
+                <span class="env__hint-open">{t('about.openLetter')} +</span>
+                <span class="env__hint-close">{t('about.closeLetter')} ×</span>
+              </span>
+            </button>
+          </h3>
+        </article>
+      );
+    })}
   </div>
 )}
 
+<script>
+  function initLetters() {
+    document.querySelectorAll<HTMLElement>('[data-env]').forEach((env) => {
+      const toggle = env.querySelector<HTMLButtonElement>('[data-env-toggle]');
+      const slot = env.querySelector<HTMLElement>('[data-env-slot]');
+      if (!toggle || !slot || toggle.dataset.ready) return;
+      toggle.dataset.ready = 'true';
+
+      const set = (open: boolean) => {
+        env.toggleAttribute('data-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        slot.inert = !open;
+      };
+
+      set(false);
+      toggle.addEventListener('click', () => set(!env.hasAttribute('data-open')));
+    });
+  }
+
+  document.addEventListener('astro:page-load', initLetters);
+</script>
+
 <style>
   .skills {
-    position: relative;
     display: grid;
-    gap: var(--space-4);
-  }
-
-  .skills__group {
-    padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
-  }
-
-  .skills__title {
-    margin-bottom: var(--space-6);
-    font-size: var(--text-xl);
-    font-weight: 400;
-    letter-spacing: var(--tracking-wide);
-  }
-
-  .skills__list {
-    display: grid;
-    gap: var(--space-3);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .skills__list li {
-    position: relative;
-    padding-left: var(--space-6);
-    line-height: 1.5;
-  }
-
-  .skills__list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.72em;
-    width: 0.75rem;
-    height: 1px;
-    background: var(--ink);
-  }
-
-  .skills :global(.skills__spark) {
-    display: none;
-    color: var(--cobalt);
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem) var(--space-8);
+    align-items: end;
   }
 
   @media (min-width: 768px) {
     .skills {
       grid-template-columns: 1fr 1fr;
     }
+  }
 
-    .skills :global(.skills__spark) {
-      display: block;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      translate: -50% -50%;
-      pointer-events: none;
+  /* ---------- Sobre ---------- */
+
+  .env {
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  .env__heading {
+    margin: 0;
+    font: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .env__front {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: var(--cobalt);
+    color: var(--peach);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    perspective: 1400px;
+  }
+
+  .env__front:focus-visible {
+    outline: 2px solid var(--cobalt-deep);
+    outline-offset: 4px;
+  }
+
+  /* Solapa: triángulo superior que gira hacia arriba al abrir. */
+  .env__flap {
+    position: absolute;
+    z-index: 2;
+    inset: 0 0 auto;
+    height: 54%;
+    background: var(--cobalt-deep);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition:
+      transform 550ms var(--ease-out) 380ms,
+      background-color 0ms linear 640ms;
+  }
+
+  .env__folds {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: rgb(255 227 208 / 0.4);
+    stroke-width: 1;
+  }
+
+  /* Estrella-sello sobre la punta de la solapa. */
+  .env__seal {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 54%;
+    width: clamp(3rem, 2rem + 3vw, 4.5rem);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    transition:
+      scale 300ms var(--ease-out) 760ms,
+      rotate 300ms var(--ease-out) 760ms,
+      opacity 200ms var(--ease-out) 760ms;
+  }
+
+  .env__seal > :global(*) {
+    grid-area: 1 / 1;
+  }
+
+  .env__seal :global(.env__seal-badge) {
+    color: var(--peach);
+  }
+
+  .env__seal :global(.env__seal-spark) {
+    color: var(--cobalt);
+  }
+
+  .env__title {
+    position: absolute;
+    z-index: 1;
+    left: clamp(1rem, 0.5rem + 2vw, 2rem);
+    right: clamp(5rem, 4rem + 4vw, 8rem);
+    bottom: clamp(1rem, 0.5rem + 1.5vw, 1.75rem);
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-2xl);
+    line-height: 1;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .env__hint {
+    position: absolute;
+    z-index: 1;
+    right: clamp(1rem, 0.5rem + 2vw, 2rem);
+    bottom: clamp(1rem, 0.5rem + 1.5vw, 1.75rem);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .env__hint-close {
+    display: none;
+  }
+
+  /* ---------- Carta ---------- */
+
+  .env__slot {
+    position: relative;
+    z-index: 2;
+    min-height: 0;
+    overflow: hidden;
+    padding-inline: 6%;
+  }
+
+  .env__letter {
+    padding: clamp(1.25rem, 0.75rem + 2vw, 2.25rem) clamp(1.25rem, 0.75rem + 2vw, 2.25rem) clamp(1.75rem, 1rem + 2vw, 2.75rem);
+  }
+
+  .env__salute {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--cobalt);
+  }
+
+  .env__salute :global(.env__salute-mark) {
+    color: var(--cobalt);
+  }
+
+  /* Hoja pautada: cada habilidad ocupa su renglón. */
+  .env__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .env__list li {
+    position: relative;
+    padding: var(--space-3) 0 var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--line);
+    font-size: var(--text-lg);
+    font-weight: 300;
+    line-height: 1.45;
+  }
+
+  .env__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: calc(var(--space-3) + 0.72em);
+    width: 0.75rem;
+    height: 1px;
+    background: var(--cobalt);
+  }
+
+  /* ---------- Estados (solo con JavaScript) ---------- */
+
+  .skills--sealed .env {
+    grid-template-rows: 0fr auto;
+    transition: grid-template-rows 550ms var(--ease-out) 120ms;
+  }
+
+  .skills--sealed .env__letter {
+    translate: 0 100%;
+    transition: translate 450ms var(--ease-out);
+  }
+
+  .skills--sealed .env__list li {
+    opacity: 0;
+    transition: opacity 150ms var(--ease-out), translate 150ms var(--ease-out);
+  }
+
+  /* Cerrado, al pasar: la solapa se levanta un poco y el sello gira, como invitando a abrir. */
+  @media (hover: hover) {
+    .skills--sealed .env:not([data-open]) .env__front:hover .env__flap {
+      transform: rotateX(28deg);
+      transition-delay: 0ms;
+    }
+
+    .skills--sealed .env:not([data-open]) .env__front:hover .env__seal {
+      rotate: 18deg;
+      transition-delay: 0ms;
+    }
+  }
+
+  /* Abierto: el sello salta, la solapa gira hacia arriba y la carta sube con sus renglones. */
+  .skills--sealed .env[data-open] {
+    grid-template-rows: 1fr auto;
+    transition: grid-template-rows 800ms var(--ease-out) 100ms;
+  }
+
+  .skills--sealed .env[data-open] .env__seal {
+    scale: 1.7;
+    rotate: 60deg;
+    opacity: 0;
+    transition-delay: 0ms;
+  }
+
+  .skills--sealed .env[data-open] .env__flap {
+    transform: rotateX(180deg);
+    background-color: var(--cobalt);
+    transition-delay: 120ms, 380ms;
+  }
+
+  .skills--sealed .env[data-open] .env__letter {
+    translate: 0 0;
+    transition: translate 900ms var(--ease-out) 320ms;
+  }
+
+  .skills--sealed .env[data-open] .env__list li {
+    opacity: 1;
+    transition: opacity 500ms var(--ease-out), translate 600ms var(--ease-out);
+    transition-delay: calc(680ms + var(--n) * 70ms);
+  }
+
+  .skills--sealed .env:not([data-open]) .env__list li {
+    translate: 0 0.5rem;
+  }
+
+  .env[data-open] .env__hint-open {
+    display: none;
+  }
+
+  .env[data-open] .env__hint-close {
+    display: inline;
+  }
+
+  /* Sin solapa giratoria: abrir y cerrar sin movimiento espacial. */
+  @media (prefers-reduced-motion: reduce) {
+    .skills--sealed .env,
+    .skills--sealed .env[data-open],
+    .skills--sealed .env__letter,
+    .skills--sealed .env[data-open] .env__letter,
+    .env__flap,
+    .env__seal {
+      transition: none;
+    }
+
+    .skills--sealed .env__letter {
+      translate: none;
+    }
+
+    .skills--sealed .env[data-open] .env__flap {
+      transform: none;
+      opacity: 0;
+    }
+
+    .skills--sealed .env__list li,
+    .skills--sealed .env[data-open] .env__list li {
+      translate: none;
+      transition: opacity 200ms linear;
+      transition-delay: 0ms;
     }
   }
 </style>

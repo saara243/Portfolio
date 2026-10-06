@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import FeaturedReel from '../../components/FeaturedReel.astro';
 import InterestList from '../../components/InterestList.astro';
 import MotivationLetter from '../../components/MotivationLetter.astro';
 import QuoteBand from '../../components/QuoteBand.astro';
 import RevealOnScroll from '../../components/RevealOnScroll.astro';
-import ScriptCard from '../../components/ScriptCard.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
 import { profileModule } from '../../modules/profile/application/factory';
 import { scriptsModule } from '../../modules/scripts/application/factory';
@@ -36,16 +36,14 @@ const motivation = profile.getMotivation();
   )}
 
   {!featured.isEmpty() && (
-    <section class="band" data-tone="taupe">
+    <section class="band featured" data-tone="taupe">
       <div class="container">
         <div class="featured__head">
           <SceneHeading scene={t('scene.cut')} title={t('home.featured')} size="lg" reveal />
           <a class="button" href={localizedPath(lang, routes.projects)}>{t('home.allProjects')}</a>
         </div>
-        <div class="grid-cards featured__grid" data-reveal>
-          {featured.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}
-        </div>
       </div>
+      <FeaturedReel lang={lang} scripts={featured.toArray()} />
     </section>
   )}
 
@@ -62,6 +60,11 @@ const motivation = profile.getMotivation();
 </BaseLayout>
 
 <style>
+  /* La cuadrícula llega hasta el borde inferior de la banda, separada de la siguiente por un filete. */
+  .featured {
+    padding-bottom: 2px;
+  }
+
   .featured__head {
     display: flex;
     flex-wrap: wrap;
@@ -80,58 +83,5 @@ const motivation = profile.getMotivation();
     flex-wrap: wrap;
     gap: var(--space-3);
     margin-top: var(--space-8);
-  }
-
-  /*
-   * Portadas destacadas: cada una se descubre de abajo arriba, como una página que se levanta,
-   * y la ficha se asienta detrás. Desfase por tarjeta, con tope para listas largas.
-   */
-  @media (prefers-reduced-motion: no-preference) {
-    .featured__grid > :global(*) {
-      --card-delay: calc(min(var(--card-i, 0), 4) * 110ms);
-    }
-
-    .featured__grid > :global(:nth-child(2)) { --card-i: 1; }
-    .featured__grid > :global(:nth-child(3)) { --card-i: 2; }
-    .featured__grid > :global(:nth-child(4)) { --card-i: 3; }
-    .featured__grid > :global(:nth-child(n + 5)) { --card-i: 4; }
-
-    .featured__grid[data-reveal='pending'] :global(.card__frame) {
-      clip-path: inset(100% 0 0 0);
-    }
-
-    .featured__grid[data-reveal='pending'] :global(.card__link > :not(.card__frame)) {
-      opacity: 0;
-    }
-
-    .featured__grid[data-reveal='in'] :global(.card__frame) {
-      animation: cover-lift 1000ms var(--ease-out) var(--card-delay) backwards;
-    }
-
-    .featured__grid[data-reveal='in'] :global(.card__cover) {
-      animation: cover-settle 1400ms var(--ease-out) var(--card-delay) backwards;
-    }
-
-    .featured__grid[data-reveal='in'] :global(.card__link > :not(.card__frame)) {
-      animation: settle 700ms var(--ease-out) calc(var(--card-delay) + 450ms) backwards;
-    }
-  }
-
-  @keyframes cover-lift {
-    from {
-      clip-path: inset(100% 0 0 0);
-    }
-    to {
-      clip-path: inset(0 0 0 0);
-    }
-  }
-
-  @keyframes cover-settle {
-    from {
-      transform: scale(1.12);
-    }
-    to {
-      transform: scale(1);
-    }
   }
 </style>

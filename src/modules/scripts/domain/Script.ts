@@ -19,6 +19,7 @@ export interface ScriptPrimitive {
   pages?: number;
   duration?: string;
   cover?: string;
+  still?: string;
   pdf?: string;
   download: DownloadAccess;
   featured: boolean;
@@ -41,6 +42,7 @@ export class Script {
     private readonly pages: number | undefined,
     private readonly duration: string | undefined,
     private readonly cover: string | undefined,
+    private readonly still: string | undefined,
     private readonly pdf: string | undefined,
     private readonly download: DownloadAccess,
     private readonly featured: boolean,
@@ -63,6 +65,7 @@ export class Script {
       data.pages,
       data.duration,
       data.cover,
+      data.still,
       data.pdf,
       data.download,
       data.featured,
@@ -108,6 +111,7 @@ export class Script {
   getPages(): number | undefined { return this.pages; }
   getDuration(): string | undefined { return this.duration; }
   getCover(): string | undefined { return this.cover; }
+  getStill(): string | undefined { return this.still; }
   getPdf(): string | undefined { return this.pdf; }
   getOrder(): number | undefined { return this.order; }
   getAwards(): string[] { return [...this.awards]; }
@@ -145,6 +149,7 @@ export class Script {
       pages: this.pages,
       duration: this.duration,
       cover: this.cover,
+      still: this.still,
       pdf: this.pdf,
       download: this.download,
       featured: this.featured,

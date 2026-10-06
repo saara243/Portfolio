@@ -29,6 +29,8 @@ const scripts = defineCollection({
     pages: z.number().int().positive().optional(),
     duration: z.string().optional(),
     cover: publicFile.optional(),
+    // Fotograma horizontal (16:9) para la cuadrícula de destacados de la home; opcional
+    still: publicFile.optional(),
     pdf: publicFile.optional(),
     download: z.enum(DOWNLOAD_ACCESS).default('public'),
     featured: z.boolean().default(false),

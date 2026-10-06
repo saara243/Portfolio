@@ -35,6 +35,8 @@ const es = {
   'about.experience': 'Experiencias clave',
   'about.learnings': 'Aprendizajes clave',
   'about.contribute': '¿Qué puedo aportar?',
+  'about.openLetter': 'Abrir',
+  'about.closeLetter': 'Cerrar',
   'contact.write': 'Escríbeme',
 
   'about.title': 'Sobre mí',
@@ -133,6 +135,8 @@ const ca: Record<UiKey, string> = {
   'about.experience': 'Experiències clau',
   'about.learnings': 'Aprenentatges clau',
   'about.contribute': 'Què puc aportar?',
+  'about.openLetter': 'Obrir',
+  'about.closeLetter': 'Tancar',
   'contact.write': 'Escriu-me',
 
   'about.title': 'Sobre mi',
@@ -229,6 +233,8 @@ const en: Record<UiKey, string> = {
   'about.experience': 'Key experience',
   'about.learnings': 'Key learnings',
   'about.contribute': 'What I bring',
+  'about.openLetter': 'Open',
+  'about.closeLetter': 'Close',
   'contact.write': 'Write to me',
 
   'about.title': 'About me',
