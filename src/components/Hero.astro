@@ -30,7 +30,8 @@ const themes = profile.getInterests().map((interest) => `${interest.getTitle()}.
 const rawBlocks: [BlockKind, string][] = [
   ['transition-in', t('scene.fadeIn')],
   ['slug', slug],
-  ['action', profile.getTagline()],
+  // Si el lema coincide con la frase-manifiesto, no se repite: ya va como diálogo.
+  ...(profile.getTagline() !== statement ? ([['action', profile.getTagline()]] as [BlockKind, string][]) : []),
   ...(themes ? ([['action', themes]] as [BlockKind, string][]) : []),
   ...(statement
     ? ([

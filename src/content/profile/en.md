@@ -1,7 +1,7 @@
 ---
 name: Sara Abreu
 role: Screenwriter
-tagline: Stories about imperfect people trying to find their place.
+tagline: "I want to write stories people see themselves in, so they think: I know someone like that."
 statement: "I want to write stories people see themselves in, so they think: I know someone like that."
 photo: images/profile.svg
 email: saara.sorribaas@gmail.com

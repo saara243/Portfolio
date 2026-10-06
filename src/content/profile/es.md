@@ -1,7 +1,7 @@
 ---
 name: Sara Abreu
 role: Guionista audiovisual
-tagline: Historias de personas imperfectas que intentan encontrar su lugar.
+tagline: "Quiero escribir historias donde la gente se vea reflejada, que piensen: yo conozco a alguien así."
 statement: "Quiero escribir historias donde la gente se vea reflejada, que piensen: yo conozco a alguien así."
 photo: images/profile.svg
 email: saara.sorribaas@gmail.com

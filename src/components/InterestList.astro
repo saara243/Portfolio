@@ -54,6 +54,31 @@ const { interests, reveal = false } = Astro.props;
   }
 
   document.addEventListener('astro:page-load', initInterests);
+
+  /*
+   * En reposo, cada palabra se centra en su fila: --shift es la distancia desde su sitio
+   * (a la izquierda) hasta el centro. Se recalcula al cambiar el ancho.
+   */
+  let resizeObserver: ResizeObserver | undefined;
+  function centerInterests() {
+    resizeObserver?.disconnect();
+    const list = document.querySelector<HTMLElement>('.interests');
+    if (!list) return;
+    const measure = () => {
+      list.querySelectorAll<HTMLElement>('[data-interest]').forEach((item) => {
+        const toggle = item.querySelector<HTMLElement>('.interests__toggle');
+        if (!toggle) return;
+        const shift = Math.max(0, (item.clientWidth - toggle.offsetWidth) / 2);
+        item.style.setProperty('--shift', `${shift.toFixed(1)}px`);
+      });
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+    resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(list);
+  }
+
+  document.addEventListener('astro:page-load', centerInterests);
 </script>
 
 <style>
@@ -162,11 +187,6 @@ const { interests, reveal = false } = Astro.props;
       padding-block: var(--space-8);
     }
 
-    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-      .interests__item:hover .interests__title {
-        translate: var(--space-6) 0;
-      }
-    }
   }
 
   /*
@@ -187,8 +207,8 @@ const { interests, reveal = false } = Astro.props;
     opacity: 1;
     translate: 0 0;
     transition:
-      opacity 500ms var(--ease-out) 150ms,
-      translate 600ms var(--ease-out) 150ms,
+      opacity 500ms var(--ease-out) 320ms,
+      translate 600ms var(--ease-out) 320ms,
       color 400ms var(--ease-out);
   }
 
@@ -198,8 +218,8 @@ const { interests, reveal = false } = Astro.props;
       opacity: 1;
       translate: 0 0;
       transition:
-        opacity 500ms var(--ease-out) 150ms,
-        translate 600ms var(--ease-out) 150ms,
+        opacity 500ms var(--ease-out) 320ms,
+        translate 600ms var(--ease-out) 320ms,
         color 400ms var(--ease-out);
     }
   }
@@ -228,6 +248,24 @@ const { interests, reveal = false } = Astro.props;
     }
   }
 
+  /*
+   * Palabra centrada en reposo; al abrir la fila se desliza a la izquierda y después entra el texto.
+   */
+  .interests--folded .interests__toggle {
+    translate: var(--shift, 0) 0;
+    transition: translate 650ms var(--ease-out);
+  }
+
+  .interests--folded .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) .interests__toggle {
+    translate: 0 0;
+  }
+
+  @media (hover: hover) {
+    .interests--folded .interests__item:hover .interests__toggle {
+      translate: 0 0;
+    }
+  }
+
   /* La fila se vuelve cobalto también al enfocarla con el teclado o al dejarla abierta. */
   .interests__item:is([data-open], :has(.interests__toggle:focus-visible))::before {
     clip-path: inset(0 0 0 0);
@@ -248,8 +286,12 @@ const { interests, reveal = false } = Astro.props;
 
   @media (prefers-reduced-motion: reduce) {
     .interests--folded .interests__text,
-    .interests--folded .interests__item {
+    .interests--folded .interests__item,
+    .interests--folded .interests__toggle {
       transition: none !important;
+    }
+
+    .interests--folded .interests__text {
       translate: none !important;
     }
   }
