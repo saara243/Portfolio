@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContractArt from '../../components/ContractArt.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
-import SocialLinks from '../../components/SocialLinks.astro';
+import ChannelIcon from '../../components/ChannelIcon.astro';
 import { profileModule } from '../../modules/profile/application/factory';
 import { getLangStaticPaths, routes, toLang, useTranslations } from '../../i18n/utils';
 
@@ -22,8 +22,18 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
       <div class="contact__head">
         <SceneHeading scene={t('scene.contact')} title={t('contact.title')} level={1} size="lg" />
         <p class="lead contact__intro">{t('contact.intro')}</p>
-        <a class="contact__email" href={`mailto:${profile.getEmail()}`}>{profile.getEmail()}</a>
-        <SocialLinks links={profile.getSocials()} align="start" />
+        <ul class="contact__channels">
+          <li class="contact__channel">
+            <ChannelIcon kind="mail" />
+            <a class="contact__link" href={`mailto:${profile.getEmail()}`}>{profile.getEmail()}</a>
+          </li>
+          {profile.getSocials().map((link) => (
+            <li class="contact__channel">
+              <ChannelIcon kind={/instagram\.com/i.test(link.getUrl()) ? 'instagram' : 'link'} />
+              <a class="contact__link" href={link.getUrl()} target="_blank" rel="noopener noreferrer">{link.getLabel()}</a>
+            </li>
+          ))}
+        </ul>
         {profile.getLocation() && <p class="contact__location">{profile.getLocation()}</p>}
       </div>
 
@@ -66,12 +76,27 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
     max-width: 44ch;
   }
 
-  .contact__email {
-    display: inline-block;
-    margin: var(--space-6) 0 var(--space-4);
+  /* Email y redes al mismo tamaño, cada uno con su viñeta animada. */
+  .contact__channels {
+    display: grid;
+    gap: var(--space-4);
+    margin: var(--space-8) 0 var(--space-6);
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact__channel {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .contact__link {
+    min-width: 0;
     font-family: var(--font-display);
     font-weight: 300;
-    font-size: clamp(1.25rem, 0.6rem + 3.4vw, 2.75rem);
+    font-size: clamp(1.25rem, 0.9rem + 1.6vw, 2rem);
     line-height: 1.2;
     letter-spacing: 0.01em;
     overflow-wrap: anywhere;
@@ -151,3 +176,18 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
     }
   }
 </style>
+
+<script>
+  // Las viñetas de contacto solo se animan mientras están a la vista.
+  function initChannelIcons() {
+    const icons = document.querySelectorAll<HTMLElement>('[data-channel-icon]');
+    if (!icons.length || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) entry.target.toggleAttribute('data-playing', entry.isIntersecting);
+    });
+    icons.forEach((icon) => observer.observe(icon));
+    document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+  }
+
+  document.addEventListener('astro:page-load', initChannelIcons);
+</script>

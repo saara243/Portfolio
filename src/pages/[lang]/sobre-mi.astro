@@ -4,7 +4,7 @@ import Motif from '../../components/Motif.astro';
 import SceneHeading from '../../components/SceneHeading.astro';
 import SkillGroups from '../../components/SkillGroups.astro';
 import { profileModule } from '../../modules/profile/application/factory';
-import { getLangStaticPaths, routes, toLang, useTranslations, withBase } from '../../i18n/utils';
+import { getLangStaticPaths, localizedPath, routes, toLang, useTranslations, withBase } from '../../i18n/utils';
 
 export const getStaticPaths = getLangStaticPaths;
 
@@ -54,6 +54,7 @@ const skillsNote = profile.getSkillsNote();
                   </li>
                 ))}
               </ul>
+              <a class="button path__cv" href={localizedPath(lang, routes.cv)}>{t('about.fullCv')} <span aria-hidden="true">→</span></a>
             </section>
           )}
           {learnings.length > 0 && (
@@ -153,6 +154,18 @@ const skillsNote = profile.getSkillsNote();
     line-height: 1.4;
     text-align: center;
     text-wrap: balance;
+  }
+
+  .path__cv {
+    margin-top: var(--space-8);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 479px) {
+    .path__cv {
+      padding-inline: var(--space-4);
+      letter-spacing: 0.08em;
+    }
   }
 
   .path__grid {

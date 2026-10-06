@@ -12,19 +12,19 @@ colors:
 typography:
   display:
     fontFamily: "Jost, Futura, Century Gothic, sans-serif"
-    fontSize: "clamp(3rem, 1.2rem + 7vw, 6rem)"
+    fontSize: "clamp(2.75rem, 1.1rem + 6vw, 5.25rem)"
     fontWeight: 300
     lineHeight: 0.95
     letterSpacing: "0.04em"
   headline:
     fontFamily: "Jost, Futura, Century Gothic, sans-serif"
-    fontSize: "clamp(2.25rem, 1.4rem + 3.6vw, 4.5rem)"
+    fontSize: "clamp(2rem, 1.3rem + 3vw, 3.75rem)"
     fontWeight: 300
     lineHeight: 1.1
     letterSpacing: "0.08em"
   title:
     fontFamily: "Jost, Futura, Century Gothic, sans-serif"
-    fontSize: "clamp(1.875rem, 1.4rem + 2vw, 3rem)"
+    fontSize: "clamp(1.625rem, 1.25rem + 1.6vw, 2.5rem)"
     fontWeight: 300
     lineHeight: 1.1
     letterSpacing: "0.08em"
@@ -186,7 +186,7 @@ Los componentes nunca usan la paleta base directamente para texto y acentos: usa
 **Character:** Mayúsculas geométricas finas y espaciadas para la voz de autora, un grotesco técnico ligero para leer, y Courier como cita literal del formato de guion.
 
 ### Hierarchy
-- **Display** (Jost 300, `display`, interlineado 0.95, tracking 0.04em, mayúsculas): el nombre en el hero, a unos 8vw. Solo uno por página.
+- **Display** (Jost 300, `display`, interlineado 0.95, tracking 0.04em, mayúsculas): el nombre en el hero (hasta 5.25rem). Solo uno por página.
 - **Headline** (Jost 300, `headline`, 1.1, tracking 0.08em, mayúsculas): títulos de sección grandes (`SceneHeading size="lg"`), intereses, menú móvil, nombre en el pie.
 - **Title** (Jost 300, `title`, 1.1, tracking 0.08em, mayúsculas): título por defecto de `SceneHeading`, cita destacada en cursiva.
 - **Subtitle** (Jost 300–400, `subtitle`, mayúsculas): títulos de tarjeta, de grupo de habilidades y de línea de tiempo; eslogan del hero en cursiva y minúsculas de frase.
