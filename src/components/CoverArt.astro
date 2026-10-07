@@ -41,10 +41,22 @@
  *   entre los árboles. Unos ojos parpadean en la oscuridad, aparecen marcas de garras en un tronco y las
  *   cadenas se tensan y se los llevan uno a uno; Lucía rompe la suya y se queda sola, encogida, mientras
  *   unas zarpas abrazan un árbol al fondo. Bucle de 10 s.
+ * - cider («¡Felices fiestes!»): dos sidrerías gemelas por fuera, La Casona de Xuanón y La Casona de John,
+ *   con luces de Navidad; delante, el brazo en alto escancia sidra, el chorro cae al vaso y salpica el
+ *   culín; la gente entra en la de los ingleses. Bucle de 8 s.
+ * - party («Cumpleaños en familia»): comedor en ruinas con un boquete al desierto y un coche abandonado.
+ *   Clara, con gorro de fiesta, sirve sopa a tres esqueletos con gorro (adulto, adulto y niño); se
+ *   encienden las velas del 46, las sopla, aplaude y CLICK, FLASH: foto. Bucle de 9 s.
+ * - pool («Sangre de pez»): primer plano de Guille de perfil, con gorro de natación, bajo el agua. Le cae
+ *   una gota en el ojo; el iris se vuelve amarillo y la pupila se estrecha como la de un pez; en el cuello
+ *   se le abren branquias que laten al respirar y suelta burbujas. Bucle de 9 s.
+ * - cannibal («Caníbales»): primer plano de Dariela, que gira despacio en la silla y sonríe con los dientes
+ *   rotos y algún hueco; muerde tres veces y en el brazo de delante aparece, a cada mordisco, una marca
+ *   más. Bucle de 8 s.
  * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
  */
 interface Props {
-  kind: 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces' | 'precinct' | 'cafe' | 'board' | 'beach' | 'platform' | 'forest';
+  kind: 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces' | 'precinct' | 'cafe' | 'board' | 'beach' | 'platform' | 'forest' | 'cider' | 'party' | 'pool' | 'cannibal';
   title: string;
   class?: string;
   [attr: string]: unknown;
@@ -111,6 +123,13 @@ const youths = [
   { id: 'valeria', x: 188, h: 1.04 },
   { id: 'gabriel', x: 224, h: 1.08 },
 ];
+
+// Caníbales: dientes de arriba (algunos rotos, algún hueco) y marcas de mordisco en el brazo.
+const teethTop = [
+  { x: 114, h: 14 }, { x: 126, h: 9 }, { x: 150, h: 15 }, { x: 162, h: 7 }, { x: 174, h: 13 },
+];
+const teethBottom = [{ x: 120, h: 10 }, { x: 144, h: 6 }, { x: 156, h: 11 }, { x: 168, h: 9 }];
+const bites = [{ x: 78, i: 0 }, { x: 150, i: 1 }, { x: 222, i: 2 }];
 
 const seats = [
   { x: 44, y: 362, kid: true },
@@ -324,6 +343,171 @@ const seats = [
           <circle class="cd-drop" style={`--dx:${drop.dx}px;--h:${-drop.h}px;--d:${drop.d}s`} cx="38" cy="330" r="3" fill="var(--peach-soft)" />
         ))}
       </g>
+    </>)}
+
+    {kind === 'cannibal' && (<>
+      <!-- Dariela, girando en la silla -->
+      <g class="cn-face">
+        <path d="M76 160q-10 70 6 112h18q-12-50-4-112ZM224 160q10 70-6 112h-18q12-50 4-112Z" fill="var(--ink)" />
+        <path d="M90 304q0-56 60-56t60 56Z" fill="var(--peach-soft)" />
+        <circle cx="150" cy="186" r="72" fill="var(--peach)" />
+        <path d="M78 176q4-74 72-76q70 2 74 76q-20-36-74-40q-52 4-72 40Z" fill="var(--ink)" />
+        <g class="cn-eyes">
+          <circle cx="124" cy="176" r="5" fill="var(--ink)" /><circle cx="176" cy="176" r="5" fill="var(--ink)" />
+        </g>
+        <!-- Boca: encías rojas, dientes rotos y huecos -->
+        <path d="M104 208q46 30 92 0q-6 42-46 44q-40-2-46-44Z" fill="var(--ink)" />
+        <path d="M106 210q44 18 88 0" stroke="var(--peach-soft)" stroke-width="5" opacity="0.35" />
+        {teethTop.map((t) => (
+          <path d={`M${t.x} 212h10v${t.h}l-3 -2-3 3-4-2Z`} fill="var(--peach-soft)" />
+        ))}
+        <g class="cn-jaw">
+          {teethBottom.map((t) => (
+            <path d={`M${t.x} 246h10v${-t.h}l-3 2-3-3-4 2Z`} fill="var(--peach-soft)" />
+          ))}
+        </g>
+        <path d="M136 252l-2 14M164 250l2 10M150 254v8" stroke="var(--ink)" stroke-width="3" />
+      </g>
+
+      <!-- El brazo, delante, con las marcas -->
+      <rect x="20" y="318" width="260" height="44" rx="22" fill="var(--peach-soft)" />
+      {bites.map((b) => (
+        <g class="cn-bite" style={`--i:${b.i}`}>
+          <path d={`M${b.x - 16} 330q16 12 32 0`} stroke="var(--ink)" stroke-width="3" stroke-dasharray="4 3" />
+          <path d={`M${b.x - 16} 350q16-12 32 0`} stroke="var(--ink)" stroke-width="3" stroke-dasharray="4 3" />
+        </g>
+      ))}
+    </>)}
+
+    {kind === 'pool' && (<>
+      <!-- Luz del agua -->
+      <g class="sp-caustics">
+        <path d="M-40 110q20-8 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="var(--peach-soft)" stroke-width="1.5" opacity="0.25" />
+        <path d="M-40 300q20-8 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="var(--peach-soft)" stroke-width="1.5" opacity="0.2" />
+        <path d="M-40 360q20-8 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="var(--peach-soft)" stroke-width="1.5" opacity="0.2" />
+      </g>
+
+      <!-- Guille, de perfil -->
+      <path d="M86 400l6-130q-24-30-14-80q10-60 72-70q52-2 62 40l4 18q16 18 4 26q-6 6-4 14q6 10-4 16q2 10-8 16q-14 12-34 12l-2 138Z" fill="var(--peach)" />
+      <path d="M78 196q2-80 72-82q56 0 64 52q-60-20-136 30Z" fill="var(--peach-soft)" />
+      <path d="M80 190q60-34 134-24" stroke="var(--cobalt)" stroke-width="3" />
+      <ellipse cx="196" cy="168" rx="12" ry="7" stroke="var(--cobalt)" stroke-width="3" />
+      <path d="M118 204q-10 8-2 20" stroke="var(--cobalt)" stroke-width="2" opacity="0.5" />
+      <path d="M210 228q-6 2-10 0" stroke="var(--cobalt)" stroke-width="2" />
+
+      <!-- El ojo -->
+      <g class="rs-zoom" transform="translate(186 198) scale(1.6) translate(-186 -198)">
+        <path d="M172 198q14-11 28 0q-14 10-28 0Z" fill="var(--peach-soft)" />
+        <circle class="sp-iris" cx="188" cy="198" r="5.5" fill="var(--cobalt)" />
+        <ellipse class="sp-pupil" cx="188" cy="198" rx="2.4" ry="4" fill="var(--ink)" />
+      </g>
+
+      <!-- Branquias en el cuello -->
+      <g class="sp-gills">
+        <path d="M128 272q8 10 0 22M140 270q8 11 0 24M152 270q8 11 0 24" stroke="var(--ink)" stroke-width="3" />
+      </g>
+
+      <!-- Burbujas -->
+      {[{ x: 222, d: 0 }, { x: 230, d: 0.5 }, { x: 216, d: 1 }].map((b) => (
+        <circle class="sp-bubble" style={`--d:${b.d}s`} cx={b.x} cy="226" r="4" stroke="var(--peach-soft)" stroke-width="1.5" />
+      ))}
+
+      <!-- El cuentagotas y la gota -->
+      <g transform="rotate(35 236 128)" class="rs-zoom">
+        <rect x="228" y="92" width="16" height="30" rx="3" fill="var(--peach-soft)" />
+        <text class="sp-label" x="236" y="111" text-anchor="middle">SP</text>
+        <path d="M232 122h8l-2 16h-4Z" fill="var(--peach-soft)" />
+      </g>
+      <path class="sp-drop" d="M226 146q4 5 2 8a2 2 0 0 1-4 0q-2-3 2-8Z" fill="var(--peach-soft)" />
+    </>)}
+
+    {kind === 'party' && (<>
+      <!-- Pared con boquete al desierto: camino y coche destartalado -->
+      <rect x="0" y="84" width="300" height="196" fill="#000" opacity="0.16" />
+      <path d="M176 100q34-10 72 4q22 30 8 70q-40 16-82 2q-16-36 2-76Z" fill="var(--peach-soft)" />
+      <path d="M176 152q40-8 80 2" stroke="var(--peach)" stroke-width="1.5" />
+      <path d="M196 156l46 18" stroke="var(--peach)" stroke-width="3" opacity="0.5" />
+      <path d="M204 150h24l6-6h10l4 6h4v6h-48Z" fill="var(--cobalt)" opacity="0.7" />
+      <path d="M40 120l14 16M60 98l-6 20M110 108l10 12" stroke="var(--peach)" stroke-width="1.2" opacity="0.5" />
+
+      <!-- La mesa -->
+      <rect x="20" y="268" width="260" height="8" fill="var(--peach)" />
+      <path d="M36 276v64M264 276v64" stroke="var(--peach)" stroke-width="4" />
+      <path d="M0 340h300" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+      <path d="M126 268v-18q0-8 8-8h26q8 0 8 8v18Z" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1" />
+      <path class="pa-steam" d="M138 236q-4-6 0-12t0-12M150 236q-4-6 0-12t0-12" stroke="var(--peach-soft)" stroke-width="1.5" />
+
+      <!-- Los esqueletos con gorro: Sebas, Diego y Biel (el de la tarta) -->
+      {[{ x: 52, s: 1 }, { x: 236, s: 1 }, { x: 196, s: 0.72 }].map((sk) => (
+        <g transform={`translate(${sk.x} 268) scale(${sk.s})`} class="rs-zoom">
+          <path d="M-9 -64l9-22 9 22Z" fill="var(--peach)" />
+          <ellipse cx="0" cy="-54" rx="11" ry="12" fill="var(--peach-soft)" />
+          <circle cx="-4" cy="-56" r="3" fill="var(--cobalt)" /><circle cx="4" cy="-56" r="3" fill="var(--cobalt)" />
+          <path d="M-4 -46h8M-2 -46v3M2 -46v3" stroke="var(--cobalt)" stroke-width="1" />
+          <path d="M0 -42v32M-10 -34h20M-9 -28h18M-8 -22h16M-12 -36l-6 26M12 -36l6 26" stroke="var(--peach-soft)" stroke-width="2.5" />
+        </g>
+      ))}
+
+      <!-- La tarta del 46 delante de Biel -->
+      <rect x="180" y="254" width="32" height="14" fill="var(--peach-soft)" />
+      <path d="M190 254v-10M202 254v-10" stroke="var(--peach)" stroke-width="2" />
+      <text class="pa-46" x="196" y="265" text-anchor="middle">46</text>
+      <path class="pa-flame" d="M190 236q4 4 2 7a2 2 0 0 1-4 0q-1-3 2-7ZM202 236q4 4 2 7a2 2 0 0 1-4 0q-1-3 2-7Z" fill="var(--peach-soft)" />
+
+      <!-- Clara, con gorro, sirviendo -->
+      <g>
+        <path d="M100 226l9-22 9 22Z" fill="var(--peach-soft)" />
+        <circle cx="109" cy="236" r="11" fill="var(--peach)" />
+        <circle cx="113" cy="234" r="1.5" fill="var(--cobalt)" />
+        <path d="M110 241q4 3 7 0" stroke="var(--cobalt)" stroke-width="1.5" />
+        <path d="M96 268q-2-22 13-22t13 22Z" fill="var(--peach)" />
+        <path class="pa-ladle" d="M118 252l16-8 4 6" stroke="var(--peach)" stroke-width="4" />
+      </g>
+
+      <!-- CLICK. FLASH. -->
+      <rect class="pa-flash" x="0" y="0" width="300" height="400" fill="var(--peach-soft)" />
+      <text class="pa-click" x="150" y="372" text-anchor="middle">CLICK. CLICK. FLASH.</text>
+    </>)}
+
+    {kind === 'cider' && (<>
+      <!-- Dos sidrerías gemelas -->
+      {[{ x: 24, name: 'XUANÓN' }, { x: 160, name: 'JOHN' }].map((bar) => (
+        <g>
+          <rect x={bar.x} y="138" width="116" height="122" fill="var(--peach)" />
+          <path d={`M${bar.x - 4} 138l8-14h108l8 14Z`} fill="var(--peach-soft)" />
+          <text class="ff-sign" x={bar.x + 58} y="156" text-anchor="middle">LA CASONA DE</text>
+          <text class="ff-sign ff-sign--big" x={bar.x + 58} y="170" text-anchor="middle">{bar.name}</text>
+          <rect x={bar.x + 12} y="184" width="34" height="28" fill="var(--cobalt)" opacity="0.8" />
+          <rect x={bar.x + 70} y="184" width="34" height="28" fill="var(--cobalt)" opacity="0.8" />
+          <rect x={bar.x + 44} y="220" width="28" height="40" fill="var(--cobalt)" />
+        </g>
+      ))}
+      {Array.from({ length: 16 }, (_, i) => (
+        <circle class="ff-light" style={`--d:${(i % 3) * 0.3}s`} cx={20 + i * 17} cy={120 + (i % 2) * 5} r="2.4" fill="var(--peach-soft)" />
+      ))}
+      <path d="M12 120q140 14 276 0" stroke="var(--peach-soft)" stroke-width="1" opacity="0.6" />
+      <path d="M0 260h300" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+
+      <!-- Clientes que se van a la de los ingleses -->
+      {[0, 1, 2].map((i) => (
+        <g class="ff-walker" style={`--d:${i * -2.6}s`}>
+          <circle cx="40" cy="236" r="5" fill="var(--peach-soft)" />
+          <path d="M40 241l-6 19h12Z" fill="var(--peach-soft)" />
+        </g>
+      ))}
+
+      <!-- El escanciado: botella en alto, chorro largo, vaso abajo -->
+      <path d="M92 400l30-92" stroke="var(--peach)" stroke-width="9" />
+      <g class="rs-zoom" transform="translate(126 300) rotate(139)">
+        <rect x="-7" y="-14" width="14" height="28" rx="3" fill="var(--peach-soft)" />
+        <rect x="-7" y="-4" width="14" height="9" fill="var(--cobalt)" />
+        <rect x="-3" y="-22" width="6" height="9" rx="1" fill="var(--peach-soft)" />
+      </g>
+      <path class="ff-stream" pathLength="1" d="M140 317q4 34 12 58" stroke="var(--peach-soft)" stroke-width="2.5" />
+      <path d="M210 400l-50-12" stroke="var(--peach)" stroke-width="9" />
+      <path d="M142 372l4 22h14l4-22Z" fill="none" stroke="var(--peach-soft)" stroke-width="2" />
+      <rect class="ff-fill" x="145" y="382" width="16" height="11" fill="var(--peach)" />
+      <g class="ff-splash"><circle cx="140" cy="368" r="2" fill="var(--peach-soft)" /><circle cx="166" cy="366" r="1.6" fill="var(--peach-soft)" /><circle cx="136" cy="378" r="1.4" fill="var(--peach-soft)" /></g>
     </>)}
 
     {kind === 'forest' && (<>
@@ -1190,6 +1374,92 @@ const seats = [
     translate: 0 13px;
   }
 
+  .ff-sign {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    fill: var(--cobalt);
+  }
+
+  .ff-sign--big {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .ff-stream {
+    stroke-dasharray: 1;
+  }
+
+  .ff-walker {
+    opacity: 0;
+  }
+
+  .cv .ff-fill {
+    transform-origin: center bottom;
+  }
+
+  .pa-46 {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 9px;
+    fill: var(--cobalt);
+  }
+
+  .pa-click {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    fill: var(--peach);
+  }
+
+  .pa-flash {
+    opacity: 0;
+  }
+
+  .cv .pa-ladle {
+    transform-origin: left center;
+  }
+
+  .cv .pa-flame {
+    transform-origin: center bottom;
+  }
+
+  .sp-label {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 8px;
+    fill: var(--cobalt);
+  }
+
+  /* Sin movimiento: el final — ojo amarillo, pupila de pez, branquias abiertas. */
+  .sp-drop {
+    opacity: 0;
+  }
+
+  .sp-iris {
+    fill: var(--peach-soft);
+    stroke: var(--peach);
+    stroke-width: 1.5;
+  }
+
+  .cv .sp-pupil {
+    scale: 0.35 1;
+  }
+
+  .cv .sp-gills {
+    transform-origin: left center;
+  }
+
+  /* Sin movimiento: la sonrisa y las tres marcas. */
+  .cv .cn-face {
+    transform-box: view-box;
+    transform-origin: 150px 300px;
+  }
+
   .cv:not([data-playing]) :global(*) {
     animation-play-state: paused !important;
   }
@@ -1231,6 +1501,91 @@ const seats = [
 
     .cv-gasp {
       animation: cv-gasp 8s linear infinite;
+    }
+
+    /* Caníbales */
+    .cn-face {
+      animation: cn-swivel 3s ease-in-out infinite alternate;
+    }
+
+    .cn-jaw {
+      animation: cn-chomp 8s ease-in-out infinite;
+    }
+
+    .cn-eyes {
+      animation: cn-look 8s steps(1, end) infinite;
+    }
+
+    .cn-bite {
+      animation: cn-bite 8s steps(1, end) infinite backwards;
+      animation-delay: calc(var(--i) * 1.6s);
+    }
+
+    /* Sangre de pez */
+    .sp-caustics {
+      animation: lb-waves 5s linear infinite;
+    }
+
+    .sp-drop {
+      animation: sp-drop 9s ease-in infinite;
+    }
+
+    .sp-iris {
+      animation: sp-iris 9s ease-in-out infinite;
+    }
+
+    .sp-pupil {
+      animation: sp-pupil 9s ease-in-out infinite;
+    }
+
+    .sp-gills {
+      animation: sp-gills 9s ease-in-out infinite;
+    }
+
+    .sp-bubble {
+      animation: sp-bubble 1.6s ease-out var(--d) infinite;
+    }
+
+    /* Cumpleaños en familia */
+    .pa-steam {
+      animation: cd-stink 2s ease-out infinite;
+    }
+
+    .pa-ladle {
+      animation: pa-ladle 9s ease-in-out infinite;
+    }
+
+    .pa-flame {
+      animation: pa-flame 9s steps(1, end) infinite;
+    }
+
+    .pa-flash {
+      animation: pa-flash 9s linear infinite;
+    }
+
+    .pa-click {
+      animation: pa-click 9s steps(1, end) infinite;
+    }
+
+    /* ¡Felices fiestes! */
+    .ff-light {
+      animation: cs-bulb 0.9s steps(1, end) var(--d) infinite;
+    }
+
+    .ff-stream {
+      animation: ff-stream 4s ease-out infinite;
+    }
+
+    .ff-fill {
+      animation: ff-fill 4s ease-out infinite;
+    }
+
+    .ff-splash {
+      animation: ff-splash 0.5s ease-out infinite alternate;
+    }
+
+    .ff-walker {
+      animation: ff-walk 7.8s linear var(--d) infinite;
     }
 
     /* El Guardián */
@@ -1629,6 +1984,138 @@ const seats = [
     .cs-wave {
       animation: cs-wave 0.5s ease-in-out infinite alternate;
     }
+  }
+
+  @keyframes sp-clock {
+    to { rotate: 360deg; }
+  }
+
+  /* Gira de lado a lado en la silla de despacho. */
+  @keyframes cn-swivel {
+    from { rotate: -4deg; translate: -6px 0; }
+    to { rotate: 4deg; translate: 6px 0; }
+  }
+
+  /* Tres mordiscos. */
+  @keyframes cn-chomp {
+    0%, 8% { translate: 0 0; }
+    12% { translate: 0 -18px; }
+    16%, 28% { translate: 0 0; }
+    32% { translate: 0 -18px; }
+    36%, 48% { translate: 0 0; }
+    52% { translate: 0 -18px; }
+    56%, 100% { translate: 0 0; }
+  }
+
+  /* Mira al brazo mientras muerde; luego, de frente. */
+  @keyframes cn-look {
+    0% { translate: 0 4px; }
+    60%, 100% { translate: 0 0; }
+  }
+
+  /* Cada mordisco deja una marca, que se queda hasta el final del ciclo. */
+  @keyframes cn-bite {
+    0% { opacity: 0; }
+    12%, 76% { opacity: 1; }
+    80%, 100% { opacity: 0; }
+  }
+
+  /* Una gota cae del cuentagotas al ojo. */
+  @keyframes sp-drop {
+    0%, 6% { opacity: 0; translate: 0 0; }
+    8% { opacity: 1; translate: 0 0; }
+    18% { opacity: 1; translate: -36px 46px; }
+    20%, 100% { opacity: 0; translate: -36px 46px; }
+  }
+
+  /* El iris se vuelve amarillo… */
+  @keyframes sp-iris {
+    0%, 20% { fill: var(--cobalt); stroke-width: 0; }
+    36%, 92% { fill: var(--peach-soft); stroke: var(--peach); stroke-width: 1.5; }
+    100% { fill: var(--cobalt); stroke-width: 0; }
+  }
+
+  /* …y la pupila se estrecha como la de un pez. */
+  @keyframes sp-pupil {
+    0%, 22% { scale: 1 1; }
+    40%, 92% { scale: 0.35 1; }
+    100% { scale: 1 1; }
+  }
+
+  /* Las branquias se abren y laten. */
+  @keyframes sp-gills {
+    0%, 34% { opacity: 0; scale: 0 1; }
+    46% { opacity: 1; scale: 1 1; }
+    54% { scale: 1.4 1; }
+    62% { scale: 1 1; }
+    70% { scale: 1.4 1; }
+    78% { scale: 1 1; }
+    86% { scale: 1.4 1; }
+    92% { opacity: 1; scale: 1 1; }
+    100% { opacity: 0; scale: 0 1; }
+  }
+
+  @keyframes sp-bubble {
+    0% { opacity: 0; translate: 0 0; scale: 0.5; }
+    20% { opacity: 1; }
+    100% { opacity: 0; translate: 14px -90px; scale: 1.2; }
+  }
+
+  /* Sirve sopa a todos, cucharón arriba y abajo. */
+  @keyframes pa-ladle {
+    0%, 4% { rotate: 0deg; }
+    8% { rotate: -30deg; }
+    12% { rotate: 10deg; }
+    18% { rotate: -30deg; }
+    22% { rotate: 10deg; }
+    28% { rotate: -30deg; }
+    32%, 100% { rotate: 0deg; }
+  }
+
+  /* Enciende las velas del 46 y las sopla. */
+  @keyframes pa-flame {
+    0% { opacity: 0; }
+    40% { opacity: 1; }
+    66%, 100% { opacity: 0; }
+  }
+
+  /* Antes una foto: dos clics y el flash. */
+  @keyframes pa-flash {
+    0%, 77% { opacity: 0; }
+    78% { opacity: 0.9; }
+    82%, 100% { opacity: 0; }
+  }
+
+  @keyframes pa-click {
+    0% { opacity: 0; }
+    72%, 94% { opacity: 1; }
+    96%, 100% { opacity: 0; }
+  }
+
+  /* El chorro largo de sidra: cae, llena el culín y vuelta a empezar. */
+  @keyframes ff-stream {
+    0% { stroke-dashoffset: 1; opacity: 1; }
+    20%, 80% { stroke-dashoffset: 0; opacity: 1; }
+    92%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  @keyframes ff-fill {
+    0%, 15% { scale: 1 0; }
+    80% { scale: 1 1; }
+    92%, 100% { scale: 1 0; }
+  }
+
+  @keyframes ff-splash {
+    from { translate: 0 0; opacity: 1; }
+    to { translate: 0 -4px; opacity: 0.4; }
+  }
+
+  /* La gente pasa de largo de Xuanón y entra en la de John. */
+  @keyframes ff-walk {
+    0% { opacity: 0; translate: -20px 0; }
+    8% { opacity: 1; }
+    70% { opacity: 1; translate: 178px 0; }
+    78%, 100% { opacity: 0; translate: 178px 0; }
   }
 
   @keyframes gd-blink {

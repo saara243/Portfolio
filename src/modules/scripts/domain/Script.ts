@@ -5,7 +5,12 @@ import { ScriptStatus } from './ScriptStatus';
 
 export const DOWNLOAD_ACCESS = ['public', 'on-request'] as const;
 export type DownloadAccess = (typeof DOWNLOAD_ACCESS)[number];
-export type CoverArtKind = 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces' | 'precinct' | 'cafe' | 'board' | 'beach' | 'platform' | 'forest';
+export interface ScriptFile {
+  label: string;
+  file: string;
+}
+
+export type CoverArtKind = 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces' | 'precinct' | 'cafe' | 'board' | 'beach' | 'platform' | 'forest' | 'cider' | 'party' | 'pool' | 'cannibal';
 
 export interface ScriptPrimitive {
   slug: string;
@@ -24,6 +29,7 @@ export interface ScriptPrimitive {
   coverArt?: CoverArtKind;
   still?: string;
   pdf?: string;
+  files?: ScriptFile[];
   download: DownloadAccess;
   featured: boolean;
   order?: number;
@@ -50,6 +56,7 @@ export class Script {
     private readonly coverArt: CoverArtKind | undefined,
     private readonly still: string | undefined,
     private readonly pdf: string | undefined,
+    private readonly files: ScriptFile[],
     private readonly download: DownloadAccess,
     private readonly featured: boolean,
     private readonly order: number | undefined,
@@ -76,6 +83,7 @@ export class Script {
       data.coverArt,
       data.still,
       data.pdf,
+      (data.files ?? []).map((f) => ({ ...f })),
       data.download,
       data.featured,
       data.order,
@@ -127,10 +135,16 @@ export class Script {
   getCoverArt(): CoverArtKind | undefined { return this.coverArt; }
   getStill(): string | undefined { return this.still; }
   getPdf(): string | undefined { return this.pdf; }
+  getFiles(): ScriptFile[] { return this.files.map((f) => ({ ...f })); }
   getOrder(): number | undefined { return this.order; }
   getAwards(): string[] { return [...this.awards]; }
   getContext(): string | undefined { return this.context; }
   isFeatured(): boolean { return this.featured; }
+
+  /** La descarga es pública (sin petición previa). */
+  isPublic(): boolean {
+    return this.download === 'public';
+  }
 
   /** El PDF se puede descargar directamente desde la web. */
   isDownloadable(): boolean {
@@ -168,6 +182,7 @@ export class Script {
       coverArt: this.coverArt,
       still: this.still,
       pdf: this.pdf,
+      files: this.getFiles(),
       download: this.download,
       featured: this.featured,
       order: this.order,

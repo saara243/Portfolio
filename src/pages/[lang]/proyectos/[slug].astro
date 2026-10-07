@@ -108,7 +108,15 @@ const details = [
               ))}
             </dl>
 
-            {script.isDownloadable() && pdf && <DownloadButton file={pdf} label={t('script.download')} />}
+            {script.getFiles().length > 0 && script.isPublic() ? (
+              <div class="script__files">
+                {script.getFiles().map((doc, i) => (
+                  <DownloadButton file={doc.file} label={doc.label} variant={i === 0 ? 'primary' : 'secondary'} />
+                ))}
+              </div>
+            ) : (
+              script.isDownloadable() && pdf && <DownloadButton file={pdf} label={t('script.download')} />
+            )}
             {script.isAvailableOnRequest() && (
               <>
                 <p class="script__note">{t('script.onRequestNote')}</p>
@@ -196,6 +204,12 @@ const details = [
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
+  }
+
+  .script__files {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
   }
 
   .script__sheet {

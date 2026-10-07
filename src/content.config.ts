@@ -42,10 +42,12 @@ const scripts = defineCollection({
     duration: z.string().optional(),
     cover: publicFile.optional(),
     // Portada ilustrada y animada (src/components/CoverArt.astro) cuando no hay imagen de portada
-    coverArt: z.enum(['revival', 'set', 'tube', 'dentist', 'closet', 'faces', 'precinct', 'cafe', 'board', 'beach', 'platform', 'forest']).optional(),
+    coverArt: z.enum(['revival', 'set', 'tube', 'dentist', 'closet', 'faces', 'precinct', 'cafe', 'board', 'beach', 'platform', 'forest', 'cider', 'party', 'pool', 'cannibal']).optional(),
     // Fotograma horizontal (16:9) para la cuadrícula de destacados de la home; opcional
     still: publicFile.optional(),
     pdf: publicFile.optional(),
+    // Varios documentos (dosier, mapa de tramas…): cada uno con su botón de descarga en la ficha
+    files: z.array(z.object({ label: z.string(), file: publicFile })).default([]),
     download: z.enum(DOWNLOAD_ACCESS).default('public'),
     featured: z.boolean().default(false),
     order: z.number().optional(),

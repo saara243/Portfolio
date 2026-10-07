@@ -84,7 +84,7 @@ const es = {
 
   'status.in-development': 'En desarrollo',
   'status.finished': 'Terminado',
-  'status.produced': 'Producido',
+  'status.produced': 'Rodado',
 
   'cv.title': 'Currículum',
   'cv.download': 'Descargar CV (PDF)',
@@ -93,7 +93,6 @@ const es = {
   'cv.awards': 'Premios y selecciones',
   'cv.about': 'Acerca de mí',
   'motivation.pass': 'Acreditación',
-  'contact.yourSignature': 'Tu firma',
   'cv.certificates': 'Certificados',
   'cv.itSkills': 'Habilidades IT',
   'cv.languages': 'Idiomas',
@@ -201,7 +200,7 @@ const ca: Record<UiKey, string> = {
 
   'status.in-development': 'En desenvolupament',
   'status.finished': 'Acabat',
-  'status.produced': 'Produït',
+  'status.produced': 'Rodat',
 
   'cv.title': 'Currículum',
   'cv.download': 'Descarregar CV (PDF)',
@@ -210,7 +209,6 @@ const ca: Record<UiKey, string> = {
   'cv.awards': 'Premis i seleccions',
   'cv.about': 'Sobre mi',
   'motivation.pass': 'Acreditació',
-  'contact.yourSignature': 'La teva signatura',
   'cv.certificates': 'Certificats',
   'cv.itSkills': 'Habilitats IT',
   'cv.languages': 'Idiomes',
@@ -316,7 +314,7 @@ const en: Record<UiKey, string> = {
 
   'status.in-development': 'In development',
   'status.finished': 'Finished',
-  'status.produced': 'Produced',
+  'status.produced': 'Shot',
 
   'cv.title': 'Résumé',
   'cv.download': 'Download CV (PDF)',
@@ -325,7 +323,6 @@ const en: Record<UiKey, string> = {
   'cv.awards': 'Awards & selections',
   'cv.about': 'About me',
   'motivation.pass': 'Crew pass',
-  'contact.yourSignature': 'Your signature',
   'cv.certificates': 'Certificates',
   'cv.itSkills': 'IT skills',
   'cv.languages': 'Languages',

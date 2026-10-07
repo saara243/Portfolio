@@ -1,9 +1,9 @@
 ---
-import { useTranslations, type Lang } from '../i18n/utils';
+import type { Lang } from '../i18n/utils';
 
 /**
- * Ilustración de contacto: un contrato que se firma. Las cláusulas se escriben, firma la autora,
- * una pluma firma en el hueco de quien contrata y cae la estrella-sello. Bucle de ~9 s, pausado
+ * Ilustración de contacto: un contrato que se firma. Las cláusulas se escriben, la pluma firma
+ * en el hueco de la autora y cae la estrella-sello. Bucle de ~9 s, pausado
  * fuera de pantalla. Decorativo (aria-hidden). Sin movimiento, se ve firmado y sellado.
  */
 interface Props {
@@ -12,8 +12,7 @@ interface Props {
   role: string;
 }
 
-const { lang, name, role } = Astro.props;
-const t = useTranslations(lang);
+const { name, role } = Astro.props;
 
 // Estrella-sello (misma geometría que el motivo `badge`), centrada en el sello.
 const POINTS = 12;
@@ -50,19 +49,12 @@ const clauses = [
         <path class="contract__clause" d={`M34 ${y}H${34 + w}`} pathLength="1" style={`--i:${i}`} />
       ))}
 
-      <line x1="34" y1="330" x2="132" y2="330" stroke="var(--cobalt)" />
-      <line x1="168" y1="330" x2="266" y2="330" stroke="var(--cobalt)" />
-      <text class="contract__label" x="34" y="346">{name}</text>
-      <text class="contract__label" x="168" y="346">{t('contact.yourSignature')}</text>
+      <line x1="90" y1="330" x2="210" y2="330" stroke="var(--cobalt)" />
+      <text class="contract__label" x="150" y="346" text-anchor="middle">{name}</text>
 
       <path
         class="contract__sig contract__sig--author"
-        d="M40 320c4-16 10-24 12-14s-8 16-2 10 10-18 14-8-2 10 4 6 8-12 12-6 2 8 8 4 8-8 14-4 8 4 14-2"
-        pathLength="1"
-      />
-      <path
-        class="contract__sig contract__sig--guest"
-        d="M172 322c6-4 8-18 14-14s-4 14 2 12 6-16 12-12-2 12 4 8 10-14 14-8-4 10 4 6 10-6 16-4 6 2 14-6"
+        d="M106 320c4-16 10-24 12-14s-8 16-2 10 10-18 14-8-2 10 4 6 8-12 12-6 2 8 8 4 8-8 14-4 8 4 14-2"
         pathLength="1"
       />
 
@@ -170,10 +162,6 @@ const clauses = [
       animation: contract-sign-author 9s ease-in-out infinite;
     }
 
-    .contract__sig--guest {
-      animation: contract-sign-guest 9s ease-in-out infinite;
-    }
-
     .contract__pen {
       animation: contract-pen 9s ease-in-out infinite;
     }
@@ -191,27 +179,21 @@ const clauses = [
   }
 
   @keyframes contract-sign-author {
-    0%, 26% { stroke-dashoffset: 1; opacity: 1; }
-    38%, 88% { stroke-dashoffset: 0; opacity: 1; }
-    96%, 100% { stroke-dashoffset: 0; opacity: 0; }
-  }
-
-  @keyframes contract-sign-guest {
-    0%, 46% { stroke-dashoffset: 1; opacity: 1; }
-    60%, 88% { stroke-dashoffset: 0; opacity: 1; }
+    0%, 40% { stroke-dashoffset: 1; opacity: 1; }
+    58%, 88% { stroke-dashoffset: 0; opacity: 1; }
     96%, 100% { stroke-dashoffset: 0; opacity: 0; }
   }
 
   /* La pluma entra, sigue la firma de izquierda a derecha y sale. */
   @keyframes contract-pen {
-    0%, 40% { opacity: 0; translate: 200px 270px; rotate: 0deg; }
-    44% { opacity: 1; translate: 172px 322px; rotate: 0deg; }
-    48% { translate: 186px 306px; rotate: -6deg; }
-    51% { translate: 200px 318px; rotate: 4deg; }
-    54% { translate: 214px 308px; rotate: -6deg; }
-    57% { translate: 234px 316px; rotate: 4deg; }
-    60% { translate: 262px 312px; rotate: 0deg; opacity: 1; }
-    66%, 100% { translate: 300px 280px; opacity: 0; }
+    0%, 36% { opacity: 0; translate: 130px 270px; rotate: 0deg; }
+    40% { opacity: 1; translate: 106px 320px; rotate: 0deg; }
+    44% { translate: 120px 306px; rotate: -6deg; }
+    48% { translate: 136px 318px; rotate: 4deg; }
+    52% { translate: 152px 308px; rotate: -6deg; }
+    55% { translate: 172px 316px; rotate: 4deg; }
+    58% { translate: 196px 312px; rotate: 0deg; opacity: 1; }
+    64%, 100% { translate: 236px 280px; opacity: 0; }
   }
 
   /* Sello: cae de arriba con un golpe seco y se queda. */
