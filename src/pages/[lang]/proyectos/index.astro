@@ -15,6 +15,9 @@ const t = useTranslations(lang);
 const scripts = await scriptsModule.listScripts.execute({ locale: lang });
 const profile = await profileModule.getProfile.execute({ locale: lang });
 // Dramaturgia es un formato más del filtro, siempre al final (después de serie, largo y corto).
+// Subgéneros («Comedia musical absurda») cuentan dentro de su género («Comedia») y no llevan filtro propio.
+const allGenres = scripts.genres();
+const genres = allGenres.filter((g) => !allGenres.some((o) => o.getKey() !== g.getKey() && g.getKey().startsWith(`${o.getKey()}-`)));
 const formats = scripts.formats().sort((a, b) => Number(a.getValue() === 'theatre') - Number(b.getValue() === 'theatre'));
 ---
 
@@ -33,7 +36,7 @@ const formats = scripts.formats().sort((a, b) => Number(a.getValue() === 'theatr
 
     {!scripts.isEmpty() && (
       <>
-        <ScriptFilters lang={lang} formats={formats} genres={scripts.genres()} />
+        <ScriptFilters lang={lang} formats={formats} genres={genres} />
 
         <div class="grid-cards" data-script-results>
           {scripts.toArray().map((script) => <ScriptCard lang={lang} script={script} />)}

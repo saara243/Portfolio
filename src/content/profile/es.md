@@ -6,7 +6,7 @@ statement: "Quiero escribir historias donde la gente se vea reflejada, que piens
 photo: images/profile.jpg
 email: saara.sorribaas@gmail.com
 location: Barcelona, España
-cv: files/cv/cv-es.pdf
+cv: files/cv/cv-sara-abreu.pdf
 socials:
   - label: "@saara.abreu"
     url: https://www.instagram.com/saara.abreu/

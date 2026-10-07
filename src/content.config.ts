@@ -46,6 +46,9 @@ const scripts = defineCollection({
     // Fotograma horizontal (16:9) para la cuadrícula de destacados de la home; opcional
     still: publicFile.optional(),
     pdf: publicFile.optional(),
+    // Vídeo de la obra rodada (MP4) y su fotograma de portada; se muestra en la ficha con reproductor
+    video: publicFile.optional(),
+    videoPoster: publicFile.optional(),
     // Varios documentos (dosier, mapa de tramas…): cada uno con su botón de descarga en la ficha
     files: z.array(z.object({ label: z.string(), file: publicFile })).default([]),
     download: z.enum(DOWNLOAD_ACCESS).default('public'),

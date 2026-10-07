@@ -27,6 +27,8 @@ export class AstroContentScriptRepository implements ScriptRepository {
           coverArt: entry.data.coverArt,
           still: entry.data.still,
           pdf: entry.data.pdf,
+          video: entry.data.video,
+          videoPoster: entry.data.videoPoster,
           files: entry.data.files,
           download: entry.data.download,
           featured: entry.data.featured,

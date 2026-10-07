@@ -59,7 +59,7 @@ const t = useTranslations(lang);
       cards.forEach((card) => {
         const matches =
           (!format || card.dataset.format === format) &&
-          (!genre || (card.dataset.genres ?? '').split(' ').includes(genre));
+          (!genre || (card.dataset.genres ?? '').split(' ').some((key) => key === genre || key.startsWith(`${genre}-`)));
         card.hidden = !matches;
         if (matches) visible++;
       });

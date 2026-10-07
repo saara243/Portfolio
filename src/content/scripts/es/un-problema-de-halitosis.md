@@ -9,5 +9,6 @@ coverArt: dentist
 pages: 3
 pdf: files/scripts/un-problema-de-halitosis.pdf
 download: public
+order: 5
 ---
 Diego lleva dos años enamorado de su dentista, la doctora Margarita Centellas, y hoy, con sus mejores pantalones de campana, piensa declararse. Pero tumbado en el sillón descubre que su aliento es insoportable, y en la mesa de detrás hay un bote de caramelos. La operación es sencilla. O debería serlo.

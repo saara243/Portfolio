@@ -6,7 +6,7 @@ statement: "Vull escriure històries on la gent s’hi vegi reflectida, que pens
 photo: images/profile.jpg
 email: saara.sorribaas@gmail.com
 location: Barcelona
-cv: files/cv/cv-ca.pdf
+cv: files/cv/cv-sara-abreu.pdf
 socials:
   - label: "@saara.abreu"
     url: https://www.instagram.com/saara.abreu/

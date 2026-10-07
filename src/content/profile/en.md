@@ -6,7 +6,7 @@ statement: "I want to write stories people see themselves in, so they think: I k
 photo: images/profile.jpg
 email: saara.sorribaas@gmail.com
 location: Barcelona, Spain
-cv: files/cv/cv-en.pdf
+cv: files/cv/cv-sara-abreu.pdf
 socials:
   - label: "@saara.abreu"
     url: https://www.instagram.com/saara.abreu/

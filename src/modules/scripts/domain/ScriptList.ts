@@ -80,10 +80,11 @@ export class ScriptList {
     return [...unique.values()];
   }
 
+  /** Géneros en el orden en que aparecen en la lista (que ya va ordenada por `order`). */
   genres(): Genre[] {
     const unique = new Map<string, Genre>();
     this.items.forEach((script) => script.getGenres().forEach((genre) => unique.set(genre.getKey(), genre)));
-    return [...unique.values()].sort((a, b) => a.getLabel().localeCompare(b.getLabel()));
+    return [...unique.values()];
   }
 
   count(): number {

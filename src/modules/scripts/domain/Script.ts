@@ -29,6 +29,8 @@ export interface ScriptPrimitive {
   coverArt?: CoverArtKind;
   still?: string;
   pdf?: string;
+  video?: string;
+  videoPoster?: string;
   files?: ScriptFile[];
   download: DownloadAccess;
   featured: boolean;
@@ -56,6 +58,8 @@ export class Script {
     private readonly coverArt: CoverArtKind | undefined,
     private readonly still: string | undefined,
     private readonly pdf: string | undefined,
+    private readonly video: string | undefined,
+    private readonly videoPoster: string | undefined,
     private readonly files: ScriptFile[],
     private readonly download: DownloadAccess,
     private readonly featured: boolean,
@@ -83,6 +87,8 @@ export class Script {
       data.coverArt,
       data.still,
       data.pdf,
+      data.video,
+      data.videoPoster,
       (data.files ?? []).map((f) => ({ ...f })),
       data.download,
       data.featured,
@@ -135,6 +141,8 @@ export class Script {
   getCoverArt(): CoverArtKind | undefined { return this.coverArt; }
   getStill(): string | undefined { return this.still; }
   getPdf(): string | undefined { return this.pdf; }
+  getVideo(): string | undefined { return this.video; }
+  getVideoPoster(): string | undefined { return this.videoPoster; }
   getFiles(): ScriptFile[] { return this.files.map((f) => ({ ...f })); }
   getOrder(): number | undefined { return this.order; }
   getAwards(): string[] { return [...this.awards]; }
@@ -182,6 +190,8 @@ export class Script {
       coverArt: this.coverArt,
       still: this.still,
       pdf: this.pdf,
+      video: this.video,
+      videoPoster: this.videoPoster,
       files: this.getFiles(),
       download: this.download,
       featured: this.featured,

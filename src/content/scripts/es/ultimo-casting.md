@@ -8,6 +8,8 @@ status: produced
 coverArt: set
 pages: 16
 pdf: files/scripts/ultimo-casting.pdf
+video: files/videos/ultimo-casting.mp4
+videoPoster: files/videos/ultimo-casting-poster.jpg
 download: public
 context: Dirigido por Sara Abreu.
 featured: true

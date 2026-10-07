@@ -10,5 +10,6 @@ pages: 5
 pdf: files/scripts/canibales.pdf
 download: public
 context: Dirigido por Ayrton Gómez y Cala (Marta Castro).
+order: 10
 ---
 Nelson espera en el sofá, con mordiscos en los brazos y la mirada clavada en la cortina de cuerdas del estudio. Su madre, Antía, sale y se pone a cortar remolacha y tomate a hachazos. Dariela, su hermana pequeña, ha hecho fuera lo que solo se hace en casa, y alguien tiene que enseñárselo. ¿Y quién mejor que su hermano?

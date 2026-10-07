@@ -61,6 +61,21 @@ const details = [
             <p>{script.getLogline()}</p>
           </section>
 
+          {script.getVideo() && (
+            <section class="script__block">
+              <h2 class="script__label script-font">{t('script.watch')}</h2>
+              <video
+                class="script__video"
+                controls
+                preload="metadata"
+                playsinline
+                poster={script.getVideoPoster() ? withBase(script.getVideoPoster()!) : undefined}
+              >
+                <source src={withBase(script.getVideo()!)} type="video/mp4" />
+              </video>
+            </section>
+          )}
+
           {script.getSynopsisHtml() && (
             <section class="script__block">
               <h2 class="script__label script-font">{t('script.synopsis')}</h2>
@@ -204,6 +219,13 @@ const details = [
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
+  }
+
+  .script__video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--ink);
   }
 
   .script__files {

@@ -9,5 +9,6 @@ coverArt: tube
 pages: 4
 pdf: files/scripts/cifras-y-letras.pdf
 download: public
+order: 8
 ---
 Cada tarde a las cinco y media, Yolanda se tumba en el sofá a ver *Cifras y letras*. Cuando le cuenta a su madre que ha mandado la solicitud para concursar, la discusión, a gritos por encima de la aspiradora, sube de volumen hasta que la tele acaba siendo mucho más que un mueble del salón.

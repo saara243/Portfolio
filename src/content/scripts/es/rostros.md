@@ -9,5 +9,6 @@ coverArt: faces
 pages: 4
 pdf: files/scripts/rostros.pdf
 download: public
+order: 15
 ---
 De noche, en la celda 231, Salva se tapa con la manta y no suelta el mechero. Una voz infantil le pregunta si no piensa mirar. Detrás de él, un rostro sale de la oscuridad y se le acerca, y cada vez que se acerca es una cara distinta. Salva sabe que no debe abrir los ojos. Dex sabe que acabará haciéndolo.
