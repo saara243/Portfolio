@@ -1,0 +1,737 @@
+---
+import BookCoverArt from './BookCoverArt.astro';
+import CoverArt from './CoverArt.astro';
+import type { Script } from '../modules/scripts/domain/Script';
+import type { UiKey } from '../i18n/ui';
+import { localizedPath, routes, useTranslations, withBase, type Lang } from '../i18n/utils';
+
+/**
+ * Proyectos destacados como un libro de tapa dura. Cerrado muestra la portada (solo el título,
+ * sin animación); al abrirlo, cada doble página es un proyecto: a la izquierda su portada animada, a la
+ * derecha formato · fecha, título, sinopsis y «Ver proyecto completo». Las hojas giran en 3D sobre
+ * el lomo (clic en la esquina, flechas o teclado). Tras el último, el libro se cierra por detrás y
+ * queda la contraportada con «Ver todos los proyectos».
+ * En móvil, una página cada vez (portada animada arriba, texto debajo), deslizando o con flechas.
+ * Con movimiento reducido, las páginas cambian con un fundido. Sin JavaScript, los proyectos van
+ * uno debajo de otro.
+ */
+interface Props {
+  lang: Lang;
+  scripts: Script[];
+}
+
+const { lang, scripts } = Astro.props;
+const t = useTranslations(lang);
+
+// La sinopsis de la ficha, en texto plano y solo su primer párrafo.
+const synopsisOf = (script: Script) => {
+  const html = script.getSynopsisHtml();
+  const match = html.match(/<p[^>]*>([\s\S]*?)<\/p>/);
+  return (match ? match[1] : html).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() || script.getLogline();
+};
+
+const projects = scripts.map((script) => ({
+  slug: script.getSlug(),
+  title: script.getTitle(),
+  meta: `${t(`format.${script.getFormat().getValue()}` as UiKey)} · ${script.getDisplayDate()}`,
+  synopsis: synopsisOf(script),
+  href: localizedPath(lang, routes.project(script.getSlug())),
+  art: script.getCoverArt(),
+  cover: script.getCover(),
+}));
+const total = projects.length;
+const allHref = localizedPath(lang, routes.projects);
+// Título de la tapa en dos líneas («Proyectos / destacados»).
+const words = t('home.featured').toUpperCase().split(' ');
+const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
+---
+
+<div class="book" data-book data-total={total}>
+  <!-- ===== Libro abierto (escritorio): hojas que giran sobre el lomo ===== -->
+  <div class="book__desk" data-book-desk>
+    <div class="book__object" data-book-object>
+      <div class="book__block" aria-hidden="true"></div>
+
+      <!-- Hoja 0: tapa (fuera) / portada animada del primer proyecto (dentro) -->
+      {[...Array(total + 2)].map((_, leaf) => (
+        <div class="book__leaf" data-leaf={leaf} style={`--leaf:${leaf}`}>
+          <div class:list={['book__face', 'book__face--front', { 'book__face--cover': leaf === 0, 'book__face--endpaper': leaf === total + 1 }]} data-face>
+            {leaf === 0 ? (
+              <button class="book__cover" type="button" data-book-open aria-label={`${t('home.featured')} — ${t('book.open')}`}>
+                <BookCoverArt title={coverTitle} />
+              </button>
+            ) : leaf <= total ? (
+              /* Página derecha: el texto del proyecto */
+              <article class="book__page book__page--text">
+                <p class="book__meta script-font">{projects[leaf - 1].meta}</p>
+                <h3 class="book__title">{projects[leaf - 1].title}</h3>
+                <p class="book__synopsis">{projects[leaf - 1].synopsis}</p>
+                <a class="button button--primary book__read" href={projects[leaf - 1].href}>{t('book.read')} <span aria-hidden="true">→</span></a>
+                <span class="book__folio script-font">{leaf} / {total}</span>
+                <button class="book__corner book__corner--next" type="button" data-book-next aria-label={t('book.next')}></button>
+              </article>
+            ) : (
+              <div class="book__page book__page--endpaper" aria-hidden="true"></div>
+            )}
+          </div>
+          <div class="book__face book__face--back" data-face>
+            {leaf < total ? (
+              /* Página izquierda: la portada animada del proyecto siguiente */
+              <div class="book__page book__page--art">
+                {projects[leaf].art ? (
+                  <CoverArt kind={projects[leaf].art!} title={projects[leaf].title} />
+                ) : projects[leaf].cover ? (
+                  <img src={withBase(projects[leaf].cover!)} alt="" />
+                ) : null}
+                <button class="book__corner book__corner--prev" type="button" data-book-prev aria-label={t('book.prev')}></button>
+              </div>
+            ) : leaf === total ? (
+              <div class="book__page book__page--endpaper book__page--fin" aria-hidden="true">
+                <span>✳</span>
+              </div>
+            ) : (
+              /* Contraportada */
+              <div class="book__back">
+                <p class="book__back-text">{t('book.more')}</p>
+                <a class="button book__back-button" href={allHref}>{t('home.allProjects')} <span aria-hidden="true">→</span></a>
+                <button class="book__back-again" type="button" data-book-restart>{t('book.again')}</button>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- ===== Una página cada vez (móvil y sin JavaScript) ===== -->
+  <ol class="book__deck" data-book-deck>
+    <li class="book__card book__card--cover" data-card>
+      <button class="book__cover" type="button" data-book-open aria-label={`${t('home.featured')} — ${t('book.open')}`}>
+        <span class="book__deck-cover"><BookCoverArt title={coverTitle} /></span>
+      </button>
+    </li>
+    {projects.map((project, i) => (
+      <li class="book__card" data-card>
+        <div class="book__card-art">
+          {project.art ? <CoverArt kind={project.art} title={project.title} /> : project.cover ? <img src={withBase(project.cover)} alt="" /> : null}
+        </div>
+        <article class="book__page book__page--text">
+          <p class="book__meta script-font">{project.meta}</p>
+          <h3 class="book__title">{project.title}</h3>
+          <p class="book__synopsis">{project.synopsis}</p>
+          <a class="button button--primary book__read" href={project.href}>{t('book.read')} <span aria-hidden="true">→</span></a>
+          <span class="book__folio script-font">{i + 1} / {total}</span>
+        </article>
+      </li>
+    ))}
+    <li class="book__card book__card--back" data-card>
+      <div class="book__back">
+        <p class="book__back-text">{t('book.more')}</p>
+        <a class="button book__back-button" href={allHref}>{t('home.allProjects')} <span aria-hidden="true">→</span></a>
+        <button class="book__back-again" type="button" data-book-restart>{t('book.again')}</button>
+      </div>
+    </li>
+  </ol>
+
+  <!-- Controles -->
+  <div class="book__controls" data-book-controls>
+    <button class="book__arrow" type="button" data-book-prev aria-label={t('book.prev')}>
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M19 12H6m0 0 5.5-5.5M6 12l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    </button>
+    <span class="book__counter script-font" data-book-counter aria-live="polite"></span>
+    <button class="book__arrow" type="button" data-book-next aria-label={t('book.next')}>
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  function initBook() {
+    const book = document.querySelector<HTMLElement>('[data-book]');
+    if (!book || book.dataset.ready) return;
+    book.dataset.ready = 'true';
+    book.classList.add('book--live');
+
+    const total = Number(book.dataset.total);
+    // Pasos: 0 = cerrado (tapa), 1..total = proyecto abierto, total + 1 = contraportada.
+    const last = total + 1;
+    const leaves = [...book.querySelectorAll<HTMLElement>('[data-leaf]')];
+    const cards = [...book.querySelectorAll<HTMLElement>('[data-card]')];
+    const counter = book.querySelector<HTMLElement>('[data-book-counter]');
+    const desk = window.matchMedia('(min-width: 860px)');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let step = 0;
+
+    // Hojas pasadas: hasta la del proyecto actual; en la contraportada, todas (el libro se cierra por detrás).
+    const turnedCount = (s: number) => (s === 0 ? 0 : s >= last ? leaves.length : s);
+
+    const render = (from = step) => {
+      const turned = turnedCount(step);
+      leaves.forEach((leaf, i) => {
+        const isTurned = i < turned;
+        leaf.toggleAttribute('data-turned', isTurned);
+        // La que gira va por encima; al asentarse, las pasadas se apilan a la izquierda y las demás a la derecha.
+        const moving = i >= Math.min(turnedCount(from), turned) && i < Math.max(turnedCount(from), turned);
+        leaf.style.zIndex = String(moving ? 100 + i : isTurned ? i + 1 : leaves.length - i);
+      });
+      book.dataset.step = step === 0 ? 'closed' : step === last ? 'end' : 'open';
+
+      // Solo se puede enfocar lo que se ve: en escritorio, las dos caras de la doble página; en móvil, la tarjeta actual.
+      leaves.forEach((leaf, i) => {
+        const [front, back] = leaf.querySelectorAll<HTMLElement>('[data-face]');
+        const showFront = step === 0 ? i === 0 : step < last && i === turned;
+        const showBack = step === last ? i === leaves.length - 1 : step > 0 && i === turned - 1;
+        front.inert = !showFront;
+        back.inert = !showBack;
+      });
+      cards.forEach((card, i) => {
+        card.toggleAttribute('data-current', i === step);
+        card.toggleAttribute('data-past', i < step);
+        card.inert = i !== step;
+      });
+
+      if (counter) counter.textContent = step === 0 || step === last ? '' : `${step} / ${total}`;
+      book.querySelectorAll<HTMLButtonElement>('.book__arrow[data-book-prev]').forEach((b) => (b.disabled = step === 0));
+      book.querySelectorAll<HTMLButtonElement>('.book__arrow[data-book-next]').forEach((b) => (b.disabled = step === last));
+
+      if (reduce.matches && from !== step) {
+        book.classList.remove('book--fade');
+        void book.offsetWidth;
+        book.classList.add('book--fade');
+      }
+    };
+
+    const go = (to: number) => {
+      const next = Math.max(0, Math.min(last, to));
+      if (next === step) return;
+      const from = step;
+      step = next;
+      render(from);
+      // Al abrir o cerrar, deja el foco en lo que acaba de aparecer.
+      if (from === 0 || next === last || next === 0) {
+        const target = desk.matches
+          ? book.querySelector<HTMLElement>(next === last ? '[data-leaf]:last-child .book__back a' : next === 0 ? '[data-book-open]' : '.book__read:not([inert] *)')
+          : cards[next]?.querySelector<HTMLElement>('a, button');
+        window.setTimeout(() => target?.focus({ preventScroll: true }), reduce.matches ? 0 : 450);
+      }
+    };
+
+    book.addEventListener('click', (event) => {
+      const el = (event.target as Element).closest('[data-book-open], [data-book-next], [data-book-prev], [data-book-restart]');
+      if (!el) return;
+      if (el.matches('[data-book-open]')) go(1);
+      else if (el.matches('[data-book-next]')) go(step + 1);
+      else if (el.matches('[data-book-prev]')) go(step - 1);
+      else if (el.matches('[data-book-restart]')) go(0);
+    });
+
+    book.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') { go(step + 1); event.preventDefault(); }
+      if (event.key === 'ArrowLeft') { go(step - 1); event.preventDefault(); }
+    });
+
+    // Móvil: deslizar para pasar página.
+    let startX = 0;
+    let startY = 0;
+    const deck = book.querySelector<HTMLElement>('[data-book-deck]');
+    deck?.addEventListener('pointerdown', (event) => { startX = event.clientX; startY = event.clientY; });
+    deck?.addEventListener('pointerup', (event) => {
+      const dx = event.clientX - startX;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(event.clientY - startY)) go(step + (dx < 0 ? 1 : -1));
+    });
+
+    render();
+  }
+
+  document.addEventListener('astro:page-load', initBook);
+</script>
+
+<style>
+  .book {
+    --paper: var(--peach-soft);
+    padding-inline: var(--gutter);
+  }
+
+  /* ---------- Sin JavaScript: todos los proyectos, uno debajo de otro ---------- */
+  .book__desk,
+  .book__controls,
+  .book__card--cover,
+  .book__card--back {
+    display: none;
+  }
+
+  .book__deck {
+    display: grid;
+    gap: var(--space-8);
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  .book__card {
+    display: grid;
+    background: var(--paper);
+    box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.45);
+  }
+
+  .book__card-art {
+    height: 26rem;
+    max-height: 70vh;
+    overflow: hidden;
+    background: var(--cobalt);
+  }
+
+  .book__card-art {
+    display: grid;
+    place-items: center;
+  }
+
+  .book__card-art > :global(.cv),
+  .book__card-art > img {
+    height: 100%;
+    max-height: 26rem;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  /* ---------- Páginas ---------- */
+  .book__page {
+    position: relative;
+    height: 100%;
+  }
+
+  .book__page--text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: clamp(1.25rem, 0.8rem + 2.4vw, 2.75rem);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .book__meta {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--cobalt);
+  }
+
+  .book__title {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--cobalt);
+  }
+
+  .book__synopsis {
+    flex: 1;
+    margin: 0;
+    font-size: var(--text-base);
+    font-weight: 300;
+    line-height: 1.6;
+    text-align: justify;
+    hyphens: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .book__read {
+    align-self: start;
+  }
+
+  .book__folio {
+    align-self: center;
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
+  .book__page--art {
+    overflow: hidden;
+    background: var(--cobalt);
+  }
+
+  .book__page--art > :global(.cv),
+  .book__page--art > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .book__page--endpaper {
+    background:
+      repeating-linear-gradient(45deg, transparent 0 10px, rgb(2 98 222 / 0.06) 10px 11px),
+      var(--paper);
+  }
+
+  .book__page--fin {
+    display: grid;
+    place-items: center;
+    font-size: 2.5rem;
+    color: var(--cobalt);
+  }
+
+  /* Contraportada */
+  .book__back {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6);
+    height: 100%;
+    min-height: 22rem;
+    padding: var(--space-8);
+    background: var(--cobalt);
+    color: var(--peach);
+    text-align: center;
+  }
+
+  .book__back::before {
+    content: '✳';
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--peach-soft);
+  }
+
+  .book__back::after {
+    content: '';
+    position: absolute;
+    inset: 6%;
+    border: 1.5px solid rgb(255 227 208 / 0.6);
+    pointer-events: none;
+  }
+
+  .book__back-text {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    color: var(--peach);
+  }
+
+  .book__back-button {
+    border-color: var(--peach);
+    color: var(--peach);
+  }
+
+  .book__back-button:hover {
+    background: var(--peach);
+    color: var(--cobalt);
+  }
+
+  .book__back-again {
+    padding: var(--space-2);
+    border: 0;
+    background: none;
+    color: var(--peach-soft);
+    font-family: var(--font-script);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+  }
+
+  /* Tapa */
+  .book__cover {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: var(--cobalt);
+    cursor: pointer;
+  }
+
+  .book__cover:focus-visible {
+    outline: 3px solid var(--peach);
+    outline-offset: -8px;
+  }
+
+  /* ---------- Con JavaScript ---------- */
+  .book--live .book__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .book__arrow {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--cobalt);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--cobalt);
+    cursor: pointer;
+    transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out), opacity 200ms;
+  }
+
+  .book__arrow:hover:not(:disabled) {
+    background: var(--cobalt);
+    color: var(--peach);
+  }
+
+  .book__arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .book__counter {
+    min-width: 4ch;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-align: center;
+    color: var(--cobalt);
+  }
+
+  /* Esquina de la hoja: zona de clic que dobla un pico al pasar el ratón. */
+  .book__corner {
+    position: absolute;
+    bottom: 0;
+    width: 4.5rem;
+    height: 4.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .book__corner--next {
+    right: 0;
+    background: linear-gradient(135deg, transparent 50%, rgb(2 98 222 / 0.12) 50%);
+    transition: background-size 300ms var(--ease-out);
+    background-size: 55% 55%;
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+  }
+
+  .book__corner--prev {
+    left: 0;
+    background: linear-gradient(225deg, transparent 50%, rgb(255 241 231 / 0.25) 50%);
+    background-size: 55% 55%;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 300ms var(--ease-out);
+  }
+
+  .book__corner:hover,
+  .book__corner:focus-visible {
+    background-size: 100% 100%;
+  }
+
+  /* Móvil (con JS): una tarjeta cada vez, apiladas; la actual encima, las pasadas giradas fuera. */
+  @media (max-width: 859px) {
+    .book--live .book__card--cover,
+    .book--live .book__card--back {
+      display: grid;
+    }
+
+    .book--live .book__deck {
+      position: relative;
+      display: grid;
+      perspective: 1600px;
+    }
+
+    .book--live .book__card {
+      grid-area: 1 / 1;
+      transform-origin: left center;
+      transition: transform 650ms var(--ease-out), opacity 650ms var(--ease-out);
+      backface-visibility: hidden;
+    }
+
+    .book--live .book__card:not([data-current]) {
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .book--live .book__card[data-past] {
+      transform: rotateY(-100deg);
+    }
+
+    .book--live .book__card--cover .book__cover {
+      height: 100%;
+    }
+
+    .book__deck-cover {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      background: var(--cobalt);
+    }
+
+    /* En móvil la tapa es más alta que el dibujo: el filete sigue el borde de la tarjeta. */
+    .book__deck-cover {
+      position: relative;
+    }
+
+    .book__deck-cover::after {
+      content: '';
+      position: absolute;
+      inset: 18px;
+      border: 1.5px solid rgb(255 227 208 / 0.6);
+      pointer-events: none;
+    }
+
+    .book__deck-cover :global(.book__cover-frame) {
+      display: none;
+    }
+
+    .book__deck-cover > :global(svg) {
+      width: 100%;
+      height: auto;
+      max-height: 100%;
+    }
+  }
+
+  /* Escritorio (con JS): libro de doble página. */
+  @media (min-width: 860px) {
+    .book--live .book__deck {
+      display: none;
+    }
+
+    .book--live .book__desk {
+      display: block;
+      perspective: 2400px;
+    }
+
+    .book__object {
+      --w: min(1060px, 100%);
+      position: relative;
+      width: var(--w);
+      aspect-ratio: 3 / 2;
+      margin-inline: auto;
+      transition: translate 800ms var(--ease-out);
+      transform-style: preserve-3d;
+    }
+
+    /* Cerrado: la tapa (mitad derecha) al centro; contraportada (mitad izquierda) al centro. */
+    .book[data-step='closed'] .book__object {
+      translate: -25% 0;
+    }
+
+    .book[data-step='end'] .book__object {
+      translate: 25% 0;
+    }
+
+    /* El bloque de páginas: canto visible bajo las hojas, solo con el libro abierto. */
+    .book__block {
+      position: absolute;
+      inset: 1.5% 0.5% -1.2% 0.5%;
+      background:
+        repeating-linear-gradient(0deg, var(--paper) 0 2px, rgb(0 0 0 / 0.08) 2px 3px);
+      box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55);
+      opacity: 1;
+      transition: opacity 400ms var(--ease-out) 300ms;
+    }
+
+    .book[data-step='closed'] .book__block,
+    .book[data-step='end'] .book__block {
+      opacity: 0;
+      transition-delay: 0s;
+    }
+
+    .book__leaf {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 50%;
+      height: 100%;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 900ms cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    .book__leaf[data-turned] {
+      transform: rotateY(-180deg);
+    }
+
+    .book__face {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: var(--paper);
+    }
+
+    .book__face--back {
+      transform: rotateY(180deg);
+    }
+
+    /* Sombra del lomo en las páginas interiores. */
+    .book__face--front:not(.book__face--cover)::after,
+    .book__face--back::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .book__face--front:not(.book__face--cover)::after {
+      background: linear-gradient(90deg, rgb(0 0 0 / 0.16), transparent 9%);
+    }
+
+    .book__face--back::after {
+      background: linear-gradient(270deg, rgb(0 0 0 / 0.22), transparent 9%);
+    }
+
+    /* La tapa: lomo más oscuro y algo de grosor. */
+    .book__face--cover {
+      box-shadow: 0 24px 50px -22px rgb(0 0 0 / 0.55);
+    }
+
+    .book__face--cover::before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      inset: 0 auto 0 0;
+      width: 5%;
+      background: linear-gradient(90deg, rgb(0 0 0 / 0.3), rgb(0 0 0 / 0.08));
+      pointer-events: none;
+    }
+
+    .book__leaf:last-child .book__face--back {
+      box-shadow: 0 24px 50px -22px rgb(0 0 0 / 0.55);
+    }
+
+    .book__leaf:last-child .book__back {
+      min-height: 0;
+    }
+  }
+
+  .book__face--cover {
+    transform-origin: left center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .book__leaf,
+    .book__object,
+    .book--live .book__card {
+      transition: none !important;
+    }
+
+    .book--fade .book__desk,
+    .book--fade .book__deck {
+      animation: book-fade 400ms ease-out;
+    }
+  }
+
+  @keyframes book-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>

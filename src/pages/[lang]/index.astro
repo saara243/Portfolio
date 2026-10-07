@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
-import FeaturedBalls from '../../components/FeaturedBalls.astro';
+import FeaturedBook from '../../components/FeaturedBook.astro';
 import InterestList from '../../components/InterestList.astro';
 import MotivationLetter from '../../components/MotivationLetter.astro';
 import RevealOnScroll from '../../components/RevealOnScroll.astro';
@@ -40,7 +40,7 @@ const motivation = profile.getMotivation();
           <a class="button" href={localizedPath(lang, routes.projects)}>{t('home.allProjects')}</a>
         </div>
       </div>
-      <FeaturedBalls lang={lang} scripts={featured.toArray()} />
+      <FeaturedBook lang={lang} scripts={featured.toArray()} />
     </section>
   )}
 

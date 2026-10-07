@@ -1,0 +1,31 @@
+---
+/** Tapa del libro de destacados: solo el título, centrado, dentro de un filete. */
+interface Props {
+  title: [string, string];
+}
+
+const { title } = Astro.props;
+---
+
+<svg class="book__cover-art" viewBox="0 0 300 400" aria-hidden="true">
+  <rect width="300" height="400" fill="var(--cobalt)" />
+  <rect class="book__cover-frame" x="18" y="18" width="264" height="364" fill="none" stroke="var(--peach)" stroke-width="1.5" opacity="0.6" />
+  <text x="150" y="196" text-anchor="middle" class="book__cover-title">{title[0]}</text>
+  <text x="150" y="230" text-anchor="middle" class="book__cover-title">{title[1]}</text>
+</svg>
+
+<style>
+  .book__cover-art {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .book__cover-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 28px;
+    letter-spacing: 0.16em;
+    fill: var(--peach);
+  }
+</style>
