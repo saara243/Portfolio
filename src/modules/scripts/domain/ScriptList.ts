@@ -49,8 +49,13 @@ export class ScriptList {
     );
   }
 
+  /** Los destacados, por `featuredOrder` (si no, se respeta el orden de la lista). */
   featured(): ScriptList {
-    return new ScriptList(this.items.filter((script) => script.isFeatured()));
+    return new ScriptList(
+      this.items
+        .filter((script) => script.isFeatured())
+        .sort((a, b) => (a.getFeaturedOrder() ?? Number.POSITIVE_INFINITY) - (b.getFeaturedOrder() ?? Number.POSITIVE_INFINITY)),
+    );
   }
 
   /** Orden manual (`order`) primero; después, los más recientes. */

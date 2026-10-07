@@ -54,6 +54,8 @@ const scripts = defineCollection({
     download: z.enum(DOWNLOAD_ACCESS).default('public'),
     featured: z.boolean().default(false),
     order: z.number().optional(),
+    // Orden en «Proyectos destacados» de la home (independiente de `order`)
+    featuredOrder: z.number().optional(),
     awards: z.array(z.string()).default([]),
     // Para qué se escribió (encargo, prueba, entrevista…); se muestra en la ficha como «Contexto»
     context: z.string().optional(),

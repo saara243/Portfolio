@@ -1,0 +1,482 @@
+---
+import CoverArt from './CoverArt.astro';
+import type { Script } from '../modules/scripts/domain/Script';
+import type { UiKey } from '../i18n/ui';
+import { localizedPath, routes, useTranslations, withBase, type Lang } from '../i18n/utils';
+
+/**
+ * Proyectos destacados de la home como pelotas que rebotan por la banda (y entre ellas).
+ * Al poner el ratón sobre una (o enfocarla con el teclado) se paran todas; esa pelota crece y
+ * enseña formato · fecha, título, sinopsis y una flecha a su ficha. En táctil, tocar una la abre
+ * y tocar fuera la cierra. Fuera de pantalla o con la pestaña oculta no se mueven; con movimiento
+ * reducido quedan quietas, repartidas. Sin JavaScript se ven como una fila de pelotas quietas.
+ */
+interface Props {
+  lang: Lang;
+  scripts: Script[];
+}
+
+const { lang, scripts } = Astro.props;
+const t = useTranslations(lang);
+
+// Sinopsis en texto plano: el primer párrafo basta para la pelota.
+const firstParagraph = (html: string) => {
+  const match = html.match(/<p[^>]*>([\s\S]*?)<\/p>/);
+  return (match ? match[1] : html).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+};
+---
+
+<div class="balls" data-balls>
+  <ul class="balls__stage" data-balls-stage>
+    {scripts.map((script, i) => {
+      const art = script.getCoverArt();
+      const cover = script.getCover();
+      const synopsis = firstParagraph(script.getSynopsisHtml()) || script.getLogline();
+      const href = localizedPath(lang, routes.project(script.getSlug()));
+      return (
+        <li class="ball" data-ball style={`--i:${i}`} tabindex="0" aria-label={script.getTitle()}>
+          <div class="ball__face" aria-hidden="true">
+            <span class="ball__art">
+              {art ? <CoverArt kind={art} title={script.getTitle()} /> : cover ? <img src={withBase(cover)} alt="" /> : null}
+            </span>
+            <span class="ball__tag">{script.getTitle()}</span>
+          </div>
+          <div class="ball__info">
+            <p class="ball__meta script-font">{t(`format.${script.getFormat().getValue()}` as UiKey)} · {script.getDisplayDate()}</p>
+            <h3 class="ball__title">{script.getTitle()}</h3>
+            <p class="ball__synopsis">{synopsis}</p>
+            <a class="ball__go" href={href} aria-label={`${t('projects.read')}: ${script.getTitle()}`} tabindex="-1">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </a>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<script>
+  type Ball = { el: HTMLElement; x: number; y: number; vx: number; vy: number; d: number };
+
+  function initBalls() {
+    const root = document.querySelector<HTMLElement>('[data-balls]');
+    const stage = root?.querySelector<HTMLElement>('[data-balls-stage]');
+    if (!root || !stage || root.dataset.ready) return;
+    root.dataset.ready = 'true';
+    root.classList.add('balls--live');
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const els = [...stage.querySelectorAll<HTMLElement>('[data-ball]')];
+    const size = () => (stage.clientWidth < 640 ? 132 : stage.clientWidth < 1000 ? 170 : 200);
+    const openSize = () => Math.min(stage.clientWidth - 24, stage.clientWidth < 640 ? 300 : 380);
+
+    // Reparto inicial en una rejilla con algo de azar, sin solaparse.
+    let balls: Ball[] = [];
+    const place = () => {
+      const W = stage.clientWidth;
+      const H = stage.clientHeight;
+      const d = size();
+      const cols = Math.max(1, Math.min(els.length, Math.floor(W / (d * 1.25))));
+      const rows = Math.ceil(els.length / cols);
+      balls = els.map((el, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const cellW = W / cols;
+        const cellH = H / rows;
+        const x = col * cellW + (cellW - d) / 2 + (reduce ? 0 : (Math.random() - 0.5) * Math.max(0, cellW - d) * 0.6);
+        const y = row * cellH + (cellH - d) / 2 + (reduce ? 0 : (Math.random() - 0.5) * Math.max(0, cellH - d) * 0.6);
+        const speed = (W < 640 ? 55 : 80) + Math.random() * 30;
+        const angle = Math.random() * Math.PI * 2;
+        el.style.setProperty('--d', `${d}px`);
+        return { el, x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, d };
+      });
+      balls.forEach(draw);
+    };
+
+    const draw = (b: Ball) => {
+      b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+    };
+
+    let active: Ball | null = null;
+    let visible = false;
+    let raf = 0;
+    let last = 0;
+
+    const step = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000 || 0);
+      last = now;
+      const W = stage.clientWidth;
+      const H = stage.clientHeight;
+      for (const b of balls) {
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        if (b.x < 0) { b.x = 0; b.vx = Math.abs(b.vx); }
+        if (b.x + b.d > W) { b.x = W - b.d; b.vx = -Math.abs(b.vx); }
+        if (b.y < 0) { b.y = 0; b.vy = Math.abs(b.vy); }
+        if (b.y + b.d > H) { b.y = H - b.d; b.vy = -Math.abs(b.vy); }
+      }
+      // Choques entre pelotas (misma masa: se intercambian la velocidad sobre la normal).
+      for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+          const a = balls[i];
+          const c = balls[j];
+          const dx = c.x + c.d / 2 - (a.x + a.d / 2);
+          const dy = c.y + c.d / 2 - (a.y + a.d / 2);
+          const dist = Math.hypot(dx, dy) || 1;
+          const min = (a.d + c.d) / 2;
+          if (dist < min) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = (min - dist) / 2;
+            a.x -= nx * overlap; a.y -= ny * overlap;
+            c.x += nx * overlap; c.y += ny * overlap;
+            const va = a.vx * nx + a.vy * ny;
+            const vc = c.vx * nx + c.vy * ny;
+            if (va - vc > 0) {
+              a.vx += (vc - va) * nx; a.vy += (vc - va) * ny;
+              c.vx += (va - vc) * nx; c.vy += (va - vc) * ny;
+            }
+          }
+        }
+      }
+      balls.forEach(draw);
+      raf = requestAnimationFrame(step);
+    };
+
+    const running = () => raf !== 0;
+    const start = () => {
+      if (reduce || running() || active || !visible || document.hidden) return;
+      last = performance.now();
+      raf = requestAnimationFrame(step);
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    // Abrir: todas se paran; la elegida crece desde su centro sin salirse de la banda.
+    const open = (b: Ball) => {
+      if (active === b) return;
+      if (active) close(false);
+      stop();
+      active = b;
+      root.classList.add('balls--paused');
+      const W = stage.clientWidth;
+      const H = stage.clientHeight;
+      const D = openSize();
+      const cx = b.x + b.d / 2;
+      const cy = b.y + b.d / 2;
+      const x = Math.min(Math.max(cx - D / 2, 0), Math.max(0, W - D));
+      const y = Math.min(Math.max(cy - D / 2, 0), Math.max(0, H - D));
+      b.el.toggleAttribute('data-open', true);
+      b.el.style.setProperty('--d', `${D}px`);
+      b.el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      b.el.querySelector<HTMLElement>('.ball__go')?.setAttribute('tabindex', '0');
+    };
+
+    const close = (resume = true) => {
+      const b = active;
+      if (!b) return;
+      active = null;
+      b.el.removeAttribute('data-open');
+      b.el.style.setProperty('--d', `${b.d}px`);
+      b.el.querySelector<HTMLElement>('.ball__go')?.setAttribute('tabindex', '-1');
+      draw(b);
+      if (resume) {
+        root.classList.remove('balls--paused');
+        // Deja terminar el encogido antes de echar a rodar otra vez.
+        window.setTimeout(start, 380);
+      }
+    };
+
+    const byEl = (el: Element | null) => balls.find((b) => b.el === el?.closest('[data-ball]')) ?? null;
+
+    stage.addEventListener('pointerover', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      const b = byEl(event.target as Element);
+      if (b) open(b);
+    });
+    stage.addEventListener('pointerleave', (event) => {
+      if (event.pointerType === 'mouse') close();
+    });
+    stage.addEventListener('pointerout', (event) => {
+      if (event.pointerType !== 'mouse' || !active) return;
+      const to = event.relatedTarget as Element | null;
+      if (!to || !active.el.contains(to)) {
+        const next = byEl(to);
+        if (next) open(next);
+        else close();
+      }
+    });
+    // Táctil: tocar una pelota la abre (el foco del toque ya la habrá abierto: no se cierra aquí);
+    // tocar el fondo de la banda o fuera de ella la cierra. La flecha navega.
+    stage.addEventListener('click', (event) => {
+      if ((event as PointerEvent).pointerType === 'mouse') return;
+      const target = event.target as Element;
+      if (target.closest('.ball__go')) return;
+      const b = byEl(target);
+      if (b) open(b);
+      else close();
+    });
+    document.addEventListener('click', (event) => {
+      if (active && !stage.contains(event.target as Node)) close();
+    });
+    // Teclado: enfocar una pelota la abre; salir de ella la cierra.
+    stage.addEventListener('focusin', (event) => {
+      const b = byEl(event.target as Element);
+      if (b) open(b);
+    });
+    stage.addEventListener('focusout', (event) => {
+      const to = event.relatedTarget as Element | null;
+      if (!to || !stage.contains(to)) close();
+    });
+
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visible ? start() : stop();
+    });
+    io.observe(stage);
+    const onVisibility = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVisibility);
+    const ro = new ResizeObserver(() => {
+      if (active) close(false);
+      place();
+    });
+    ro.observe(stage);
+
+    place();
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        stop();
+        io.disconnect();
+        ro.disconnect();
+        document.removeEventListener('visibilitychange', onVisibility);
+      },
+      { once: true },
+    );
+  }
+
+  document.addEventListener('astro:page-load', initBalls);
+</script>
+
+<style>
+  .balls {
+    padding-inline: var(--gutter);
+  }
+
+  /* Sin JavaScript: una fila de pelotas quietas. */
+  .balls__stage {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-8);
+    margin: 0;
+    padding: var(--space-8) 0;
+    list-style: none;
+  }
+
+  .ball {
+    --d: 200px;
+    position: relative;
+    width: var(--d);
+    height: var(--d);
+    border-radius: 50%;
+    outline: none;
+  }
+
+  /* Con JavaScript: la banda es la caja de rebote. */
+  .balls--live .balls__stage {
+    position: relative;
+    display: block;
+    height: clamp(560px, 78vh, 760px);
+    padding: 0;
+  }
+
+  .balls--live .ball {
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform;
+    transition:
+      width 420ms var(--ease-out),
+      height 420ms var(--ease-out);
+  }
+
+  .balls--live .ball[data-open] {
+    z-index: 2;
+    transition:
+      width 420ms var(--ease-out),
+      height 420ms var(--ease-out),
+      transform 420ms var(--ease-out);
+  }
+
+  .ball__face,
+  .ball__info {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .ball__face {
+    background: var(--cobalt);
+    box-shadow:
+      0 0 0 3px var(--peach-soft),
+      0 14px 28px -12px rgb(0 0 0 / 0.35);
+    transition: opacity 260ms var(--ease-out);
+  }
+
+  /* La portada animada, recortada en círculo y centrada. */
+  .ball__art {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ball__art > :global(.cv),
+  .ball__art > img {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    translate: 0 -50%;
+  }
+
+  .ball__tag {
+    position: absolute;
+    left: 50%;
+    bottom: 14%;
+    max-width: 82%;
+    translate: -50% 0;
+    padding: 0.35em 0.8em;
+    background: var(--peach);
+    color: var(--cobalt);
+    font-family: var(--font-display);
+    font-size: clamp(0.6rem, calc(var(--d) * 0.055), 0.85rem);
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Abierta: cobalto con la sinopsis y la flecha. */
+  .ball__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 16%;
+    background: var(--cobalt);
+    color: var(--peach);
+    text-align: center;
+    box-shadow:
+      0 0 0 3px var(--peach-soft),
+      0 20px 40px -16px rgb(0 0 0 / 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 260ms var(--ease-out),
+      visibility 0s linear 260ms;
+  }
+
+  .ball[data-open] .ball__face {
+    opacity: 0;
+  }
+
+  .ball[data-open] .ball__info {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 360ms var(--ease-out) 200ms,
+      visibility 0s;
+  }
+
+  .ball__meta {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--peach-soft);
+  }
+
+  .ball__title {
+    margin: 0;
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--peach);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ball__synopsis {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.45;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ball__go {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-top: 0.3rem;
+    border-radius: 50%;
+    background: var(--peach);
+    color: var(--cobalt);
+    transition: translate 300ms var(--ease-out), background-color 200ms var(--ease-out);
+  }
+
+  .ball__go:hover,
+  .ball__go:focus-visible {
+    translate: 4px 0;
+    background: var(--peach-soft);
+  }
+
+  .ball:focus-visible .ball__face,
+  .ball:focus-visible .ball__info {
+    box-shadow:
+      0 0 0 3px var(--peach-soft),
+      0 0 0 6px var(--cobalt);
+  }
+
+  /* Mientras están paradas, la portada animada de las demás también se detiene un poco: atenuadas. */
+  .balls--paused .ball:not([data-open]) .ball__face {
+    filter: saturate(0.7) brightness(0.92);
+    transition: filter 300ms var(--ease-out), opacity 260ms var(--ease-out);
+  }
+
+  @media (max-width: 639px) {
+    .balls--live .balls__stage {
+      height: 600px;
+    }
+
+    .ball__synopsis {
+      -webkit-line-clamp: 5;
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .balls--live .ball,
+    .balls--live .ball[data-open],
+    .ball__face,
+    .ball__info {
+      transition: none !important;
+    }
+  }
+</style>

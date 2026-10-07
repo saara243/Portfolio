@@ -11,5 +11,7 @@ pdf: files/scripts/el-guardian.pdf
 download: public
 context: Dirigido por Iván Loma.
 order: 11
+featured: true
+featuredOrder: 2
 ---
 Desde hace cinco décadas, cada año unos cuantos jóvenes son encadenados y arrastrados al bosque donde vive El Guardián. Solo sobrevive uno. Lucía, de dieciséis años, entra junto a Mateo, su hermano de doce, que lleva un mapa y un plan para que salgan los dos. Pero cuando las cadenas empiezan a tensarse, el miedo pesa más que cualquier promesa.

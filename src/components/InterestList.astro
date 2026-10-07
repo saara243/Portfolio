@@ -37,8 +37,15 @@ const { interests, reveal = false } = Astro.props;
 )}
 
 <script>
+  // El script en línea pliega la lista en la primera carga, pero no se vuelve a ejecutar al navegar con
+  // el ClientRouter: hay que plegarla también tras cada cambio de página (antes de pintar, en after-swap).
+  function foldInterests() {
+    document.querySelectorAll('.interests').forEach((list) => list.classList.add('interests--folded'));
+  }
+
   // En táctil o con teclado, tocar (o pulsar Enter en) la palabra fija su texto; volver a tocar lo recoge.
   function initInterests() {
+    foldInterests();
     document.querySelectorAll<HTMLButtonElement>('[data-interest-toggle]').forEach((toggle) => {
       if (toggle.dataset.ready) return;
       toggle.dataset.ready = 'true';
@@ -53,6 +60,7 @@ const { interests, reveal = false } = Astro.props;
     });
   }
 
+  document.addEventListener('astro:after-swap', foldInterests);
   document.addEventListener('astro:page-load', initInterests);
 
 </script>

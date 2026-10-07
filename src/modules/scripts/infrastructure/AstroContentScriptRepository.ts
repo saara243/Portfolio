@@ -33,6 +33,7 @@ export class AstroContentScriptRepository implements ScriptRepository {
           download: entry.data.download,
           featured: entry.data.featured,
           order: entry.data.order,
+          featuredOrder: entry.data.featuredOrder,
           awards: entry.data.awards,
           context: entry.data.context,
         });

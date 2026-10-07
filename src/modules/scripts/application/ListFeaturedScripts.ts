@@ -6,7 +6,7 @@ export interface ListFeaturedScriptsProps {
   limit?: number;
 }
 
-const DEFAULT_LIMIT = 3;
+const DEFAULT_LIMIT = 4;
 
 /** Proyectos destacados para la portada. Si no hay ninguno marcado, los más recientes. */
 export class ListFeaturedScripts {

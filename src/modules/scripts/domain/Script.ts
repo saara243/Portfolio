@@ -35,6 +35,7 @@ export interface ScriptPrimitive {
   download: DownloadAccess;
   featured: boolean;
   order?: number;
+  featuredOrder?: number;
   awards: string[];
   context?: string;
 }
@@ -64,6 +65,7 @@ export class Script {
     private readonly download: DownloadAccess,
     private readonly featured: boolean,
     private readonly order: number | undefined,
+    private readonly featuredOrder: number | undefined,
     private readonly awards: string[],
     private readonly context: string | undefined,
   ) {}
@@ -93,6 +95,7 @@ export class Script {
       data.download,
       data.featured,
       data.order,
+      data.featuredOrder,
       [...data.awards],
       data.context?.trim() || undefined,
     );
@@ -145,6 +148,7 @@ export class Script {
   getVideoPoster(): string | undefined { return this.videoPoster; }
   getFiles(): ScriptFile[] { return this.files.map((f) => ({ ...f })); }
   getOrder(): number | undefined { return this.order; }
+  getFeaturedOrder(): number | undefined { return this.featuredOrder; }
   getAwards(): string[] { return [...this.awards]; }
   getContext(): string | undefined { return this.context; }
   isFeatured(): boolean { return this.featured; }
@@ -196,6 +200,7 @@ export class Script {
       download: this.download,
       featured: this.featured,
       order: this.order,
+      featuredOrder: this.featuredOrder,
       awards: [...this.awards],
       context: this.context,
     };
