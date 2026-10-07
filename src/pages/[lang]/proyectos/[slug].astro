@@ -68,6 +68,13 @@ const details = [
             </section>
           )}
 
+          {script.getContext() && (
+            <section class="script__block">
+              <h2 class="script__label script-font">{t('script.context')}</h2>
+              <div class="prose script__synopsis"><p>{script.getContext()}</p></div>
+            </section>
+          )}
+
           {script.getAwards().length > 0 && (
             <section class="script__block">
               <h2 class="script__label script-font">{t('script.awards')}</h2>

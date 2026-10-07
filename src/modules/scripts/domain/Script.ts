@@ -5,7 +5,7 @@ import { ScriptStatus } from './ScriptStatus';
 
 export const DOWNLOAD_ACCESS = ['public', 'on-request'] as const;
 export type DownloadAccess = (typeof DOWNLOAD_ACCESS)[number];
-export type CoverArtKind = 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces';
+export type CoverArtKind = 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces' | 'precinct' | 'cafe' | 'board' | 'beach' | 'platform' | 'forest';
 
 export interface ScriptPrimitive {
   slug: string;
@@ -28,6 +28,7 @@ export interface ScriptPrimitive {
   featured: boolean;
   order?: number;
   awards: string[];
+  context?: string;
 }
 
 /** Guion / proyecto del portfolio. Identidad: idioma + slug. */
@@ -53,6 +54,7 @@ export class Script {
     private readonly featured: boolean,
     private readonly order: number | undefined,
     private readonly awards: string[],
+    private readonly context: string | undefined,
   ) {}
 
   static create(data: ScriptPrimitive): Script {
@@ -78,6 +80,7 @@ export class Script {
       data.featured,
       data.order,
       [...data.awards],
+      data.context?.trim() || undefined,
     );
   }
 
@@ -126,6 +129,7 @@ export class Script {
   getPdf(): string | undefined { return this.pdf; }
   getOrder(): number | undefined { return this.order; }
   getAwards(): string[] { return [...this.awards]; }
+  getContext(): string | undefined { return this.context; }
   isFeatured(): boolean { return this.featured; }
 
   /** El PDF se puede descargar directamente desde la web. */
@@ -168,6 +172,7 @@ export class Script {
       featured: this.featured,
       order: this.order,
       awards: [...this.awards],
+      context: this.context,
     };
   }
 }

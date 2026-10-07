@@ -20,10 +20,31 @@
  *   encendido. Detrás asoma un rostro que se acerca y cambia (niño, anciana, hombre con barba que sonríe
  *   con todos los dientes); unos dedos largos apagan la llama. Oscuro. Amanece: la manta en el suelo y
  *   Salva mirando hacia arriba, sin rostro. Bucle de 10 s.
+ * - precinct («Diego y Héctor»): sala de interrogatorios de comisaría con dos lámparas que se balancean.
+ *   Diego, con capucha, hace equilibrios con la silla; entra el inspector, deja la placa y el móvil
+ *   grabando (REC), le frena la silla y se inclina sobre la mesa; Diego se quita la capucha. El inspector
+ *   se va, la puerta se cierra y Diego vuelve a taparse; cae una lágrima. Bucle de 10 s.
+ * - cafe («Juan y María»): mesa de un bar de Sant Martí junto a la ventana, zumo de melocotón y café
+ *   humeante. María remueve el zumo; Juan amaga con irse y ella le retiene; él le busca la mano y ella la
+ *   esconde; al final él se acaba el café de un trago, se va, se para un instante y sigue. Bucle de 10 s.
+ * - board («Problemas de familia»): tablón de investigación. Las fotos de Pablo y Mateo, la bolsa de
+ *   pruebas con el pañuelo manchado y una nota «¿QUIÉN?»; los hilos se tienden de pista en pista mientras
+ *   la lupa del detective recorre el tablón; al final cae una postal de Navidad y el último hilo va
+ *   a parar a ella. Bucle de 10 s.
+ * - beach («La soledad»): playa al atardecer con las olas yendo y viniendo. Bianca, Laura y Valeria en la
+ *   orilla; Bianca se va, luego Valeria; Laura se sienta sola, se mete en el agua y se hace de noche
+ *   sobre la playa vacía. Bucle de 10 s.
+ * - platform («Misma historia, distinto final»): andén de Sant Andreu Arenal, los cascos de Valeria en la
+ *   vía y tres finales seguidos: FINAL 1, la aspiradora se los traga; FINAL 2, un robot los rescata;
+ *   FINAL 3, pasa el tren y le quedan unos cascos de espuma y música. Bucle de 12 s.
+ * - forest («El Guardián»): la linde del bosque; cuatro jóvenes encadenados, con las cadenas perdiéndose
+ *   entre los árboles. Unos ojos parpadean en la oscuridad, aparecen marcas de garras en un tronco y las
+ *   cadenas se tensan y se los llevan uno a uno; Lucía rompe la suya y se queda sola, encogida, mientras
+ *   unas zarpas abrazan un árbol al fondo. Bucle de 10 s.
  * Decorativo (aria-hidden): el título real va en la tarjeta. Sin movimiento, queda la escena con él fuera.
  */
 interface Props {
-  kind: 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces';
+  kind: 'revival' | 'set' | 'tube' | 'dentist' | 'closet' | 'faces' | 'precinct' | 'cafe' | 'board' | 'beach' | 'platform' | 'forest';
   title: string;
   class?: string;
   [attr: string]: unknown;
@@ -69,6 +90,26 @@ const drops = [
   { dx: 4, h: 92, d: 0.25 },
   { dx: 20, h: 64, d: 0.5 },
   { dx: -6, h: 82, d: 0.75 },
+];
+
+
+// Tablón: hilos de pista en pista (orden en que se tienden).
+const threads = [
+  { d: 'M86 108L150 186', i: 0 },
+  { d: 'M216 104L150 186', i: 1 },
+  { d: 'M72 262L150 186', i: 2 },
+  { d: 'M150 186L222 254', i: 3 },
+];
+
+// Bosque: troncos y los cuatro jóvenes encadenados (x en la linde y orden en que se los lleva).
+const trunks = [
+  { x: 34, w: 14 }, { x: 74, w: 8 }, { x: 118, w: 10 }, { x: 182, w: 9 }, { x: 226, w: 16 }, { x: 268, w: 10 },
+];
+const youths = [
+  { id: 'lucia', x: 76, h: 1 },
+  { id: 'mateo', x: 112, h: 0.82 },
+  { id: 'valeria', x: 188, h: 1.04 },
+  { id: 'gabriel', x: 224, h: 1.08 },
 ];
 
 const seats = [
@@ -282,6 +323,309 @@ const seats = [
         {drops.map((drop) => (
           <circle class="cd-drop" style={`--dx:${drop.dx}px;--h:${-drop.h}px;--d:${drop.d}s`} cx="38" cy="330" r="3" fill="var(--peach-soft)" />
         ))}
+      </g>
+    </>)}
+
+    {kind === 'forest' && (<>
+      <!-- El bosque -->
+      <defs>
+        <linearGradient id="gd-dusk" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.15" stop-color="#000" stop-opacity="0" />
+          <stop offset="0.35" stop-color="#000" stop-opacity="0.24" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="300" height="400" fill="url(#gd-dusk)" />
+      {trunks.map((trunk) => (
+        <rect x={trunk.x - trunk.w / 2} y="84" width={trunk.w} height="232" fill="var(--peach)" opacity="0.28" />
+      ))}
+      <g class="gd-eyes"><circle cx="150" cy="180" r="2.5" fill="var(--peach-soft)" /><circle cx="160" cy="180" r="2.5" fill="var(--peach-soft)" /></g>
+      <g class="gd-eyes gd-eyes--b"><circle cx="252" cy="150" r="2" fill="var(--peach-soft)" /><circle cx="260" cy="150" r="2" fill="var(--peach-soft)" /></g>
+
+      <!-- Marcas de garras en un tronco -->
+      <path class="gd-claw" pathLength="1" d="M222 190l12 26M228 186l12 28M234 184l12 28" stroke="var(--peach-soft)" stroke-width="2.5" />
+
+      <!-- Zarpas abrazando un árbol al fondo -->
+      <g class="gd-paws">
+        <path d="M66 160q-12 2-12 10M66 166q-14 4-12 12M66 172q-12 6-8 14" stroke="var(--peach-soft)" stroke-width="3" />
+        <path d="M82 160q12 2 12 10M82 166q14 4 12 12M82 172q12 6 8 14" stroke="var(--peach-soft)" stroke-width="3" />
+      </g>
+
+      <path d="M0 316h300" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+      <rect x="0" y="316" width="300" height="84" fill="#000" opacity="0.12" />
+
+      <!-- Cuatro jóvenes, encadenados por la cadera; las cadenas se pierden en el bosque -->
+      {youths.map((youth) => (
+        <g class:list={['gd-youth', `gd-youth--${youth.id}`]}>
+          <path class="gd-chain" d={`M${youth.x} ${348 - 24 * youth.h}Q${youth.x + (150 - youth.x) * 0.4} 300 150 214`} stroke="var(--peach-soft)" stroke-width="2" stroke-dasharray="4 3" opacity="0.8" />
+          <circle class="gd-head" cx={youth.x} cy={348 - 50 * youth.h} r={8 * youth.h} fill="var(--peach)" />
+          <g class="gd-body">
+            <path d={`M${youth.x} ${348 - 42 * youth.h}l${-10 * youth.h} ${42 * youth.h}h${20 * youth.h}Z`} fill="var(--peach)" />
+          </g>
+        </g>
+      ))}
+      <path class="gd-break" d="M84 318l6-6M90 322l6-4" stroke="var(--peach-soft)" stroke-width="2" />
+      <g class="gd-slash"><path d="M176 286l24 22M182 282l24 22" stroke="var(--peach-soft)" stroke-width="3" /></g>
+    </>)}
+
+    {kind === 'platform' && (<>
+      <!-- Andén y vía -->
+      <rect x="64" y="94" width="172" height="20" rx="2" fill="var(--peach-soft)" />
+      <text class="mh-sign" x="150" y="108" text-anchor="middle">SANT ANDREU ARENAL</text>
+      <rect x="0" y="232" width="300" height="20" fill="var(--peach)" />
+      <path d="M0 236h300" stroke="var(--peach-soft)" stroke-width="3" stroke-dasharray="10 6" />
+      <rect x="0" y="252" width="300" height="110" fill="#000" opacity="0.18" />
+      <path d="M0 304h300M0 330h300" stroke="var(--peach)" stroke-width="4" />
+      <path d="M20 300v34M60 300v34M100 300v34M140 300v34M180 300v34M220 300v34M260 300v34" stroke="var(--peach)" stroke-width="3" opacity="0.4" />
+
+      <!-- Valeria, mirando a la vía -->
+      <g>
+        <circle cx="96" cy="176" r="10" fill="var(--peach)" />
+        <path d="M96 186l-14 46h28Z" fill="var(--peach)" />
+        <circle cx="101" cy="178" r="1.6" fill="var(--cobalt)" />
+      </g>
+
+      <!-- Los cascos en la vía (uno por final) -->
+      {[1, 2, 3].map((n) => (
+        <g class:list={['mh-pods', `mh-pods--${n}`]}>
+          <path d="M176 290v10M188 290v10" stroke="var(--peach-soft)" stroke-width="3" />
+          <circle cx="176" cy="288" r="4" fill="var(--peach-soft)" /><circle cx="188" cy="288" r="4" fill="var(--peach-soft)" />
+        </g>
+      ))}
+
+      <!-- FINAL 1: la aspiradora del equipo de limpieza -->
+      <g class="mh-vacuum">
+        <path d="M-10 200q90-10 150 76" stroke="var(--peach-soft)" stroke-width="7" />
+        <path d="M132 268l24 12-6 12-24-12Z" fill="var(--peach-soft)" />
+      </g>
+
+      <!-- FINAL 2: el robot de Samuel -->
+      <g class="mh-robot">
+        <rect x="252" y="270" width="22" height="20" rx="3" fill="var(--peach-soft)" />
+        <circle cx="258" cy="279" r="2" fill="var(--cobalt)" /><circle cx="268" cy="279" r="2" fill="var(--cobalt)" />
+        <path d="M252 284l-8-2-4 4M252 288l-8 2" stroke="var(--peach-soft)" stroke-width="2.5" />
+        <path class="mh-legs" d="M256 290v10M270 290v10" stroke="var(--peach-soft)" stroke-width="3" />
+      </g>
+
+      <!-- FINAL 3: pasa el tren; quedan unos cascos de espuma y música -->
+      <g class="mh-train">
+        <rect x="0" y="244" width="300" height="90" rx="10" fill="var(--peach-soft)" />
+        <rect x="20" y="258" width="50" height="30" rx="3" fill="var(--cobalt)" /><rect x="90" y="258" width="50" height="30" rx="3" fill="var(--cobalt)" />
+        <rect x="160" y="258" width="50" height="30" rx="3" fill="var(--cobalt)" /><rect x="230" y="258" width="50" height="30" rx="3" fill="var(--cobalt)" />
+      </g>
+      <g class="mh-foam">
+        <path d="M84 176q0-20 12-20t12 20" stroke="var(--peach-soft)" stroke-width="4" />
+        <rect x="80" y="172" width="8" height="12" rx="3" fill="var(--peach-soft)" /><rect x="104" y="172" width="8" height="12" rx="3" fill="var(--peach-soft)" />
+        <g class="mh-note"><circle cx="126" cy="160" r="3.5" fill="var(--peach-soft)" /><path d="M129.5 160v-14q6 3 5 9" stroke="var(--peach-soft)" stroke-width="2" /></g>
+      </g>
+
+      <!-- Rótulo de cada final -->
+      <text class="mh-label mh-label--static" x="150" y="384" text-anchor="middle">TRES FINALES</text>
+      {[1, 2, 3].map((n) => (
+        <text class:list={['mh-label', 'mh-label--n', `mh-label--${n}`]} x="150" y="384" text-anchor="middle">{`FINAL ${n}`}</text>
+      ))}
+    </>)}
+
+    {kind === 'beach' && (<>
+      <!-- Sol que se pone y mar -->
+      <clipPath id="lb-sky"><rect x="0" y="0" width="300" height="232" /></clipPath>
+      <g clip-path="url(#lb-sky)">
+        <circle class="lb-sun" cx="150" cy="232" r="36" fill="var(--peach-soft)" />
+      </g>
+      <rect x="0" y="232" width="300" height="80" fill="#000" opacity="0.12" />
+      <g class="lb-waves">
+        <path d="M-40 250q15-6 30 0t30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0" stroke="var(--peach)" stroke-width="2" opacity="0.6" />
+        <path d="M-40 272q15-6 30 0t30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0" stroke="var(--peach)" stroke-width="2" opacity="0.45" />
+      </g>
+      <path class="lb-shore" d="M-10 300q40-8 80 0t80 0 80 0 80 0" stroke="var(--peach-soft)" stroke-width="3" />
+      <rect x="0" y="304" width="300" height="96" fill="var(--peach)" />
+
+      <!-- Bianca, Laura y Valeria -->
+      <g class="lb-girl lb-girl--bianca">
+        <circle cx="94" cy="290" r="10" fill="var(--cobalt)" stroke="var(--peach-soft)" stroke-width="2" />
+        <path d="M94 300l-15 52h30Z" fill="var(--cobalt)" />
+      </g>
+      <g class="lb-girl lb-girl--valeria">
+        <circle cx="206" cy="290" r="10" fill="var(--cobalt)" stroke="var(--peach-soft)" stroke-width="2" />
+        <path d="M206 300l-15 52h30Z" fill="var(--cobalt)" />
+      </g>
+      <g class="lb-laura">
+        <circle class="lb-head" cx="150" cy="290" r="10" fill="var(--cobalt)" stroke="var(--peach-soft)" stroke-width="2" />
+        <path class="lb-body" d="M150 300l-15 52h30Z" fill="var(--cobalt)" />
+      </g>
+
+      <rect class="lb-night" x="0" y="0" width="300" height="400" fill="#001a40" />
+
+      <!-- Cielo de noche: estrellas que aparecen cuando se pone el sol -->
+      <g class="lb-stars">
+        <circle cx="52" cy="120" r="1.6" fill="var(--peach-soft)" /><circle cx="96" cy="96" r="1.2" fill="var(--peach-soft)" />
+        <circle cx="214" cy="110" r="1.6" fill="var(--peach-soft)" /><circle cx="252" cy="148" r="1.2" fill="var(--peach-soft)" />
+        <circle cx="168" cy="132" r="1.2" fill="var(--peach-soft)" />
+        <path d="M236 92a14 14 0 1 0 10 24a11 11 0 1 1-10-24Z" fill="var(--peach-soft)" />
+      </g>
+    </>)}
+
+    {kind === 'board' && (<g transform="translate(0 22)">
+      <!-- El tablón -->
+      <rect x="28" y="88" width="244" height="270" rx="4" fill="var(--peach)" />
+      <rect x="28" y="88" width="244" height="270" rx="4" stroke="var(--peach-soft)" stroke-width="6" />
+
+      <!-- Pablo y Mateo -->
+      <g transform="rotate(-6 86 140)">
+        <rect x="60" y="104" width="52" height="64" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1" />
+        <rect x="65" y="109" width="42" height="40" fill="var(--cobalt)" />
+        <circle cx="86" cy="124" r="7" fill="var(--peach-soft)" />
+        <path d="M74 149q0-14 12-14t12 14Z" fill="var(--peach-soft)" />
+        <text class="pb-label" x="86" y="162" text-anchor="middle">PABLO</text>
+      </g>
+      <g transform="rotate(5 216 136)">
+        <rect x="190" y="100" width="52" height="64" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1" />
+        <rect x="195" y="105" width="42" height="40" fill="var(--cobalt)" />
+        <circle cx="216" cy="120" r="7" fill="var(--peach-soft)" />
+        <path d="M204 145q0-14 12-14t12 14Z" fill="var(--peach-soft)" />
+        <text class="pb-label" x="216" y="158" text-anchor="middle">MATEO</text>
+      </g>
+
+      <!-- Bolsa de pruebas con el pañuelo -->
+      <g transform="rotate(-2 150 220)">
+        <rect x="120" y="186" width="60" height="70" rx="2" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1.5" />
+        <path d="M120 196h60" stroke="var(--cobalt)" stroke-width="3" />
+        <path d="M132 214q10-6 18 2t18-2q-2 10-8 14l4 16-8 2-6-16q-12 0-18-16Z" fill="var(--cobalt)" />
+        <path d="M148 220q6 2 4 8t-4 10q-5-3-4-10t4-8Z" fill="var(--ink)" />
+        <text class="pb-label" x="150" y="252" text-anchor="middle">PRUEBA 01</text>
+      </g>
+
+      <!-- Nota -->
+      <g transform="rotate(4 72 288)">
+        <rect x="44" y="262" width="58" height="50" fill="var(--peach-soft)" />
+        <text class="pb-note" x="73" y="286" text-anchor="middle">¿QUIÉN?</text>
+        <path d="M52 296h40M52 304h28" stroke="var(--cobalt)" stroke-width="1" opacity="0.5" />
+      </g>
+
+      <!-- Postal de Navidad: llega la última -->
+      <g class="pb-card">
+        <g transform="rotate(-5 222 282)">
+          <rect x="188" y="254" width="70" height="54" fill="var(--peach-soft)" stroke="var(--cobalt)" stroke-width="1" />
+          <path d="M222 262l-14 34h28Z" fill="var(--cobalt)" />
+          <path d="M222 258l2 4 4 0-3 3 1 4-4-2-4 2 1-4-3-3 4 0Z" fill="var(--cobalt)" />
+          <circle cx="216" cy="282" r="1.8" fill="var(--peach-soft)" /><circle cx="227" cy="288" r="1.8" fill="var(--peach-soft)" />
+          <text class="pb-label" x="246" y="302" text-anchor="middle">2006</text>
+        </g>
+      </g>
+
+      <!-- Hilos y chinchetas -->
+      {threads.map((thread) => (
+        <path class="pb-thread" style={`--i:${thread.i}`} pathLength="1" d={thread.d} stroke="var(--cobalt)" stroke-width="1.6" />
+      ))}
+      <circle cx="86" cy="108" r="4" fill="var(--cobalt)" />
+      <circle cx="216" cy="104" r="4" fill="var(--cobalt)" />
+      <circle cx="150" cy="186" r="4" fill="var(--cobalt)" />
+      <circle cx="72" cy="262" r="4" fill="var(--cobalt)" />
+      <circle class="pb-card" cx="222" cy="254" r="4" fill="var(--cobalt)" />
+
+      <!-- La lupa del detective -->
+      <g class="pb-lens">
+        <circle cx="0" cy="0" r="22" fill="var(--peach-soft)" fill-opacity="0.35" stroke="var(--cobalt)" stroke-width="4" />
+        <path d="M16 16l20 20" stroke="var(--cobalt)" stroke-width="7" />
+      </g>
+    </g>)}
+
+    {kind === 'cafe' && (<>
+      <!-- La ventana del bar, con la calle detrás y el rótulo al revés -->
+      <rect x="56" y="84" width="188" height="110" stroke="var(--peach)" stroke-width="3" />
+      <path d="M150 84v110M56 140h188" stroke="var(--peach)" stroke-width="2" opacity="0.6" />
+      <path d="M70 194v-62h26v62M104 194v-80h30v80M166 194v-50h22v50M196 194v-70h34v70" stroke="var(--peach)" stroke-width="1.5" opacity="0.35" />
+      <text class="jm-sign" x="0" y="0" text-anchor="middle" transform="translate(150 124) scale(-1 1)">BAR</text>
+      <path d="M24 340h252" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+
+      <!-- Mesa, zumo de melocotón y café -->
+      <path d="M104 268h92M150 268v66M128 338h44" stroke="var(--peach)" stroke-width="5" />
+      <rect x="124" y="244" width="14" height="22" rx="1" stroke="var(--peach-soft)" stroke-width="2" />
+      <rect x="126" y="252" width="10" height="13" fill="var(--peach)" />
+      <path class="jm-straw" d="M131 262l6-28" stroke="var(--peach-soft)" stroke-width="2" />
+      <g class="jm-cup">
+        <path d="M160 254h16v8q0 6-8 6t-8-6Z" fill="var(--peach-soft)" />
+        <path d="M176 257q6 0 4 5t-5 3" stroke="var(--peach-soft)" stroke-width="2" />
+        <path class="jm-steam" d="M164 248q-4-6 0-12t0-12M172 248q-4-6 0-12t0-12" stroke="var(--peach-soft)" stroke-width="1.5" />
+      </g>
+
+      <!-- María: pelo largo, mira por la ventana al final -->
+      <g class="jm-maria">
+        <path d="M58 340l6-42h26l-2 42M64 298l-6-46" stroke="var(--peach)" stroke-width="3" />
+        <path d="M72 298q-2-28 6-40h12q6 12 4 40Z" fill="var(--peach-soft)" />
+        <path class="jm-reach" d="M90 266l24 2" stroke="var(--peach-soft)" stroke-width="6" />
+        <path d="M86 298h12l2 42" stroke="var(--peach)" stroke-width="5" />
+        <path d="M74 236q-6 20 0 34" stroke="var(--peach)" stroke-width="7" />
+        <circle cx="84" cy="244" r="10" fill="var(--peach)" />
+        <circle class="jm-eye" cx="89" cy="243" r="1.5" fill="var(--cobalt)" />
+      </g>
+
+      <!-- Juan: amaga con irse, le busca la mano y al final se va -->
+      <g class="jm-juan">
+        <path d="M242 340l-6-42h-26l2 42M236 298l6-46" stroke="var(--peach)" stroke-width="3" />
+        <g class="jm-rise">
+          <path d="M228 298q2-28-6-40h-12q-6 12-4 40Z" fill="var(--peach)" />
+          <path class="jm-hand" d="M210 266l-24 2" stroke="var(--peach)" stroke-width="6" />
+          <path d="M214 298h-12l-2 42" stroke="var(--peach)" stroke-width="5" />
+          <circle cx="216" cy="244" r="10" fill="var(--peach)" />
+          <path d="M206 240q10-10 20-2" stroke="var(--peach-soft)" stroke-width="4" />
+          <circle cx="211" cy="243" r="1.5" fill="var(--cobalt)" />
+        </g>
+      </g>
+    </>)}
+
+    {kind === 'precinct' && (<>
+      <!-- Sala de interrogatorios -->
+      <path d="M24 340h252" stroke="var(--peach)" stroke-width="2" opacity="0.5" />
+      <text class="dh-sign" x="268" y="160" text-anchor="middle">SALA 2</text>
+      <rect x="248" y="170" width="40" height="170" stroke="var(--peach)" stroke-width="3" />
+      <rect x="250" y="172" width="36" height="166" fill="#000" opacity="0.3" />
+      <g class="dh-door">
+        <rect x="250" y="172" width="36" height="166" fill="var(--peach)" />
+        <rect x="258" y="186" width="20" height="26" fill="var(--cobalt)" opacity="0.5" />
+        <circle cx="255" cy="262" r="2.5" fill="var(--cobalt)" />
+      </g>
+
+      <!-- Dos lámparas paralelas -->
+      {[115, 185].map((x, i) => (
+        <g class="dh-lamp" style={`--o:${x}px;--l:${i * -0.6}s`}>
+          <path d={`M${x - 26} 270L${x - 9} 152h18L${x + 26} 270Z`} fill="var(--peach-soft)" opacity="0.12" />
+          <path d={`M${x} 64v76`} stroke="var(--peach)" stroke-width="1.5" />
+          <path d={`M${x - 10} 152l4-12h12l4 12Z`} fill="var(--peach)" />
+        </g>
+      ))}
+
+      <!-- La mesa, la placa y el móvil grabando -->
+      <rect x="100" y="270" width="104" height="6" fill="var(--peach)" />
+      <path d="M108 276v64M196 276v64" stroke="var(--peach)" stroke-width="4" />
+      <g class="dh-props">
+        <path d="M162 258l8-3 8 3v6q0 5-8 7q-8-2-8-7Z" fill="var(--peach-soft)" />
+        <rect x="130" y="262" width="18" height="8" rx="1.5" fill="var(--peach-soft)" />
+        <circle class="dh-rec" cx="135" cy="266" r="2" fill="var(--cobalt)" />
+      </g>
+
+      <!-- Diego: sudadera con capucha, haciendo equilibrios con la silla -->
+      <g class="dh-diego">
+        <path d="M58 340l6-40h24l-2 40M64 300l-6-44" stroke="var(--peach)" stroke-width="3" />
+        <path d="M70 300q-2-30 6-42h14q6 14 4 42Z" fill="var(--peach-soft)" />
+        <path d="M90 270l14 0" stroke="var(--peach-soft)" stroke-width="6" />
+        <path d="M86 300h10l2 40" stroke="var(--peach)" stroke-width="5" />
+        <circle cx="84" cy="246" r="10" fill="var(--peach)" />
+        <circle cx="89" cy="244" r="1.5" fill="var(--cobalt)" />
+        <path class="dh-hood" d="M72 252q-2-22 13-22q12 0 12 14l-4 2q-2-10-9-10q-8 0-8 16Z" fill="var(--peach-soft)" />
+        <path class="dh-tear" d="M90 249q2 3 0 5q-2-2 0-5Z" fill="var(--peach-soft)" />
+      </g>
+
+      <!-- Héctor, el inspector: americana y corbata -->
+      <g class="dh-hector">
+        <path d="M242 340l-6-40h-24l2 40M236 300l6-44" stroke="var(--peach)" stroke-width="3" />
+        <path class="dh-lean" d="M230 300q2-30-6-42h-14q-6 14-4 42Z" fill="var(--peach)" />
+        <path d="M216 260l2 14 2-14Z" fill="var(--cobalt)" />
+        <path d="M210 270l-12 0" stroke="var(--peach)" stroke-width="6" />
+        <path d="M214 300h-10l-2 40" stroke="var(--peach)" stroke-width="5" />
+        <circle cx="216" cy="246" r="10" fill="var(--peach)" />
+        <path d="M207 240q9-8 18 0" stroke="var(--cobalt)" stroke-width="2" />
+        <circle cx="211" cy="246" r="1.5" fill="var(--cobalt)" />
+        <path d="M207 242l6-1" stroke="var(--cobalt)" stroke-width="1.5" />
       </g>
     </>)}
 
@@ -703,6 +1047,149 @@ const seats = [
     transform-origin: center bottom;
   }
 
+  .dh-sign {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    fill: var(--peach);
+    opacity: 0.6;
+  }
+
+  /* Sin movimiento: los dos sentados frente a frente, grabando. */
+  .cv .dh-lamp {
+    transform-box: view-box;
+    transform-origin: var(--o) 64px;
+  }
+
+  .cv .dh-diego {
+    transform-box: view-box;
+    transform-origin: 58px 340px;
+  }
+
+  .cv .dh-door {
+    transform-origin: right center;
+  }
+
+  .dh-tear {
+    opacity: 0;
+  }
+
+  .jm-sign {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0.3em;
+    fill: var(--peach);
+    opacity: 0.5;
+  }
+
+  .cv .jm-straw {
+    transform-origin: left bottom;
+  }
+
+  .cv .jm-reach {
+    transform-origin: left center;
+  }
+
+  .cv .jm-hand {
+    transform-origin: left center;
+  }
+
+  .pb-label {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 7px;
+    letter-spacing: 0.08em;
+    fill: var(--cobalt);
+  }
+
+  .pb-note {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 11px;
+    fill: var(--cobalt);
+  }
+
+  /* Sin movimiento: todos los hilos tendidos y la lupa sobre la postal. */
+  .pb-thread {
+    stroke-dasharray: 1;
+  }
+
+  .cv .pb-lens {
+    transform-box: view-box;
+    transform-origin: 0 0;
+    translate: 222px 280px;
+  }
+
+  /* Sin movimiento: Laura sola, sentada en la orilla al atardecer. */
+  .lb-girl,
+  .lb-stars,
+  .lb-night {
+    opacity: 0;
+  }
+
+  .cv .lb-body {
+    transform-origin: center bottom;
+    scale: 1.15 0.62;
+  }
+
+  .lb-head {
+    translate: 0 20px;
+  }
+
+  .mh-sign {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    fill: var(--cobalt);
+  }
+
+  .mh-label {
+    font-family: var(--font-script);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    fill: var(--peach);
+  }
+
+  /* Sin movimiento: los cascos en la vía y «TRES FINALES». */
+  .mh-pods--2,
+  .mh-pods--3,
+  .mh-vacuum,
+  .mh-robot,
+  .mh-train,
+  .mh-foam,
+  .mh-label--n {
+    opacity: 0;
+  }
+
+  .cv .mh-legs {
+    transform-origin: center top;
+  }
+
+  /* Sin movimiento: Lucía sola, con la cadena rota, y las zarpas al fondo. */
+  .gd-youth--mateo,
+  .gd-youth--valeria,
+  .gd-youth--gabriel,
+  .gd-slash,
+  .gd-youth--lucia .gd-chain {
+    opacity: 0;
+  }
+
+  .gd-claw {
+    stroke-dasharray: 1;
+  }
+
+  .cv .gd-youth--lucia .gd-body {
+    transform-origin: center bottom;
+    scale: 1.1 0.7;
+  }
+
+  .gd-youth--lucia .gd-head {
+    translate: 0 13px;
+  }
+
   .cv:not([data-playing]) :global(*) {
     animation-play-state: paused !important;
   }
@@ -744,6 +1231,205 @@ const seats = [
 
     .cv-gasp {
       animation: cv-gasp 8s linear infinite;
+    }
+
+    /* El Guardián */
+    .gd-eyes {
+      animation: gd-blink 3.2s steps(1, end) infinite;
+    }
+
+    .gd-eyes--b {
+      animation-delay: -1.4s;
+    }
+
+    .gd-claw {
+      animation: gd-claw 10s ease-out infinite;
+    }
+
+    .gd-youth--valeria { animation: gd-valeria 10s ease-in infinite; }
+    .gd-youth--gabriel { animation: gd-dragged 10s ease-in infinite; --gd-at: 0; }
+    .gd-youth--mateo { animation: gd-mateo 10s ease-in infinite; }
+    .gd-youth--lucia .gd-chain { animation: gd-lucia-chain 10s steps(1, end) infinite; }
+    .gd-youth--lucia .gd-body { animation: gd-crouch 10s ease-in-out infinite; }
+    .gd-youth--lucia .gd-head { animation: gd-crouch-head 10s ease-in-out infinite; }
+
+    .gd-slash {
+      animation: gd-slash 10s steps(1, end) infinite;
+    }
+
+    .gd-break {
+      animation: gd-break 10s steps(1, end) infinite;
+    }
+
+    .gd-paws {
+      animation: gd-paws 10s ease-in-out infinite;
+    }
+
+    /* Misma historia, distinto final */
+    .mh-label--static {
+      opacity: 0;
+    }
+
+    .mh-label--1 { animation: mh-seg1 12s steps(1, end) infinite; }
+    .mh-label--2 { animation: mh-seg2 12s steps(1, end) infinite; }
+    .mh-label--3 { animation: mh-seg3 12s steps(1, end) infinite; }
+
+    .mh-pods--1 { animation: mh-pods1 12s ease-in infinite; }
+    .mh-pods--2 { animation: mh-pods2 12s ease-in-out infinite; }
+    .mh-pods--3 { animation: mh-pods3 12s linear infinite; }
+
+    .mh-vacuum {
+      animation: mh-vacuum 12s ease-in-out infinite;
+    }
+
+    .mh-robot {
+      animation: mh-robot 12s ease-in-out infinite;
+    }
+
+    .mh-legs {
+      animation: mh-legs 12s ease-in-out infinite;
+    }
+
+    .mh-train {
+      animation: mh-train 12s linear infinite;
+    }
+
+    .mh-foam {
+      animation: mh-foam 12s steps(1, end) infinite;
+    }
+
+    .mh-note {
+      animation: cd-stink 1.2s ease-out infinite;
+    }
+
+    /* La soledad */
+    .lb-waves {
+      animation: lb-waves 4s linear infinite;
+    }
+
+    .lb-shore {
+      animation: lb-shore 2.4s ease-in-out infinite alternate;
+    }
+
+    .lb-sun {
+      animation: lb-sun 10s ease-in-out infinite;
+    }
+
+    .lb-girl--bianca {
+      animation: lb-bianca 10s ease-in-out infinite;
+    }
+
+    .lb-girl--valeria {
+      animation: lb-valeria 10s ease-in-out infinite;
+    }
+
+    .lb-body {
+      animation: lb-sit 10s ease-in-out infinite;
+    }
+
+    .lb-head {
+      animation: lb-sit-head 10s ease-in-out infinite;
+    }
+
+    .lb-laura {
+      animation: lb-dive 10s ease-in-out infinite;
+    }
+
+    .lb-night {
+      animation: lb-night 10s ease-in-out infinite;
+    }
+
+    .lb-stars {
+      animation: lb-stars 10s ease-in-out infinite;
+    }
+
+    /* Problemas de familia */
+    .pb-thread {
+      animation: pb-thread 10s ease-out infinite;
+      animation-delay: calc(var(--i) * 1s);
+    }
+
+    .pb-thread[style*='--i:3'] {
+      animation-name: pb-thread-last;
+      animation-delay: 0s;
+    }
+
+    .pb-card {
+      animation: pb-card 10s var(--ease-out) infinite;
+    }
+
+    .pb-lens {
+      animation: pb-lens 10s ease-in-out infinite;
+    }
+
+    /* Juan y María */
+    .jm-straw {
+      animation: jm-stir 1.6s ease-in-out infinite alternate;
+    }
+
+    .jm-steam {
+      animation: jm-steam 10s linear infinite;
+    }
+
+    .jm-cup {
+      animation: jm-cup 10s ease-in-out infinite;
+    }
+
+    .jm-rise {
+      animation: jm-rise 10s ease-in-out infinite;
+    }
+
+    .jm-juan {
+      animation: jm-leave 10s ease-in-out infinite;
+    }
+
+    .jm-maria {
+      animation: jm-lean 10s ease-in-out infinite;
+    }
+
+    .jm-reach {
+      animation: jm-reach 10s ease-in-out infinite;
+    }
+
+    .jm-hand {
+      animation: jm-hand 10s ease-in-out infinite;
+    }
+
+    .jm-eye {
+      animation: jm-look 10s steps(1, end) infinite;
+    }
+
+    /* Diego y Héctor */
+    .dh-lamp {
+      animation: dh-sway 3s ease-in-out var(--l) infinite alternate;
+    }
+
+    .dh-diego {
+      animation: dh-tilt 10s ease-in-out infinite;
+    }
+
+    .dh-hector {
+      animation: dh-hector 10s ease-in-out infinite;
+    }
+
+    .dh-door {
+      animation: dh-door 10s ease-in-out infinite;
+    }
+
+    .dh-props {
+      animation: dh-props 10s steps(1, end) infinite;
+    }
+
+    .dh-rec {
+      animation: cs-bulb 1.2s steps(1, end) infinite;
+    }
+
+    .dh-hood {
+      animation: dh-hood 10s steps(1, end) infinite;
+    }
+
+    .dh-tear {
+      animation: dh-tear 10s ease-in infinite;
     }
 
     /* Rostros */
@@ -943,6 +1629,362 @@ const seats = [
     .cs-wave {
       animation: cs-wave 0.5s ease-in-out infinite alternate;
     }
+  }
+
+  @keyframes gd-blink {
+    0%, 88% { opacity: 1; }
+    90%, 94% { opacity: 0; }
+    96%, 100% { opacity: 1; }
+  }
+
+  @keyframes gd-claw {
+    0%, 10% { stroke-dashoffset: 1; opacity: 1; }
+    16%, 92% { stroke-dashoffset: 0; opacity: 1; }
+    98%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  /* Una sombra pasa por detrás de Valeria. */
+  @keyframes gd-valeria {
+    0%, 26% { opacity: 1; }
+    28%, 100% { opacity: 0; }
+  }
+
+  @keyframes gd-slash {
+    0% { opacity: 0; }
+    26% { opacity: 1; }
+    30%, 100% { opacity: 0; }
+  }
+
+  /* Las cadenas se tensan y los arrastran hacia el bosque. */
+  @keyframes gd-dragged {
+    0%, 32% { opacity: 1; translate: 0 0; scale: 1; }
+    42% { opacity: 0; translate: -60px -110px; scale: 0.3; }
+    100% { opacity: 0; translate: -60px -110px; scale: 0.3; }
+  }
+
+  @keyframes gd-mateo {
+    0%, 52% { opacity: 1; translate: 0 0; scale: 1; }
+    56% { opacity: 1; translate: 6px -8px; scale: 0.92; }
+    66% { opacity: 0; translate: 30px -110px; scale: 0.3; }
+    100% { opacity: 0; translate: 30px -110px; scale: 0.3; }
+  }
+
+  /* Lucía rompe su cadena y se queda encogida. */
+  @keyframes gd-lucia-chain {
+    0% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes gd-break {
+    0% { opacity: 0; }
+    50%, 94% { opacity: 1; }
+    96%, 100% { opacity: 0; }
+  }
+
+  @keyframes gd-crouch {
+    0%, 66% { scale: 1 1; }
+    72%, 94% { scale: 1.1 0.7; }
+    100% { scale: 1 1; }
+  }
+
+  @keyframes gd-crouch-head {
+    0%, 66% { translate: 0 0; }
+    72%, 94% { translate: 0 13px; }
+    100% { translate: 0 0; }
+  }
+
+  @keyframes gd-paws {
+    0%, 66% { opacity: 0; }
+    74%, 94% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Tres tramos de 4 s, uno por final. */
+  @keyframes mh-seg1 { 0% { opacity: 1; } 33.3%, 100% { opacity: 0; } }
+  @keyframes mh-seg2 { 0% { opacity: 0; } 33.3% { opacity: 1; } 66.6%, 100% { opacity: 0; } }
+  @keyframes mh-seg3 { 0% { opacity: 0; } 66.6% { opacity: 1; } 100% { opacity: 1; } }
+
+  /* FINAL 1: la aspiradora entra y se traga los cascos. */
+  @keyframes mh-vacuum {
+    0%, 6% { opacity: 1; translate: -160px -40px; }
+    16%, 26% { opacity: 1; translate: 0 0; }
+    32% { opacity: 1; translate: -160px -40px; }
+    33.3%, 100% { opacity: 0; translate: -160px -40px; }
+  }
+
+  @keyframes mh-pods1 {
+    0%, 17% { opacity: 1; translate: 0 0; scale: 1; }
+    22% { opacity: 0; translate: -30px -12px; scale: 0.3; }
+    100% { opacity: 0; translate: -30px -12px; scale: 0.3; }
+  }
+
+  /* FINAL 2: el robot llega, los coge y crece hasta el andén. */
+  @keyframes mh-robot {
+    0%, 33.2% { opacity: 0; translate: 40px 0; }
+    33.3% { opacity: 1; translate: 40px 0; }
+    44%, 50% { opacity: 1; translate: -54px 0; }
+    60%, 64% { opacity: 1; translate: -54px -44px; }
+    66.6%, 100% { opacity: 0; translate: -54px -44px; }
+  }
+
+  @keyframes mh-legs {
+    0%, 50% { scale: 1 1; }
+    60%, 64% { scale: 1 5; }
+    66.6%, 100% { scale: 1 1; }
+  }
+
+  @keyframes mh-pods2 {
+    0%, 33.2% { opacity: 0; translate: 0 0; }
+    33.3%, 50% { opacity: 1; translate: 0 0; }
+    60%, 64% { opacity: 1; translate: 0 -44px; }
+    66.6%, 100% { opacity: 0; translate: 0 -44px; }
+  }
+
+  /* FINAL 3: el tren pasa por encima; quedan unos cascos de espuma y música. */
+  @keyframes mh-pods3 {
+    0%, 66.5% { opacity: 0; }
+    66.6%, 74% { opacity: 1; }
+    75%, 100% { opacity: 0; }
+  }
+
+  @keyframes mh-train {
+    0%, 70% { opacity: 1; translate: 320px 0; }
+    80% { opacity: 1; translate: -320px 0; }
+    100% { opacity: 1; translate: -320px 0; }
+  }
+
+  @keyframes mh-foam {
+    0% { opacity: 0; }
+    82%, 100% { opacity: 1; }
+  }
+
+  @keyframes lb-waves {
+    from { translate: 0 0; }
+    to { translate: 60px 0; }
+  }
+
+  @keyframes lb-shore {
+    from { translate: 0 0; }
+    to { translate: -12px 2px; }
+  }
+
+  @keyframes lb-sun {
+    0% { translate: 0 0; }
+    66%, 92% { translate: 0 44px; }
+    100% { translate: 0 0; }
+  }
+
+  /* Bianca se va la primera. */
+  @keyframes lb-bianca {
+    0% { opacity: 0; translate: 0 0; }
+    4%, 20% { opacity: 1; translate: 0 0; }
+    34% { opacity: 0; translate: -110px 0; }
+    100% { opacity: 0; translate: -110px 0; }
+  }
+
+  /* Luego Valeria. */
+  @keyframes lb-valeria {
+    0% { opacity: 0; translate: 0 0; }
+    4%, 36% { opacity: 1; translate: 0 0; }
+    50% { opacity: 0; translate: 110px 0; }
+    100% { opacity: 0; translate: 110px 0; }
+  }
+
+  /* Laura se sienta en la orilla, sola. */
+  @keyframes lb-sit {
+    0%, 50% { scale: 1 1; }
+    54%, 62% { scale: 1.15 0.62; }
+    66%, 100% { scale: 1 1; }
+  }
+
+  @keyframes lb-sit-head {
+    0%, 50% { translate: 0 0; }
+    54%, 62% { translate: 0 20px; }
+    66%, 100% { translate: 0 0; }
+  }
+
+  /* Y se mete en el agua. */
+  @keyframes lb-dive {
+    0%, 64% { opacity: 1; translate: 0 0; scale: 1; }
+    74% { opacity: 0; translate: 0 -40px; scale: 0.6; }
+    96% { opacity: 0; translate: 0 0; scale: 1; }
+    100% { opacity: 1; translate: 0 0; scale: 1; }
+  }
+
+  @keyframes lb-night {
+    0%, 66% { opacity: 0; }
+    76%, 92% { opacity: 0.45; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes lb-stars {
+    0%, 70% { opacity: 0; }
+    78%, 92% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Cada hilo se tiende de su pista a la bolsa y se queda hasta el final del ciclo. */
+  @keyframes pb-thread {
+    0%, 10% { stroke-dashoffset: 1; opacity: 1; }
+    18%, 80% { stroke-dashoffset: 0; opacity: 1; }
+    88%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  /* El último, de la bolsa a la postal, cuando esta ya está clavada. */
+  @keyframes pb-thread-last {
+    0%, 58% { stroke-dashoffset: 1; opacity: 1; }
+    68%, 90% { stroke-dashoffset: 0; opacity: 1; }
+    96%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+
+  /* La postal cae al tablón y se queda clavada. */
+  @keyframes pb-card {
+    0%, 42% { opacity: 0; translate: 0 -40px; rotate: 10deg; }
+    48% { opacity: 1; translate: 0 4px; rotate: -2deg; }
+    52%, 90% { opacity: 1; translate: 0 0; rotate: 0deg; }
+    96%, 100% { opacity: 0; translate: 0 0; rotate: 0deg; }
+  }
+
+  /* La lupa recorre las pistas y se detiene sobre la postal. */
+  @keyframes pb-lens {
+    0% { translate: 150px 380px; }
+    12% { translate: 86px 136px; }
+    24% { translate: 216px 132px; }
+    36% { translate: 72px 286px; }
+    48% { translate: 150px 222px; }
+    66%, 92% { translate: 222px 280px; }
+    100% { translate: 150px 380px; }
+  }
+
+  @keyframes jm-stir {
+    from { rotate: -6deg; }
+    to { rotate: 6deg; }
+  }
+
+  @keyframes jm-steam {
+    0% { opacity: 0.9; translate: 0 0; }
+    10% { opacity: 0.3; translate: 0 -4px; }
+    20% { opacity: 0.9; translate: 0 0; }
+    30% { opacity: 0.3; translate: 0 -4px; }
+    40% { opacity: 0.9; translate: 0 0; }
+    50% { opacity: 0.3; translate: 0 -4px; }
+    60% { opacity: 0.9; translate: 0 0; }
+    70% { opacity: 0.5; translate: 0 -2px; }
+    74%, 96% { opacity: 0; translate: 0 0; }
+    100% { opacity: 0.9; }
+  }
+
+  /* Se acaba el café de un trago y lo deja. */
+  @keyframes jm-cup {
+    0%, 70% { translate: 0 0; rotate: 0deg; }
+    73%, 75% { translate: 40px -24px; rotate: -40deg; }
+    78%, 100% { translate: 0 0; rotate: 0deg; }
+  }
+
+  /* Amaga con levantarse (20%) y al final se levanta de verdad (68%). */
+  @keyframes jm-rise {
+    0%, 18% { translate: 0 0; }
+    22%, 26% { translate: 4px -12px; }
+    32%, 66% { translate: 0 0; }
+    70%, 92% { translate: 4px -14px; }
+    96%, 100% { translate: 0 0; }
+  }
+
+  @keyframes jm-leave {
+    0%, 76% { translate: 0 0; opacity: 1; }
+    82%, 85% { translate: 46px 0; opacity: 1; }
+    92% { translate: 110px 0; opacity: 0; }
+    96% { translate: 0 0; opacity: 0; }
+    100% { translate: 0 0; opacity: 1; }
+  }
+
+  @keyframes jm-lean {
+    0%, 20% { translate: 0 0; }
+    24%, 28% { translate: 8px -2px; }
+    32%, 100% { translate: 0 0; }
+  }
+
+  /* Ella le agarra del brazo; luego esconde la mano bajo la mesa. */
+  @keyframes jm-reach {
+    0%, 20% { rotate: 0deg; scale: 1 1; }
+    24%, 28% { rotate: -14deg; scale: 1.5 1; }
+    32%, 50% { rotate: 0deg; scale: 1 1; }
+    54%, 66% { rotate: 50deg; scale: 0.7 1; }
+    70%, 100% { rotate: 0deg; scale: 1 1; }
+  }
+
+  @keyframes jm-hand {
+    0%, 46% { scale: 1 1; }
+    52%, 58% { scale: 1.9 1; }
+    62%, 100% { scale: 1 1; }
+  }
+
+  @keyframes jm-look {
+    0% { translate: 0 0; }
+    78% { translate: -3px -2px; }
+    96%, 100% { translate: 0 0; }
+  }
+
+  @keyframes dh-sway {
+    from { rotate: -3deg; }
+    to { rotate: 3deg; }
+  }
+
+  /* Diego se balancea en la silla hasta que el inspector se la frena (46%). */
+  @keyframes dh-tilt {
+    0% { rotate: 0deg; }
+    5% { rotate: -9deg; }
+    10% { rotate: -3deg; }
+    15% { rotate: -9deg; }
+    20% { rotate: -3deg; }
+    25% { rotate: -9deg; }
+    30% { rotate: -3deg; }
+    36% { rotate: -10deg; }
+    44% { rotate: -10deg; }
+    46%, 100% { rotate: 0deg; }
+  }
+
+  /* Entra por la puerta, se sienta, se inclina sobre la mesa y se va. */
+  @keyframes dh-hector {
+    0%, 12% { opacity: 0; translate: 60px 0; }
+    14% { opacity: 1; translate: 60px 0; }
+    24%, 40% { opacity: 1; translate: 0 0; }
+    44% { translate: -110px 0; }
+    48% { translate: 0 0; }
+    54% { translate: -18px -6px; }
+    68% { translate: -18px -6px; }
+    72% { translate: 0 0; }
+    74% { opacity: 1; translate: 0 0; }
+    80% { opacity: 1; translate: 60px 0; }
+    82%, 100% { opacity: 0; translate: 60px 0; }
+  }
+
+  @keyframes dh-door {
+    0%, 10% { scale: 1 1; }
+    14%, 22% { scale: 0.15 1; }
+    26%, 74% { scale: 1 1; }
+    77%, 82% { scale: 0.15 1; }
+    85%, 100% { scale: 1 1; }
+  }
+
+  @keyframes dh-props {
+    0% { opacity: 0; }
+    26% { opacity: 1; }
+    76%, 100% { opacity: 0; }
+  }
+
+  /* Se quita la capucha cuando se altera y se la vuelve a poner al quedarse solo. */
+  @keyframes dh-hood {
+    0% { opacity: 1; }
+    58% { opacity: 0; }
+    86%, 100% { opacity: 1; }
+  }
+
+  @keyframes dh-tear {
+    0%, 86% { opacity: 0; translate: 0 0; }
+    88% { opacity: 1; translate: 0 0; }
+    98% { opacity: 1; translate: 0 18px; }
+    100% { opacity: 0; translate: 0 18px; }
   }
 
   /* El rostro sale de la oscuridad detrás de él y se le acerca. */

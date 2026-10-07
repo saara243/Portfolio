@@ -42,7 +42,7 @@ const scripts = defineCollection({
     duration: z.string().optional(),
     cover: publicFile.optional(),
     // Portada ilustrada y animada (src/components/CoverArt.astro) cuando no hay imagen de portada
-    coverArt: z.enum(['revival', 'set', 'tube', 'dentist', 'closet', 'faces']).optional(),
+    coverArt: z.enum(['revival', 'set', 'tube', 'dentist', 'closet', 'faces', 'precinct', 'cafe', 'board', 'beach', 'platform', 'forest']).optional(),
     // Fotograma horizontal (16:9) para la cuadrícula de destacados de la home; opcional
     still: publicFile.optional(),
     pdf: publicFile.optional(),
@@ -50,6 +50,8 @@ const scripts = defineCollection({
     featured: z.boolean().default(false),
     order: z.number().optional(),
     awards: z.array(z.string()).default([]),
+    // Para qué se escribió (encargo, prueba, entrevista…); se muestra en la ficha como «Contexto»
+    context: z.string().optional(),
   }),
 });
 

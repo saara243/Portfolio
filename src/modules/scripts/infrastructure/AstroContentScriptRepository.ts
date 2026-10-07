@@ -31,6 +31,7 @@ export class AstroContentScriptRepository implements ScriptRepository {
           featured: entry.data.featured,
           order: entry.data.order,
           awards: entry.data.awards,
+          context: entry.data.context,
         });
       }),
     );
