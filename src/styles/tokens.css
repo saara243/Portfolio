@@ -15,6 +15,8 @@
   --cobalt: #0262de;
   --cobalt-deep: #0247a3;
   --taupe: #ccb6a6;
+  /* Taupe aclarado hacia el melocotón: bandas que necesitan respirar (destacados, «¿Qué puedo aportar?»). */
+  --taupe-soft: color-mix(in oklab, var(--taupe) 45%, var(--peach-soft));
   --ink: #14110f;
   --ink-soft: #5e5048;
 
@@ -69,6 +71,11 @@
   --accent: var(--peach);
   --on-accent: var(--cobalt);
   --line: rgb(255 227 208 / 0.45);
+}
+
+/* Mismo tono que taupe, con el fondo aclarado. */
+[data-tone='taupe'][data-soft] {
+  --bg: var(--taupe-soft);
 }
 
 [data-tone='taupe'] {

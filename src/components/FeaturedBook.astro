@@ -275,6 +275,11 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
     box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.45);
   }
 
+  /* Las tarjetas apiladas miden lo que la más alta: el sobrante va a la página de texto, que centra su bloque. */
+  .book__card:not(.book__card--cover, .book__card--back) {
+    grid-template-rows: auto 1fr;
+  }
+
   .book__card-art {
     height: 26rem;
     max-height: 70vh;
@@ -301,11 +306,15 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
     height: 100%;
   }
 
+  /* Si el texto no llena la página, el bloque se queda centrado en vertical; el folio va fijo abajo. */
   .book__page--text {
+    --page-pad: clamp(1.25rem, 0.8rem + 2.4vw, 2.75rem);
     display: flex;
     flex-direction: column;
+    justify-content: safe center;
     gap: var(--space-3);
-    padding: clamp(1.25rem, 0.8rem + 2.4vw, 2.75rem);
+    padding: var(--page-pad);
+    padding-bottom: max(var(--page-pad), 3.25rem);
     background: var(--paper);
     color: var(--ink);
   }
@@ -327,7 +336,6 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
   }
 
   .book__synopsis {
-    flex: 1;
     margin: 0;
     font-size: var(--text-base);
     font-weight: 300;
@@ -342,11 +350,14 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
 
   .book__read {
     align-self: start;
+    margin-top: var(--space-3);
   }
 
   .book__folio {
-    align-self: center;
-    margin-top: var(--space-2);
+    position: absolute;
+    bottom: var(--space-4);
+    left: 50%;
+    translate: -50% 0;
     font-size: var(--text-xs);
     color: var(--muted);
   }

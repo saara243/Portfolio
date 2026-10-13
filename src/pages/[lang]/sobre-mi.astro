@@ -76,7 +76,7 @@ const skillsNote = profile.getSkillsNote();
   )}
 
   {profile.getSkills().length > 0 && (
-    <section class="band" data-tone="taupe">
+    <section class="band" data-tone="taupe" data-soft>
       <div class="container">
         <SceneHeading scene={t('scene.skills')} title={t('about.contribute')} align="center" size="lg" />
         <SkillGroups groups={profile.getSkills()} lang={lang} />
