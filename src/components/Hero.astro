@@ -226,12 +226,13 @@ const typedMs = Math.round(clock);
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
+    /* En móvil, primero el nombre y el texto (y sus botones); la página de guion, al final. */
     grid-template-areas:
       'slug'
-      'mark'
       'title'
       'tagline'
-      'actions';
+      'actions'
+      'mark';
     align-items: end;
     gap: var(--space-6);
   }
@@ -574,6 +575,11 @@ const typedMs = Math.round(clock);
 
     :global(html.intro) .hero__sheet--back {
       animation: sheet-slide 1600ms var(--ease-out) 250ms backwards;
+    }
+
+    /* En móvil la página queda bajo el texto: no se escribe hasta que entra en pantalla. */
+    .hero__mark[data-offscreen] :is(.hero__ch, .hero__ch::after, .hero__cursor) {
+      animation-play-state: paused;
     }
 
     :global(html.intro) .hero__ch {

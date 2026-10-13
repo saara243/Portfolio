@@ -473,9 +473,10 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
   .book--live .book__controls {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: var(--space-6);
-    margin-top: var(--space-8);
+    max-width: 34rem;
+    margin: var(--space-6) auto 0;
   }
 
   .book__arrow {
@@ -501,12 +502,14 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
     cursor: default;
   }
 
+  /* El número ya está impreso en la página: aquí solo se anuncia a los lectores de pantalla. */
   .book__counter {
-    min-width: 4ch;
-    font-size: var(--text-sm);
-    font-weight: 700;
-    text-align: center;
-    color: var(--cobalt);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* Esquina de la hoja: zona de clic que dobla un pico al pasar el ratón. */
@@ -619,8 +622,31 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
       perspective: 2400px;
     }
 
+    /* Ancho del libro abierto: deja sitio a cada lado para las flechas. */
+    .book {
+      --bw: min(1060px, calc(100cqw - 2 * var(--gutter) - 9rem));
+      position: relative;
+      container-type: inline-size;
+    }
+
+    .book--live .book__controls {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: calc(var(--bw) + 9rem);
+      max-width: none;
+      height: calc(var(--bw) * 2 / 3);
+      margin: 0;
+      translate: -50% 0;
+      pointer-events: none;
+    }
+
+    .book__arrow {
+      pointer-events: auto;
+    }
+
     .book__object {
-      --w: min(1060px, 100%);
+      --w: var(--bw);
       position: relative;
       width: var(--w);
       aspect-ratio: 3 / 2;
