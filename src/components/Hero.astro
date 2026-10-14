@@ -226,13 +226,13 @@ const typedMs = Math.round(clock);
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
-    /* En móvil, primero el nombre y el texto (y sus botones); la página de guion, al final. */
+    /* En móvil, el nombre y el texto en una columna, con la página de guion al lado; los botones, debajo. */
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      'slug'
-      'title'
-      'tagline'
-      'actions'
-      'mark';
+      'slug    slug'
+      'title   mark'
+      'tagline mark'
+      'actions actions';
     align-items: end;
     gap: var(--space-6);
   }
@@ -473,8 +473,36 @@ const typedMs = Math.round(clock);
   }
 
   @media (max-width: 899px) {
+    .hero__inner {
+      column-gap: var(--space-4);
+      row-gap: var(--space-3);
+      align-items: start;
+    }
+
+    .hero__name {
+      font-size: clamp(2rem, 10vw, 3.25rem);
+    }
+
     .hero__role {
-      margin-left: 0;
+      margin: var(--space-3) 0 0;
+      font-size: clamp(0.75rem, 3.4vw, 0.95rem);
+      letter-spacing: 0.08em;
+    }
+
+    .hero__tagline {
+      margin-top: var(--space-2);
+      font-size: clamp(0.95rem, 4.2vw, 1.15rem);
+      line-height: 1.4;
+    }
+
+    .hero__mark {
+      align-self: center;
+      width: clamp(8.5rem, 40vw, 13rem);
+      margin: 0 calc(-0.25 * var(--gutter)) 0 0;
+    }
+
+    .hero__actions {
+      margin-top: var(--space-4);
     }
   }
 

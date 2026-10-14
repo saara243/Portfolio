@@ -234,6 +234,55 @@ const skillsNote = profile.getSkillsNote();
     font-size: var(--text-xl);
   }
 
+  /* Móvil: el título arriba; debajo, la foto en una columna estrecha y el texto al lado. */
+  @media (max-width: 899px) {
+    .about__inner {
+      grid-template-columns: minmax(0, 36%) minmax(0, 1fr);
+      grid-template-areas:
+        'head  head'
+        'photo bio';
+      column-gap: var(--space-5, 1.25rem);
+      row-gap: var(--space-2);
+      align-items: start;
+    }
+
+    .about__text {
+      display: contents;
+    }
+
+    .about__text > :global(*:first-child) {
+      grid-area: head;
+    }
+
+    .about__figure {
+      grid-area: photo;
+      max-width: none;
+      margin-top: var(--space-2);
+    }
+
+    .about__photo {
+      outline-offset: 5px;
+    }
+
+    .about__figure :global(.about__spark) {
+      right: -0.6rem;
+      top: -0.9rem;
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+
+    .about__bio {
+      grid-area: bio;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      hyphens: auto;
+    }
+
+    .about__bio :global(p) {
+      margin-bottom: 0.9em;
+    }
+  }
+
   @media (min-width: 900px) {
     .about__inner {
       grid-template-columns: minmax(16rem, 2fr) 3fr;

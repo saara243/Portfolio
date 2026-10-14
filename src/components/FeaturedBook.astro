@@ -580,6 +580,44 @@ const coverTitle: [string, string] = [words[0], words.slice(1).join(' ')];
       height: 100%;
     }
 
+    /*
+     * Flechas a los lados de la tarjeta, a media altura de la ilustración (o de la tapa). En el
+     * móvil estrecho montan sobre el borde, así que van rellenas de melocotón para leerse sobre el cobalto.
+     */
+    .book {
+      position: relative;
+    }
+
+    .book--live .book__controls {
+      position: absolute;
+      top: min(13rem, 35vh);
+      left: 50%;
+      width: min(100%, 34rem + 8rem);
+      max-width: none;
+      margin: 0;
+      padding-inline: var(--space-1);
+      translate: -50% -50%;
+      pointer-events: none;
+    }
+
+    .book__arrow {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-color: var(--peach);
+      background: var(--peach);
+      pointer-events: auto;
+    }
+
+    .book__arrow:hover:not(:disabled) {
+      border-color: var(--peach);
+    }
+
+    /* En la tapa no hay «anterior» ni en la contraportada «siguiente»: la flecha desaparece. */
+    .book__arrow:disabled {
+      opacity: 0;
+      visibility: hidden;
+    }
+
     .book__deck-cover {
       display: grid;
       place-items: center;

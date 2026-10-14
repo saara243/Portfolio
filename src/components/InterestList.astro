@@ -4,8 +4,9 @@ import type { Interest } from '../modules/profile/domain/Interest';
 
 /**
  * Temas que la autora quiere contar: palabra grande + descripción, en filas con filete.
- * En reposo solo se ve la palabra; al pasar (o enfocar con el teclado) la fila se vuelve cobalto
- * y entra la descripción. En pantallas táctiles, tocar la palabra despliega o recoge su texto.
+ * En reposo solo se ve la palabra; al pasar con el ratón (o enfocar con el teclado) la fila se vuelve
+ * cobalto, entra la descripción y se queda abierta hasta pasar a otra. En táctil, tocar la palabra
+ * despliega o recoge su texto.
  * Sin JavaScript se ven todas las descripciones (el plegado solo existe con .interests--folded).
  */
 interface Props {
@@ -43,19 +44,31 @@ const { interests, reveal = false } = Astro.props;
     document.querySelectorAll('.interests').forEach((list) => list.classList.add('interests--folded'));
   }
 
-  // En táctil o con teclado, tocar (o pulsar Enter en) la palabra fija su texto; volver a tocar lo recoge.
+  const setOpen = (item: HTMLElement, open: boolean) => {
+    item.toggleAttribute('data-open', open);
+    item.querySelector('[data-interest-toggle]')?.setAttribute('aria-expanded', String(open));
+  };
+
+  // Con ratón, entrar en una fila la abre y la deja abierta hasta pasar a otra: el texto no depende de
+  // mantener el puntero quieto encima (con :hover se cerraba al moverlo y no daba tiempo a leer).
+  // En táctil o con teclado, tocar (o pulsar Enter en) la palabra abre o recoge su texto.
   function initInterests() {
     foldInterests();
-    document.querySelectorAll<HTMLButtonElement>('[data-interest-toggle]').forEach((toggle) => {
-      if (toggle.dataset.ready) return;
-      toggle.dataset.ready = 'true';
-      const item = toggle.closest<HTMLElement>('[data-interest]');
-      toggle.addEventListener('click', (event) => {
-        // Con ratón manda el :hover; el clic solo fija el texto en táctil o con teclado.
+    document.querySelectorAll<HTMLElement>('[data-interest]').forEach((item) => {
+      if (item.dataset.ready) return;
+      item.dataset.ready = 'true';
+      const toggle = item.querySelector<HTMLButtonElement>('[data-interest-toggle]');
+      const siblings = () => [...(item.parentElement?.querySelectorAll<HTMLElement>('[data-interest]') ?? [])];
+
+      item.addEventListener('pointerenter', (event) => {
+        if (event.pointerType !== 'mouse' || item.hasAttribute('data-open')) return;
+        siblings().forEach((other) => setOpen(other, other === item));
+      });
+
+      toggle?.addEventListener('click', (event) => {
+        // Con ratón la fila ya se abrió al entrar; el clic no la recoge mientras se lee.
         if (event instanceof PointerEvent && event.pointerType === 'mouse') return;
-        const open = !item?.hasAttribute('data-open');
-        item?.toggleAttribute('data-open', open);
-        toggle.setAttribute('aria-expanded', String(open));
+        setOpen(item, !item.hasAttribute('data-open'));
       });
     });
   }
@@ -141,27 +154,6 @@ const { interests, reveal = false } = Astro.props;
     transition: color 400ms var(--ease-out);
   }
 
-  @media (hover: hover) {
-    .interests__item:hover::before {
-      clip-path: inset(0 0 0 0);
-    }
-
-    .interests__item:hover .interests__title,
-    .interests__item:hover .interests__text,
-    .interests__item:hover :global(.interests__mark) {
-      color: var(--peach);
-    }
-
-    .interests__item:hover :global(.interests__mark) {
-      rotate: 180deg;
-      scale: 1.25;
-    }
-
-    .interests__item:hover ::selection {
-      background: var(--peach);
-      color: var(--cobalt);
-    }
-  }
 
   @media (min-width: 900px) {
     .interests__item {
@@ -174,7 +166,7 @@ const { interests, reveal = false } = Astro.props;
   }
 
   /*
-   * Plegado (solo con JS): en reposo, solo la palabra. Al pasar, enfocar o abrir, la descripción
+   * Plegado (solo con JS): en reposo, solo la palabra. Al abrir (ratón encima, toque) o enfocar, la descripción
    * entra desde la derecha. En una columna (móvil/tableta) la fila además crece para hacerle sitio;
    * en dos columnas el hueco ya está reservado y no hay saltos de maquetación.
    */
@@ -196,17 +188,6 @@ const { interests, reveal = false } = Astro.props;
       color 400ms var(--ease-out);
   }
 
-  /* Pasar por encima solo cuenta con ratón: en táctil el :hover se queda pegado tras tocar. */
-  @media (hover: hover) {
-    .interests--folded .interests__item:hover .interests__text {
-      opacity: 1;
-      translate: 0 0;
-      transition:
-        opacity 500ms var(--ease-out) 320ms,
-        translate 600ms var(--ease-out) 320ms,
-        color 400ms var(--ease-out);
-    }
-  }
 
   @media (max-width: 899px) {
     .interests--folded .interests__item {
@@ -222,13 +203,6 @@ const { interests, reveal = false } = Astro.props;
     .interests--folded .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) {
       grid-template-rows: auto 1fr;
       row-gap: var(--space-3);
-    }
-
-    @media (hover: hover) {
-      .interests--folded .interests__item:hover {
-        grid-template-rows: auto 1fr;
-        row-gap: var(--space-3);
-      }
     }
   }
 
@@ -252,11 +226,6 @@ const { interests, reveal = false } = Astro.props;
     translate: 0 0;
   }
 
-  @media (hover: hover) {
-    .interests--folded .interests__item:hover .interests__toggle {
-      translate: 0 0;
-    }
-  }
 
   /* La fila se vuelve cobalto también al enfocarla con el teclado o al dejarla abierta. */
   .interests__item:is([data-open], :has(.interests__toggle:focus-visible))::before {
@@ -269,6 +238,11 @@ const { interests, reveal = false } = Astro.props;
 
   .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) :global(.interests__mark) {
     color: var(--peach);
+  }
+
+  .interests__item[data-open] ::selection {
+    background: var(--peach);
+    color: var(--cobalt);
   }
 
   .interests__item:is([data-open], :has(.interests__toggle:focus-visible)) :global(.interests__mark) {
