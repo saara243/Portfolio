@@ -165,21 +165,35 @@ const skillsNote = profile.getSkillsNote();
     .path__cv {
       padding-inline: var(--space-4);
       letter-spacing: 0.08em;
+      white-space: normal;
+      text-align: center;
     }
   }
 
   .path__grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-4);
+  }
+
+  /* Que ninguna línea larga ensanche el panel en pantallas muy estrechas. */
+  .path__grid > :global(*) {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .path__panel {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     align-content: start;
     gap: var(--space-4);
     padding: clamp(2rem, 1.5rem + 3vw, 3.5rem) clamp(1.25rem, 1rem + 2vw, 3rem);
     text-align: center;
+  }
+
+  .path__panel > :global(*) {
+    max-width: 100%;
   }
 
   .path__panel :global(.path__mark) {
