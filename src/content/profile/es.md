@@ -48,17 +48,9 @@ skills:
   - title: Rodajes
     items: [Experiencia en diversos departamentos de set, Trabajo con actores, Organización del rodaje antes y durante la grabación, Comunicación en set y dinámicas]
 skillsNote: Me interesa aprender, pero también llegar sabiendo trabajar.
-motivation:
-  title: ¿Por qué Gestmusic?
-  paragraphs:
-    - Quiero hacer mis prácticas en Gestmusic porque me interesa conocer de cerca cómo funciona un equipo profesional dedicado a crear contenidos para televisión.
-    - Mi formación en guion me ha enseñado a construir historias y personajes, pero quiero descubrir cómo esas herramientas se transforman cuando el objetivo es crear entretenimiento, desarrollar formatos y trabajar con contenidos que evolucionan constantemente.
-    - "Me interesa especialmente aprender del proceso colectivo: cómo nace una idea, cómo se desarrolla, cómo se trabaja en una redacción y cómo se transforma hasta llegar a pantalla."
-    - Busco unas prácticas en las que poder aprender, observar y participar, pero también aportar mi capacidad de escritura, creatividad y experiencia audiovisual.
-  closing: Quiero aprender cómo se cuentan historias cuando millones de personas están al otro lado de la pantalla.
 resume:
   fullName: Sara Abreu Sorribas
-  about: Estoy interesada en el mundo laboral del cine y el teatro, y en particular, en la creación del guion de obras y películas. Me he especializado en dirección cinematográfica durante la carrera, pero ahora estoy centrada en el guion cinematográfico y televisivo, y estoy cursando el máster superior de especialidad de guion de la ESCAC. Soy una persona responsable y con capacidad de trabajo en equipo, a la que le encanta escribir y construir historias.
+  about: Estoy interesada en el mundo laboral del cine y el teatro, y en particular, en la creación del guion de obras y películas. Me he especializado en dirección cinematográfica durante la carrera, pero ahora estoy centrada en el guion cinematográfico y televisivo, y estoy cursando el máster superior de especialidad de guion de la ESCAC. Soy una persona responsable y con capacidad de trabajo en equipo, a la que le encanta escribir y construir historias. Además también me gustaría explorar la construcción narrativa de historias reales, la documentación y la escritura para formatos sonoros. Destaco por mi interés en el desarrollo de historias, la atención a la estructura y los personajes y la voluntad de seguir aprendiendo en un entorno profesional.
   experience:
     - title: Tercera ayudante de dirección
       place: Spot Cinema Catalunya
@@ -128,6 +120,6 @@ Soy guionista audiovisual formada en ESCAC, donde he aprendido a desarrollar his
 
 Me interesan especialmente las historias protagonizadas por personas imperfectas que intentan encontrar su lugar, las relaciones familiares y los personajes complejos que, de una manera u otra, terminan dejándose conocer.
 
-Disfruto de la escritura de personajes y diálogos, pero también de todo el proceso que existe alrededor de una historia: pensar una idea, encontrar su estructura, desarrollarla, compartirla y verla transformarse durante el rodaje.
+Disfruto de la escritura de personajes y diálogos, pero también de todo el proceso que existe alrededor de una historia: documentarse, pensar una idea, encontrar su estructura, desarrollarla, compartirla y verla transformarse durante el rodaje.
 
-Ahora quiero ampliar mi experiencia hacia la televisión y el entretenimiento, conocer cómo trabaja un equipo profesional de contenidos audiovisuales y aprender de los procesos que convierten una idea en un programa de televisión.
+Ahora quiero ampliar mi experiencia hacia la televisión y el entretenimiento, conocer cómo trabaja un equipo profesional de contenidos audiovisuales y aprender de los procesos que convierten una idea o un hecho en narrativa.

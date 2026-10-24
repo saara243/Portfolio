@@ -11,7 +11,7 @@ web
 - **Productoras y showrunners** que buscan guionistas junior o ayudantes de guion para salas y proyectos. Llegan con poco tiempo, normalmente desde un enlace en un email, una candidatura o LinkedIn, y necesitan decidir rápido si la voz y el oficio encajan.
 - **Festivales, laboratorios y residencias de guion** cuyos comités evalúan convocatorias. Leen con más calma, comparan candidaturas y buscan trayectoria, loglines sólidas y material verificable (guiones, selecciones, formación).
 
-Ambas audiencias tienen el mismo peso. La autora es **Sara Abreu**, guionista audiovisual formada en ESCAC (Grado de Cinematografía y Máster Superior de Guion), con base en Barcelona. Ahora busca ampliar su experiencia hacia la televisión y el entretenimiento; la web incluye una sección "¿Por qué Gestmusic?" dirigida a unas prácticas en esa productora.
+Ambas audiencias tienen el mismo peso. La autora es **Sara Abreu**, guionista audiovisual formada en ESCAC (Grado de Cinematografía y Máster Superior de Guion), con base en Barcelona. Ahora busca ampliar su experiencia hacia la televisión y el entretenimiento. La web no se dirige a ninguna productora concreta: la sección «¿Por qué Gestmusic?» se retiró (octubre 2026).
 
 ## Product Purpose
 
@@ -49,7 +49,7 @@ La web habla el idioma del guion: cada página se abre con un encabezado de esce
 
 ## Evidence on Hand
 
-**Contenido real** (tomado de la web anterior de la autora): nombre, bio, estudios en ESCAC, experiencia (profesora en el Aula de Guion de la Summer School de ESCAC, junio 2026; rodajes 2022–2026), aprendizajes clave, historias que le interesa contar, capacidades, motivación para Gestmusic, email e Instagram. Vive en `src/content/profile/{es,ca,en}.md`. El teléfono de la web anterior no se publica.
+**Contenido real** (tomado de la web anterior de la autora): nombre, bio, estudios en ESCAC, experiencia (profesora en el Aula de Guion de la Summer School de ESCAC, junio 2026; rodajes 2022–2026), aprendizajes clave, historias que le interesa contar, capacidades, email e Instagram. Vive en `src/content/profile/{es,ca,en}.md`. El teléfono de la web anterior no se publica.
 
 **Sigue siendo placeholder:**
 

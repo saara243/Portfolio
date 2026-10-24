@@ -248,10 +248,10 @@ const skillsNote = profile.getSkillsNote();
     font-size: var(--text-xl);
   }
 
-  /* Móvil: el título arriba; debajo, la foto en una columna estrecha y el texto al lado. */
+  /* Móvil: el título arriba; debajo, la foto al lado del texto, centrada en su altura. */
   @media (max-width: 899px) {
     .about__inner {
-      grid-template-columns: minmax(0, 36%) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 44%) minmax(0, 1fr);
       grid-template-areas:
         'head  head'
         'photo bio';
@@ -270,8 +270,8 @@ const skillsNote = profile.getSkillsNote();
 
     .about__figure {
       grid-area: photo;
+      align-self: center;
       max-width: none;
-      margin-top: var(--space-2);
     }
 
     .about__photo {

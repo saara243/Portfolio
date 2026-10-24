@@ -48,17 +48,9 @@ skills:
   - title: On set
     items: [Experience across several set departments, Working with actors, Organising shoots before and during filming, On-set communication and dynamics]
 skillsNote: I want to learn, but also to arrive knowing how to work.
-motivation:
-  title: Why Gestmusic?
-  paragraphs:
-    - I want to do my internship at Gestmusic because I’d like to see up close how a professional team creating television content works.
-    - My screenwriting training taught me how to build stories and characters, but I want to discover how those tools change when the goal is entertainment, developing formats and working with content that is constantly evolving.
-    - "I’m especially interested in learning from the collective process: how an idea is born, how it develops, how a writers’ room works and how it changes on its way to the screen."
-    - I’m looking for an internship where I can learn, observe and take part, while also contributing my writing, creativity and audiovisual experience.
-  closing: I want to learn how stories are told when millions of people are on the other side of the screen.
 resume:
   fullName: Sara Abreu Sorribas
-  about: I’m drawn to working in film and theatre, and above all to writing scripts for plays and films. I specialised in film directing during my degree, but I’m now focused on screenwriting for film and television, and I’m studying the Master’s in Screenwriting at ESCAC. I’m responsible, I work well in a team, and I love writing and building stories.
+  about: I’m drawn to working in film and theatre, and above all to writing scripts for plays and films. I specialised in film directing during my degree, but I’m now focused on screenwriting for film and television, and I’m studying the Master’s in Screenwriting at ESCAC. I’m responsible, I work well in a team, and I love writing and building stories. I’d also like to explore the narrative construction of true stories, research, and writing for audio formats. I stand out for my interest in developing stories, my attention to structure and character, and my drive to keep learning in a professional environment.
   experience:
     - title: Third assistant director
       place: Spot Cinema Catalunya
@@ -128,6 +120,6 @@ I’m a screenwriter trained at ESCAC, where I learned to develop stories from t
 
 I’m especially drawn to stories about imperfect people trying to find their place, family relationships, and complex characters who, one way or another, end up letting us know them.
 
-I love writing characters and dialogue, but also the whole process around a story: thinking up an idea, finding its structure, developing it, sharing it and watching it change during the shoot.
+I love writing characters and dialogue, but also the whole process around a story: researching, thinking up an idea, finding its structure, developing it, sharing it and watching it change during the shoot.
 
-Now I want to broaden my experience towards television and entertainment, see how a professional content team works, and learn the processes that turn an idea into a TV show.
+Now I want to broaden my experience towards television and entertainment, see how a professional content team works, and learn the processes that turn an idea or a real event into narrative.

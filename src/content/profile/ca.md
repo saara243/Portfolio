@@ -48,17 +48,9 @@ skills:
   - title: Rodatges
     items: [Experiència en diversos departaments de set, Treball amb actors, Organització del rodatge abans i durant l’enregistrament, Comunicació al set i dinàmiques]
 skillsNote: M’interessa aprendre, però també arribar-hi sabent treballar.
-motivation:
-  title: Per què Gestmusic?
-  paragraphs:
-    - Vull fer les pràctiques a Gestmusic perquè m’interessa conèixer de prop com funciona un equip professional dedicat a crear continguts per a televisió.
-    - La meva formació en guió m’ha ensenyat a construir històries i personatges, però vull descobrir com es transformen aquestes eines quan l’objectiu és crear entreteniment, desenvolupar formats i treballar amb continguts que evolucionen constantment.
-    - "M’interessa especialment aprendre del procés col·lectiu: com neix una idea, com es desenvolupa, com es treballa en una redacció i com es transforma fins a arribar a pantalla."
-    - Busco unes pràctiques on pugui aprendre, observar i participar, però també aportar la meva capacitat d’escriptura, creativitat i experiència audiovisual.
-  closing: Vull aprendre com s’expliquen històries quan milions de persones són a l’altra banda de la pantalla.
 resume:
   fullName: Sara Abreu Sorribas
-  about: M’interessa el món laboral del cinema i el teatre i, en particular, la creació del guió d’obres i pel·lícules. Durant la carrera em vaig especialitzar en direcció cinematogràfica, però ara estic centrada en el guió cinematogràfic i televisiu, i estic cursant el màster superior d’especialitat de guió de l’ESCAC. Soc una persona responsable i amb capacitat de treball en equip, a qui li encanta escriure i construir històries.
+  about: M’interessa el món laboral del cinema i el teatre i, en particular, la creació del guió d’obres i pel·lícules. Durant la carrera em vaig especialitzar en direcció cinematogràfica, però ara estic centrada en el guió cinematogràfic i televisiu, i estic cursant el màster superior d’especialitat de guió de l’ESCAC. Soc una persona responsable i amb capacitat de treball en equip, a qui li encanta escriure i construir històries. A més, també m’agradaria explorar la construcció narrativa d’històries reals, la documentació i l’escriptura per a formats sonors. Destaco pel meu interès en el desenvolupament d’històries, l’atenció a l’estructura i als personatges i la voluntat de continuar aprenent en un entorn professional.
   experience:
     - title: Tercera ajudant de direcció
       place: Spot Cinema Catalunya
@@ -128,6 +120,6 @@ Soc guionista audiovisual formada a l’ESCAC, on he après a desenvolupar hist�
 
 M’interessen especialment les històries protagonitzades per persones imperfectes que intenten trobar el seu lloc, les relacions familiars i els personatges complexos que, d’una manera o una altra, acaben deixant-se conèixer.
 
-Gaudeixo de l’escriptura de personatges i diàlegs, però també de tot el procés que hi ha al voltant d’una història: pensar una idea, trobar-ne l’estructura, desenvolupar-la, compartir-la i veure-la transformar-se durant el rodatge.
+Gaudeixo de l’escriptura de personatges i diàlegs, però també de tot el procés que hi ha al voltant d’una història: documentar-se, pensar una idea, trobar-ne l’estructura, desenvolupar-la, compartir-la i veure-la transformar-se durant el rodatge.
 
-Ara vull ampliar la meva experiència cap a la televisió i l’entreteniment, conèixer com treballa un equip professional de continguts audiovisuals i aprendre dels processos que converteixen una idea en un programa de televisió.
+Ara vull ampliar la meva experiència cap a la televisió i l’entreteniment, conèixer com treballa un equip professional de continguts audiovisuals i aprendre dels processos que converteixen una idea o un fet en narrativa.

@@ -175,7 +175,6 @@ const sections: { title: string; entries: ResumeEntry[] }[] = resume
   .cv-head {
     display: grid;
     gap: var(--space-6);
-    max-width: 52rem;
     margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
   }
 
@@ -194,9 +193,9 @@ const sections: { title: string; entries: ResumeEntry[] }[] = resume
     color: var(--ink);
   }
 
+  /* El párrafo ocupa todo el ancho del contenedor, de lado a lado. */
   .cv-head__about p {
     margin: 0;
-    max-width: 62ch;
     font-size: var(--text-lg);
     font-weight: 300;
     line-height: 1.65;
