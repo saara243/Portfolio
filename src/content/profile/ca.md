@@ -38,6 +38,8 @@ interests:
     description: M’agrada trobar l’humor en situacions incòmodes, absurdes o reconeixibles, sense que els personatges hagin de ser conscients que resulten còmics.
   - title: Créixer
     description: Moltes de les meves històries giren al voltant de personatges que intenten esbrinar qui són mentre la vida els exigeix que ja ho sàpiguen.
+  - title: Veracitat
+    description: "M’interessa explicar històries veraces o fets que han passat en la realitat d’una manera entretinguda, didàctica i narrativa. S’assembla molt a la creació d’històries de ficció, ja que recopiles informació sobre un tema, l’estudies, penses la millor manera d’explicar-lo i després l’exposes al públic general."
 skills:
   - title: Guió
     items: [Escriptura i reescriptura, Escaletes, Diàlegs, Desenvolupament de personatges, Estructura narrativa]

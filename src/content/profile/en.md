@@ -38,6 +38,8 @@ interests:
     description: I like finding the humour in awkward, absurd or familiar situations, without the characters ever realising they’re being funny.
   - title: Growing up
     description: Many of my stories follow characters trying to work out who they are while life demands that they already know.
+  - title: Truth
+    description: "I’m interested in telling true stories, things that really happened, in an entertaining, informative and narrative way. It’s very close to creating fiction: you gather information on a subject, study it, work out the best way to tell it and then present it to a general audience."
 skills:
   - title: Screenwriting
     items: [Writing and rewriting, Step outlines, Dialogue, Character development, Narrative structure]

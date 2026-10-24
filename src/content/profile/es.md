@@ -38,6 +38,8 @@ interests:
     description: Me gusta encontrar el humor en situaciones incómodas, absurdas o reconocibles, sin que los personajes tengan que ser conscientes de que resultan cómicos.
   - title: Crecer
     description: Muchas de mis historias giran alrededor de personajes que están intentando averiguar quiénes son mientras la vida les exige que ya lo sepan.
+  - title: Veracidad
+    description: "Me interesa contar historias veraces o hechos que han pasado en la realidad de forma entretenida, didáctica y narrativa. Se asemeja mucho a la creación de historias de ficción, ya que recabas información sobre un tema, lo estudias, piensas la mejor forma de contarlo y luego lo expones al público general."
 skills:
   - title: Guion
     items: [Escritura y reescritura, Escaletas, Diálogos, Desarrollo de personajes, Estructura narrativa]
