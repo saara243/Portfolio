@@ -14,6 +14,6 @@ download: public
 context: Dirigido por Sara Abreu.
 order: 1
 featured: true
-featuredOrder: 4
+featuredOrder: 1
 ---
 1992\. Carmen tiene 28 años y friega ollas en la cocina de una escuela, atrapada en la vida que su madre eligió por ella. Cuando la radio anuncia que *¡Baila, Baila!*, el programa que la hacía soñar de niña, se despide con un último casting, decide presentarse. Su madre, que la ha frenado toda la vida, también intentará impedírselo esta vez.

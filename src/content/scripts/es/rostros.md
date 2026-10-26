@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Rostros
 logline: En la celda 231, un preso aterrado se niega a abrir los ojos ante la voz que le susurra desde la oscuridad, pero cuanto más tarda en mirar, más cerca la tiene.
 format: short

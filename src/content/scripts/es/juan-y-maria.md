@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Juan y María
 logline: Tres años después de dejarle, María cita a Juan en un bar para decirle algo que ni ella sabe cómo decir.
 format: short

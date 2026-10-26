@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Misma historia, distinto final
 logline: A Valeria se le caen los cascos a la vía del tren en Sant Andreu Arenal. Una misma situación, tres finales distintos.
 format: short

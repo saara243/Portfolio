@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: La soledad
 logline: Una tarde en la playa, Laura tiene que decidir entre su novia, Bianca, y su mejor amiga, Valeria, con la que la ha engañado, sin saber de quién está enamorada.
 format: short

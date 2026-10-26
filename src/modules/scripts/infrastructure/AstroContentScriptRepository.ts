@@ -6,7 +6,8 @@ import type { ScriptRepository } from '../domain/ScriptRepository';
 /** Lee los guiones de `src/content/scripts/{idioma}/{slug}.md`. */
 export class AstroContentScriptRepository implements ScriptRepository {
   async findAll(): Promise<ScriptList> {
-    const entries = await getCollection('scripts');
+    // Los proyectos marcados `hidden` se guardan en el contenido pero no se publican.
+    const entries = await getCollection('scripts', (entry) => !entry.data.hidden);
     return ScriptList.create(
       entries.map((entry) => {
         const [locale, slug] = entry.id.split('/');

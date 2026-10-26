@@ -59,6 +59,8 @@ const scripts = defineCollection({
     awards: z.array(z.string()).default([]),
     // Para qué se escribió (encargo, prueba, entrevista…); se muestra en la ficha como «Contexto»
     context: z.string().optional(),
+    // Oculto de la web sin borrarlo: no sale en listados, destacados ni tiene ficha. Quitar para volver a publicarlo.
+    hidden: z.boolean().default(false),
   }),
 });
 

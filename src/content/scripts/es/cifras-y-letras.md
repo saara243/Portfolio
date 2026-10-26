@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Cifras y letras
 logline: Yolanda quiere presentarse a Cifras y letras, su concurso favorito, pero su madre, aspiradora en mano, no piensa ponérselo fácil.
 format: short

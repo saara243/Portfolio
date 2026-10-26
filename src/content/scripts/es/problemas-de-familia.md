@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Problemas de familia
 logline: Diez años buscando al asesino de sus hermanos llevan a Carla, en plena cena de Nochebuena, a una foto que no esperaba ver.
 format: short

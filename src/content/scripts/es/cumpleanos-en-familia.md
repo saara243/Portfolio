@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Cumpleaños en familia
 logline: En una casa en ruinas en mitad del desierto, Clara prepara la cena de su cumpleaños y se sienta a la mesa con su familia, que ya no puede responderle.
 format: short

@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Diego y Héctor
 logline: En una sala de interrogatorios, un chaval que propuso un reto en internet descubre, pregunta a pregunta, que para el streamer que lo aceptó no era ningún juego.
 format: short

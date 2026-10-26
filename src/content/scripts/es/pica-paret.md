@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Pica paret
 logline: Dos hermanas juegan al pica paret con el ser que vive en su armario, hasta que él decide jugar con sus propias reglas.
 format: short

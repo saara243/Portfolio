@@ -1,4 +1,5 @@
 ---
+hidden: true
 title: Un problema de halitosis
 logline: A punto de declararse a su dentista, Diego descubre que le apesta el aliento, y su plan para conseguir un caramelo antes de que ella vuelva a la consulta se le va de las manos.
 format: short
