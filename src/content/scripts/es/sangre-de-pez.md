@@ -7,7 +7,6 @@ year: 2026
 status: produced
 coverArt: pool
 pages: 6
-pdf: files/scripts/sangre-de-pez.pdf
 download: public
 context: Dirigido por Ayrton Gómez y Cala (Marta Castro).
 order: 13

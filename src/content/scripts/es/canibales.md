@@ -7,7 +7,6 @@ year: 2026
 status: produced
 coverArt: cannibal
 pages: 5
-pdf: files/scripts/canibales.pdf
 download: public
 context: Dirigido por Ayrton Gómez y Cala (Marta Castro).
 order: 10

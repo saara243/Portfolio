@@ -7,7 +7,6 @@ year: 2026
 status: produced
 coverArt: forest
 pages: 7
-pdf: files/scripts/el-guardian.pdf
 download: public
 context: Dirigido por Iván Loma.
 order: 11
